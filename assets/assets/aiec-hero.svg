@@ -1,2 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#7aa2ff"/><stop offset="1" stop-color="#42d392"/></linearGradient></defs><rect width="640" height="360" fill="#0b1020"/><circle cx="180" cy="180" r="120" fill="url(#g)" opacity=".2"/><rect x="260" y="90" width="300" height="180" rx="20" fill="#121935" stroke="#1e2a50"/><text x="410" y="185" text-anchor="middle" font-family="Segoe UI,Roboto" font-size="26" fill="#e8ebf3">AI Easy Coder</text></svg>
-

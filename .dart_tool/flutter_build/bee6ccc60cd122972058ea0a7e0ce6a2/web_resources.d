@@ -1,1 +1,0 @@
- build/web/.nojekyll:  /home/matsunaga/nexspace_site/web/.nojekyll /home/matsunaga/nexspace_site/web/index.html
