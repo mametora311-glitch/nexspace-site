@@ -1,0 +1,266 @@
+/* ========== Base ========== */
+:root{
+  --bg-deep:#0b0d17;
+  --bg-hero:#0e1222;
+  --bg-light:#f5f7fb;
+  --ink-strong:#0f172a;
+  --ink:#1f2937;
+  --ink-weak:#4b5563;
+  --brand:#3b82f6;        /* アクセント青 */
+  --brand-2:#60a5fa;
+  --white:#ffffff;
+
+  --radius:14px;
+  --shadow:0 10px 24px rgba(2,6,23,.14);
+  --shadow-soft:0 6px 16px rgba(2,6,23,.10);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  color:var(--ink);
+  background:var(--bg-deep);
+  line-height:1.75;
+}
+
+/* ========== Layout ========== */
+.container{
+  width:min(1100px, calc(100% - 2rem));
+  margin-inline:auto;
+}
+
+.slab{padding:64px 0}
+.slab--light{background:var(--bg-light)}
+.slab--dark{
+  color:#e5ecff;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(13,18,34,.0) 0, rgba(13,18,34,.6) 55%, rgba(13,18,34,.9) 100%),
+    linear-gradient(180deg, #0f1222 0, #0b0d17 60%);
+}
+
+/* ========== Header ========== */
+.site-header{
+  position:sticky; top:0; z-index:100;
+  background:rgba(11,13,23,.8);
+  backdrop-filter:saturate(120%) blur(6px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.site-header .nav{
+  height:56px; display:flex; align-items:center; justify-content:space-between;
+}
+.brand{display:inline-flex; align-items:center; gap:.5rem; color:#e7efff; text-decoration:none; font-weight:700}
+.logo-dot{
+  width:10px;height:10px;border-radius:50%;
+  background: radial-gradient(60% 60% at 40% 40%, #9ecbff, #3877ff 70%, #1740ff 100%);
+  box-shadow:0 0 10px rgba(96,165,250,.9);
+}
+.brand-text{letter-spacing:.3px}
+.nav-links a{
+  color:#dbe7ff; text-decoration:none; margin-left:20px; font-weight:600;
+  opacity:.9;
+}
+.nav-links a:hover{opacity:1; text-decoration:underline}
+
+/* ========== HERO ========== */
+.hero{
+  position:relative; isolation:isolate;
+  background:var(--bg-hero);
+  padding:84px 0 60px;
+  overflow:hidden;
+}
+.hero::before{
+  /* グリッド+星 */
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0, rgba(255,255,255,.06) 1px, transparent 1px, transparent 96px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0, rgba(255,255,255,.06) 1px, transparent 1px, transparent 96px),
+    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.18), transparent 60%),
+    radial-gradient(2px 2px at 70% 50%, rgba(255,255,255,.15), transparent 60%),
+    radial-gradient(1.6px 1.6px at 40% 70%, rgba(255,255,255,.12), transparent 60%);
+  opacity:.28;
+}
+.hero-overlay{
+  /* タイトルのコントラストを底上げ */
+  position:absolute; inset:0;
+  background:
+    radial-gradient(40% 30% at 50% 45%, rgba(0,0,0,.55) 0, rgba(0,0,0,.35) 40%, rgba(0,0,0,0) 70%),
+    linear-gradient(180deg, rgba(0,0,0,.24) 0, rgba(0,0,0,0) 40%);
+}
+.hero-inner{position:relative; z-index:1; text-align:center}
+.hero-title{
+  color:#eff6ff; margin:20px 0 8px; font-weight:800;
+  font-size:clamp(28px, 5.4vw, 56px);
+  letter-spacing:.5px;
+  text-shadow:0 2px 12px rgba(0,0,0,.45), 0 0 18px rgba(60,120,255,.25);
+}
+.hero-sub{
+  color:#cfe0ff; margin:0 0 22px; font-weight:600; letter-spacing:.3px;
+}
+.hero-glow{
+  width:240px; height:14px; margin:0 auto;
+  background:
+    radial-gradient(65% 100% at 50% 50%, rgba(120,160,255,.65) 0, rgba(120,160,255,.25) 40%, rgba(120,160,255,0) 75%),
+    linear-gradient(90deg, transparent, rgba(120,160,255,.4), transparent);
+  border-radius:999px; filter:blur(.2px);
+  box-shadow:0 6px 26px rgba(120,160,255,.45), inset 0 -1px 2px rgba(255,255,255,.6);
+}
+
+/* ========== Sections / Cards ========== */
+.section{margin:42px 0}
+.section-title{
+  font-size:clamp(20px, 2.4vw, 28px);
+  margin:0 0 18px; color:var(--ink-strong); letter-spacing:.4px; font-weight:800;
+}
+.section-title--invert{color:#eaf1ff}
+
+.cards{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:20px;
+  align-items:stretch;         /* 高さ揃え */
+}
+.card{
+  background: var(--white);
+  color: var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 18px 18px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  border:1px solid rgba(2,6,23,.06);
+}
+.card-title{margin:0 0 6px; font-size:18px; font-weight:800; color:var(--ink-strong)}
+.card p{margin:0; color:var(--ink-weak)}
+
+.product-card{padding:22px}
+.product-card__body{margin-bottom:12px}
+.product-card__actions{display:flex; gap:10px; flex-wrap:wrap}
+
+/* ニュースカードは「ガラス」質感でニュースのグラデと統一 */
+.card--glass{
+  background: rgba(255,255,255,.08);
+  color:#eaf1ff;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: 0 8px 22px rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* ========== Buttons ========== */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  height:38px; padding:0 14px; border-radius:10px;
+  border:1px solid rgba(2,6,23,.14);
+  color:var(--ink-strong); text-decoration:none; font-weight:700; background:#fff;
+}
+.btn:hover{box-shadow:0 6px 16px rgba(2,6,23,.12)}
+.btn-primary{
+  color:#fff; background:linear-gradient(180deg, var(--brand) 0, #1f62ff 100%);
+  border:none; box-shadow:0 8px 18px rgba(59,130,246,.35);
+}
+.btn-primary:hover{transform:translateY(-1px); box-shadow:0 12px 22px rgba(59,130,246,.42)}
+
+/* ========== News ========== */
+.news .news-list{list-style:none; padding:0; margin:0; display:grid; gap:14px}
+.news .news-item{display:flex; gap:14px; align-items:center; padding:14px 16px}
+.news time{font-weight:800; color:#cfe0ff; min-width:96px}
+
+/* ========== Footer ========== */
+.site-footer{
+  padding:28px 0;
+  background:#070910;
+  color:#a9b6d6;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.footer-inner{display:flex; align-items:center; justify-content:space-between; gap:16px}
+.footer-links a{color:#cfe0ff; text-decoration:none; margin-left:16px}
+.footer-sep{margin-left:16px; opacity:.6}
+
+/* ========== Responsive tweaks ========== */
+@media (max-width:640px){
+  .nav-links a{margin-left:14px}
+  .product-card__actions{width:100%}
+  .btn{flex:1 1 auto; justify-content:center}
+}
+/* ===== Nexspace HP visual overrides (Products向け) ===== */
+/* トーン統一用トークン */
+:root {
+  --nx-bg: #0d1117;
+  --nx-surface: rgba(255,255,255,0.06);
+  --nx-surface-strong: rgba(255,255,255,0.10);
+  --nx-border: rgba(255,255,255,0.14);
+  --nx-white: #ffffff;
+  --nx-muted: rgba(255,255,255,0.72);
+  --nx-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  --nx-shadow-soft: 0 6px 20px rgba(0,0,0,0.22);
+  --nx-radius-xl: 18px;
+}
+
+/* 背景に軽い霧膜を足して見出しコントラストUP（必要なセクションに .overlay-sheen を付与） */
+.overlay-sheen {
+  position: relative;
+  isolation: isolate;
+}
+.overlay-sheen::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.35));
+  z-index: -1;   /* 背景扱い */
+}
+
+/* 見出しを沈ませない（ProductsのH1/H2に .contrast-title を付与） */
+.contrast-title {
+  color: var(--nx-white);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  letter-spacing: .02em;
+}
+
+/* カードのグラス効果をナチュラルに（NASA寄りの淡さ） */
+.card--glass {
+  background: linear-gradient(180deg, var(--nx-surface), var(--nx-surface-strong));
+  border: 1px solid var(--nx-border);
+  box-shadow: var(--nx-shadow-soft);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--nx-radius-xl);
+  color: var(--nx-muted);
+}
+
+/* カード群の高さを自動で揃える */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+.cards-grid .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 最低縦幅を合わせ、余白を統一 */
+.card {
+  padding: 20px 22px;
+  min-height: 180px;         /* 必要なら 200〜240 に調整 */
+}
+.card .card-body {
+  flex: 1 1 auto;
+}
+
+/* ボタンのコントラスト（黒背景で沈みにくく） */
+.btn {
+  border-radius: 12px;
+  font-weight: 600;
+}
+.btn--primary {
+  background: var(--nx-white);
+  color: #0a0a0a;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.btn--primary:hover {
+  filter: brightness(0.95);
+}
+
+/* セクション内の小見出しや説明文の読みやすさ */
+.section-lead { color: var(--nx-muted); }

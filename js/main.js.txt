@@ -1,0 +1,35 @@
+(function(){
+  const cfg = (window.AIEC_CONFIG||{});
+  // 1) フッターの年
+  const y = document.querySelectorAll(".js-year");
+  y.forEach(n=>n.textContent = new Date().getFullYear());
+
+  // 2) 購入ボタン制御（Payment Link）
+  const buyBtns = document.querySelectorAll("[data-buy]");
+  buyBtns.forEach(btn=>{
+    if(!cfg.PAYMENT_LINK_URL){ btn.style.display="none"; return; }
+    btn.addEventListener("click",()=>{ window.location.href = cfg.PAYMENT_LINK_URL; });
+  });
+
+  // 3) ダウンロード表示
+  const dWin = document.getElementById("dl-win");
+  const dLin = document.getElementById("dl-linux");
+  if(dWin && cfg.DOWNLOAD_URL_WINDOWS){ dWin.href = cfg.DOWNLOAD_URL_WINDOWS; }
+  if(dLin && cfg.DOWNLOAD_URL_LINUX){ dLin.href = cfg.DOWNLOAD_URL_LINUX; }
+  if(dWin && !cfg.DOWNLOAD_URL_WINDOWS) dWin.parentElement.style.display="none";
+  if(dLin && !cfg.DOWNLOAD_URL_LINUX) dLin.parentElement.style.display="none";
+
+  // 4) 会社名/メール自動差し込み
+  const company = document.querySelectorAll(".js-company");
+  company.forEach(n=>n.textContent = cfg.COMPANY_NAME || "Nexspace");
+  const mail = document.querySelectorAll(".js-mail");
+  mail.forEach(n=>{
+    const m = cfg.SUPPORT_EMAIL || "support@example.com";
+    n.textContent = m; n.setAttribute("href","mailto:"+m);
+  });
+
+  // 5) トークン上限表示
+  const tcap = document.querySelectorAll(".js-token-cap");
+  tcap.forEach(n=>n.textContent = cfg.NOTES_TOKEN_CAP || "月間300k tokens（生成+レビュー合算）");
+})();
+
