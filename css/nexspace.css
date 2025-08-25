@@ -1,0 +1,125 @@
+/* ===== Base ===== */
+:root{
+  --bg:#0c121b;           /* 深いネイビー */
+  --bg-2:#0f1622;
+  --ink:#eaf2ff;          /* 文字色 */
+  --muted:#a9b3c6;
+  --brand:#5ea0ff;        /* アクセント */
+  --brand-2:#9bd3ff;
+  --card:#121a25cc;       /* ガラス調 */
+  --card-light:#ffffff;
+  --shadow:0 12px 30px rgba(0,0,0,.35);
+  --radius:16px;
+  --radius-lg:22px;
+  --max:1100px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  line-height:1.65;
+}
+
+a{color:var(--brand);text-decoration:none}
+a:hover{opacity:.92}
+img{max-width:100%;height:auto}
+.sr-only{position:absolute;left:-9999px}
+
+/* ===== Layout ===== */
+.container{width:100%;max-width:var(--max);margin:0 auto;padding:0 20px}
+.section{padding:56px 0}
+.section.light{background:#e9eff6;color:#0a0f16}
+.section.darkband{position:relative;padding:64px 0;background:var(--bg-2);overflow:hidden}
+.section .section-title{margin:0 0 22px;font-size:28px;letter-spacing:.02em}
+
+/* ===== Header / Nav ===== */
+.site-header{position:sticky;top:0;z-index:50;background:rgba(10,15,22,.7);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:700;letter-spacing:.1em}
+.logo-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 10px var(--brand)}
+.brand-text{font-weight:800}
+.nav-links{display:flex;gap:18px}
+.nav-links a{color:var(--ink);opacity:.9}
+.nav-links a[aria-current="page"]{color:var(--brand-2)}
+
+/* ===== Hero ===== */
+.hero{position:relative;padding:98px 0 86px;background:linear-gradient(180deg, #0e1523 0%, #0a111c 100%);overflow:hidden}
+.hero.small{padding:72px 0 64px}
+.hero.xsmall{padding:56px 0 48px}
+.grid-overlay{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size:60px 60px;
+  opacity:.25
+}
+.hero-inner{position:relative;z-index:1;text-align:center}
+.hero-title{margin:0 0 10px;font-size:42px;letter-spacing:.02em}
+.hero-sub{margin:0 0 6px;color:var(--muted)}
+.hero-glow{width:200px;height:12px;margin:18px auto 0;border-radius:999px;
+  background:radial-gradient(ellipse at center, rgba(94,160,255,.55), rgba(94,160,255,0));
+  filter:blur(6px)}
+
+/* ===== Cards / Chips ===== */
+.cards{display:grid;gap:18px}
+.cards.one{grid-template-columns:1fr}
+.cards.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cards.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){
+  .cards.two,.cards.three{grid-template-columns:1fr}
+}
+.card{
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow)
+}
+.card h3{margin:0 0 8px;font-size:20px}
+.card p{margin:0 0 10px;color:#c5d1e6}
+.card ul{margin:8px 0 0 18px;padding:0}
+.card li{margin:6px 0}
+.card-actions{margin-top:10px}
+.linkcard{display:block;color:var(--ink);position:relative;padding-right:42px}
+.linkcard .chev{position:absolute;right:16px;bottom:16px;font-weight:700;font-size:20px;color:var(--brand-2)}
+.glass .card{background:rgba(18,26,37,.55);backdrop-filter:blur(6px)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:8px 12px;border-radius:999px;background:#172033;border:1px solid rgba(255,255,255,.08)}
+
+/* ===== Doc / Forms ===== */
+.narrow{max-width:800px;margin:0 auto}
+.doc p{margin:.4rem 0}
+.doc ul{margin:.4rem 0 0 1.2rem}
+.doc h2{margin:1.1rem 0 .5rem;font-size:18px}
+.form{display:grid;gap:12px}
+.form input,.form select,.form textarea{
+  width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);
+  background:#0f1622;color:var(--ink)
+}
+.form .agree{display:flex;align-items:center;gap:8px}
+.form-actions{margin-top:6px}
+
+/* ===== Buttons ===== */
+.btn{
+  display:inline-block;padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.18);
+  background:#1a2434;color:var(--ink);text-decoration:none
+}
+.btn.primary{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:#1e40af}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn:hover{opacity:.95}
+
+/* ===== Footer ===== */
+.site-footer{margin-top:40px;border-top:1px solid rgba(255,255,255,.08);background:#0a0f16}
+.foot{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.foot-links{display:flex;gap:16px}
+.muted{color:var(--muted)}
+.note{color:#cfd8ea}
+
+/* ===== Utilities ===== */
+code{background:#0f172a;padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.1)}
+
