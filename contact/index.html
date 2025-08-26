@@ -1,89 +1,78 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>お問い合わせ | NEXSPACE</title>
-  <link rel="stylesheet" href="../css/nexspace.css" />
+  <meta name="description" content="導入相談・見積もり・技術的なご質問はこちらのフォームからご連絡ください。">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/params.css">
+  <link rel="stylesheet" href="/css/pages/contact.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="../">
-      <span class="logo-dot"></span><span class="brand-text">NEXSPACE</span>
-    </a>
-    <nav class="nav-links">
-      <a href="../products/index.html">製品一覧</a>
-      <a href="../about/index.html">会社情報</a>
-      <a href="./index.html" aria-current="page">お問い合わせ</a>
-      <a href="../legal/index.html">ご利用にあたって</a>
-    </nav>
-  </div>
-</header>
+  <header class="site-header">
+    <div class="nav container">
+      <a class="brand" href="/"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
+      <nav class="nav-links">
+        <a href="/products/index.html">製品一覧</a>
+        <a href="/about/index.html">会社情報</a>
+        <a aria-current="page">お問い合わせ</a>
+        <a href="/legal/index.html">ご利用にあたって</a>
+      </nav>
+    </div>
+  </header>
 
-<section class="hero small">
-  <div class="grid-overlay"></div>
-  <div class="container hero-inner">
-    <h1 class="hero-title">お問い合わせ</h1>
-    <p class="hero-sub">導入相談・見積もり・技術的な質問など、要件に沿ってご連絡ください。</p>
-  </div>
-</section>
-
-<main>
-  <section class="section">
-    <div class="container">
-      <form class="form card" action="../success/index.html" method="get">
-        <label>お名前（必須）<input type="text" name="name" required></label>
-        <label>メールアドレス（必須）<input type="email" name="email" required placeholder="you@example.com"></label>
-        <label>企業/組織（任意）<input type="text" name="org" placeholder=""></label>
-
-        <label>お問い合わせ種別（必須）
-          <select name="type" required>
-            <option value="">選択してください</option>
-            <option>導入/PoC</option>
-            <option>見積もり</option>
-            <option>技術的な質問</option>
-            <option>その他</option>
-          </select>
-        </label>
-
-        <label>件名（必須）<input type="text" name="subject" required></label>
-        <label>お問い合わせ内容（必須）
-          <textarea name="message" rows="6" required></textarea>
-        </label>
-
-        <label class="agree"><input type="checkbox" required> プライバシーポリシーに同意します（<a href="../legal/privacy.html" target="_blank" rel="noopener">プライバシー</a>）</label>
-
-        <div class="form-actions">
-          <button class="btn primary" type="submit">送信</button>
-        </div>
-      </form>
+  <section class="hero">
+    <div class="grid-overlay" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <h1 class="hero-title">お問い合わせ</h1>
+      <p class="hero-sub">内容を確認のうえ、原則数営業日以内にご連絡します。</p>
     </div>
   </section>
 
-  <section class="section darkband">
-    <div class="grid-overlay"></div>
-    <div class="container">
-      <div class="cards three glass">
-        <a class="card linkcard" href="../products/index.html"><h3>製品一覧</h3><p>提供中のプロダクト。</p><span class="chev">»</span></a>
-        <a class="card linkcard" href="../products/aiec-light/index.html"><h3>AIEC ライト版</h3><p>機能・料金・FAQ。</p><span class="chev">»</span></a>
-        <a class="card linkcard" href="../legal/index.html"><h3>ご利用にあたって</h3><p>規約・プライバシー・返金・特定商取引法。</p><span class="chev">»</span></a>
+  <main>
+    <section class="section">
+      <div class="container">
+        <form class="form" id="contactForm" action="/success/index.html" method="GET" novalidate>
+          <div class="sr-only" aria-hidden="true">
+            <label for="hp_field">Leave this field empty</label>
+            <input type="text" id="hp_field" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <label>お名前（必須）
+            <input class="input" name="name" id="name" placeholder="山田 太郎" required maxlength="100" autocomplete="name" />
+          </label>
+
+          <label>メールアドレス（必須）
+            <input class="input" name="email" id="email" type="email" placeholder="taro@example.com" required maxlength="254" autocomplete="email" />
+          </label>
+
+          <label>電話番号（任意）
+            <input class="input" name="tel" id="tel" type="tel" placeholder="090-1234-5678" inputmode="tel" maxlength="20" />
+          </label>
+
+          <label>お問い合わせ内容（必須）
+            <textarea class="input" name="body" id="body" placeholder="ご用件をご記入ください" required></textarea>
+          </label>
+
+          <label class="agree"><input type="checkbox" required> プライバシーポリシーに同意します（<a href="/legal/privacy.html">プライバシー</a>）。</label>
+
+          <p><button class="btn primary" type="submit">送信する</button></p>
+        </form>
       </div>
-    </div>
-  </section>
-</main>
+    </section>
+  </main>
 
-<footer class="site-footer">
-  <div class="container foot">
-    <small>© NEXSPACE</small>
-    <nav class="foot-links">
-      <a href="../legal/terms.html">利用規約</a>
-      <a href="../legal/privacy.html">プライバシー</a>
-      <a href="../legal/refund.html">返金</a>
-      <a href="../legal/tokusho.html">特定商取引法</a>
-    </nav>
-  </div>
-</footer>
+  <footer class="site-footer">
+    <div class="container foot">
+      <small>© NEXSPACE</small>
+      <nav class="foot-links">
+        <a href="/legal/terms.html">利用規約</a>
+        <a href="/legal/privacy.html">プライバシー</a>
+        <a href="/legal/refund.html">返金</a>
+        <a href="/legal/tokusho.html">特定商取引法</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>
-

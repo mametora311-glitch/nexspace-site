@@ -1,0 +1,206 @@
+/* ===========================
+   NEXSPACE base.css  (共通)
+   - サイト全体の土台・レイアウト・共通UI
+   - “値”調整は /css/params.css で上書き
+   - ページ固有は /css/pages/*.css へ
+   =========================== */
+
+/* --- デフォルト変数（params.cssで上書き） --- */
+:root{
+  /* テーマ色 */
+  --nx-hero-start:#0e1420;
+  --nx-hero-end:#0b1220;
+  --nx-grid: rgba(255,255,255,0.03);
+
+  --nx-bg:#eef2f7;
+  --nx-card:#ffffff;
+  --nx-text:#0b0f14;
+  --nx-muted:#4b5563;
+
+  --nx-primary:#0b63ff;
+  --nx-border:#e6eaf0;
+  --nx-shadow:0 10px 24px rgba(16,24,40,.08);
+  --nx-radius:18px;
+
+  /* タイポ・幅・余白トークン（params.cssで詳細管理） */
+  --container-w: 1100px;
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 20px;
+  --space-5: 28px;
+  --space-6: 40px;
+  --space-7: 56px;
+
+  --fz-hero:32px;
+  --fz-h2:24px;
+  --fz-h3:20px;
+  --fz-body:16px;
+  --lh-body:1.65;
+
+  /* ヒーロー高さ */
+  --hero-pad-top:    56px;
+  --hero-pad-bottom: 44px;
+  --hero-pad-small:  40px;
+  --hero-pad-xsmall: 28px;
+
+  /* グリッド/カード */
+  --grid-gap: 24px;
+  --card-min-two:   320px;
+  --card-min-three: 280px;
+  --card-min-four:  240px;
+  --card-pad: 22px;
+  --card-min-h: 200px;
+  --card-shadow: 0 10px 22px rgba(16,24,40,.06);
+
+  /* ページ上下の基準余白 */
+  --gap-top:    24px;
+  --gap-bottom: 56px;
+
+  /* ダークなヒーロー風セクション用（トップProducts等） */
+  --hero-bg-card-bg:#0f1622;
+  --hero-bg-border: rgba(255,255,255,.12);
+  --hero-bg-text:#eaf2ff;
+  --hero-bg-muted:#c8d3e6;
+  --hero-bg-btn:#162136;
+}
+
+/* ========= Reset / Base ========= */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh; display:flex; flex-direction:column;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,"Noto Sans JP",sans-serif;
+  color:var(--nx-text); background:var(--nx-bg);
+  line-height:var(--lh-body); font-size:var(--fz-body);
+}
+a{color:inherit}
+
+/* ========= Layout ========= */
+.container{max-width:var(--container-w);margin:0 auto}
+main{
+  flex:1;
+  padding: var(--space-6) var(--space-4) 0; /* 下のパディングを0に */
+}
+.section{
+  margin: 0; /* 外側マージンはゼロに統一 */
+  padding: var(--space-6) var(--space-4); /* 内側に上下余白を持たせる */
+}
+.section.light{
+  background:#ffffff;
+  border-top:1px solid var(--nx-border);
+  border-bottom:1px solid var(--nx-border);
+
+  /* 内側余白も統一 */
+  padding: var(--space-6) var(--space-4);
+}
+
+/* HERO直後に余白を足さない（HEROのpaddingだけで高さを決める） */
+main > .section:first-of-type{
+  margin-top: 0;
+}
+
+/* ========= Header / Nav ========= */
+.site-header{background:#0a0f19;color:#fff;position:sticky;top:0;z-index:50}
+.nav{
+  max-width:var(--container-w);margin:0 auto;
+  padding:var(--space-3) var(--space-4);
+  display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap
+}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.brand-text{font-weight:800;letter-spacing:.04em}
+.logo-dot{width:10px;height:10px;border-radius:50%;background:#60a5fa;display:inline-block}
+.nav-links{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto}
+.nav-links a{color:#fff;text-decoration:none;opacity:.9}
+.nav-links a:hover{opacity:1;text-decoration:underline}
+
+/* ========= Hero ========= */
+.hero{
+  position:relative; overflow:hidden; color:#fff;
+  background:linear-gradient(180deg,var(--nx-hero-start),var(--nx-hero-end));
+
+  /* ← 高さはここだけで管理（上下を変数で） */
+  padding: var(--hero-pad-top) var(--space-4) var(--hero-pad-bottom);
+
+  /* ↓ これが下の見た目を固定していた。完全に外す */
+  margin: 0;
+
+  /* 既存 */
+  text-rendering:optimizeLegibility;
+}
+
+.hero.small{ padding:var(--hero-pad-small) var(--space-4); }
+.hero.xsmall{ padding:var(--hero-pad-xsmall) var(--space-4); }
+.grid-overlay{position:absolute;inset:0;background:
+  linear-gradient(var(--nx-grid) 1px,transparent 1px) 0 0/80px 80px,
+  linear-gradient(90deg,var(--nx-grid) 1px,transparent 1px) 0 0/80px 80px;}
+.hero-inner{max-width:var(--container-w);margin:0 auto;position:relative;text-align:center}
+.hero-title{
+  margin:0 0 10px 0; font-size:var(--fz-hero);
+  line-height:2.25; letter-spacing:.12em; text-shadow:0 8px 10px rgba(0,0,0,.35)
+}
+.hero-sub{margin:0 auto;color:#d7deea;max-width:720px}
+
+/* ========= Hero-like section ========= */
+.section.hero-bg{
+  color:var(--hero-bg-text);
+  background:linear-gradient(180deg,var(--nx-hero-start),var(--nx-hero-end));
+  border-top:1px solid rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.section.hero-bg .card,
+.section.hero-bg .chip{
+  background:var(--hero-bg-card-bg);
+  border-color:var(--hero-bg-border);
+  color:var(--hero-bg-text);
+}
+.section.hero-bg .card p{ color:var(--hero-bg-muted); }
+.section.hero-bg .btn{ background:var(--hero-bg-btn); color:var(--hero-bg-text); border-color:var(--hero-bg-border); }
+.section.hero-bg .btn.primary{ background:var(--nx-primary); color:#fff; border-color:transparent; }
+
+/* ========= Grid / Card ========= */
+.grid{display:grid;gap:var(--grid-gap);align-items:stretch}
+.grid.one{grid-template-columns:repeat(1,minmax(260px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(var(--card-min-two),1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(var(--card-min-three),1fr))}
+.grid.four{grid-template-columns:repeat(auto-fit,minmax(var(--card-min-four),1fr))}
+
+.card{
+  background:var(--nx-card); border:3px solid var(--nx-border);
+  border-radius:var(--nx-radius); box-shadow:var(--card-shadow);
+  padding:var(--card-pad); display:flex; flex-direction:column; min-height:var(--card-min-h)
+}
+.card h3{margin:0 0 16px 0;font-size:var(--fz-h3)}
+.card p{margin:0;color:var(--nx-muted);line-height:1.7}
+.card .actions{margin-top:16px}
+
+/* ========= Chips / Lists ========= */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:#fff;border:1px solid var(--nx-border);border-radius:999px;padding:6px 10px;box-shadow:var(--nx-shadow);color:var(--nx-text)}
+.list{padding-left:1.1em;margin:0}
+.kv{display:grid;gap:10px}
+.kv dt{font-weight:700}
+.kv dd{margin:0 0 8px 0;color:var(--nx-muted)}
+
+/* ========= Forms ========= */
+.form{display:grid;gap:14px;max-width:720px}
+.input,textarea{width:100%;padding:10px 12px;border:1px solid var(--nx-border);border-radius:12px;background:#fff;color:var(--nx-text)}
+textarea{min-height:140px;resize:vertical}
+.sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.agree{display:flex;gap:8px;align-items:center}
+
+/* ========= Buttons ========= */
+.btn{display:inline-block;padding:8px 14px;border-radius:10px;border:1px solid var(--nx-border);text-decoration:none;color:var(--nx-text);background:#fff}
+.btn:hover{background:#f7f8fb}
+.btn.primary{background:var(--nx-primary);color:#fff;border-color:transparent}
+.btn.primary:hover{filter:brightness(1.05)}
+
+/* ========= Link Card ========= */
+.linkcard{position:relative;text-decoration:none;color:inherit}
+.linkcard .chev{position:absolute;right:14px;bottom:16px;opacity:.5}
+
+/* ========= Footer ========= */
+.site-footer{background:#0a0f19;padding:28px 20px;text-align:center;color:#9ca3af}
+.foot{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+.foot-links a{color:#9ca3af;text-decoration:none;margin:0 8px}
+.foot-links a:hover{text-decoration:underline}

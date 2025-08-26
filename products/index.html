@@ -4,81 +4,61 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>製品一覧 | NEXSPACE</title>
-  <link rel="stylesheet" href="../css/nexspace.css" />
+  <meta name="description" content="NEXSPACE の提供プロダクト一覧。">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/params.css">
+  <link rel="stylesheet" href="/css/pages/products.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="../">
-      <span class="logo-dot"></span><span class="brand-text">NEXSPACE</span>
-    </a>
-    <nav class="nav-links">
-      <a href="./">製品一覧</a>
-      <a href="../about/index.html">会社情報</a>
-      <a href="../contact/index.html">お問い合わせ</a>
-      <a href="../legal/index.html">ご利用にあたって</a>
-    </nav>
-  </div>
-</header>
+  <header class="site-header">
+    <div class="nav container">
+      <a class="brand" href="/"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
+      <nav class="nav-links">
+        <a aria-current="page">製品一覧</a>
+        <a href="/about/index.html">会社情報</a>
+        <a href="/contact/index.html">お問い合わせ</a>
+        <a href="/legal/index.html">ご利用にあたって</a>
+      </nav>
+    </div>
+  </header>
 
-<section class="hero small">
-  <div class="grid-overlay"></div>
-  <div class="container hero-inner">
-    <h1 class="hero-title">Products</h1>
-    <p class="hero-sub">Nexspace が提供するプロダクト一覧です。</p>
-  </div>
-</section>
-
-<main>
-  <section class="section">
-    <div class="container">
-      <div class="cards two">
-        <article class="card">
-          <h3>AI Easy Coder ライト版</h3>
-          <p>月額 ¥3,980 / 月 300k tokens（生成+レビュー合算）。<br/>ローカル実行。超過分は追加課金で対応。</p>
-          <div class="card-actions">
-            <a class="btn primary" href="./aiec-light/index.html">詳細を見る</a>
-          </div>
-        </article>
-      </div>
+  <section class="hero small">
+    <div class="grid-overlay" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <h1 class="hero-title">Products</h1>
+      <p class="hero-sub">NEXSPACE が提供するプロダクトです。</p>
     </div>
   </section>
 
-  <section class="section darkband">
-    <div class="grid-overlay"></div>
-    <div class="container">
-      <div class="cards three glass">
-        <a class="card linkcard" href="../guide/index.html" onclick="return false;">
-          <h3>導入手順</h3>
-          <p>購入〜セットアップまでの手順をステップ形式で案内します。</p>
-          <span class="chev">»</span>
-        </a>
-        <a class="card linkcard" href="../faq/index.html" onclick="return false;">
-          <h3>FAQ</h3>
-          <p>料金・ローカル実行など、よくある質問を掲載。</p>
-          <span class="chev">»</span>
-        </a>
-        <a class="card linkcard" href="../contact/index.html">
-          <h3>お問い合わせ</h3>
-          <p>導入相談・見積もり・技術的な質問はこちら。</p>
-          <span class="chev">»</span>
-        </a>
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="grid two">
+          <article class="card">
+            <h3>AI Easy Coder ライト版</h3>
+            <p>チームの実務にフィットする、最小構成のコード生成ワークフロー。</p>
+            <div class="actions"><a class="btn primary" href="/products/aiec-light/index.html">詳細を見る</a></div>
+          </article>
+          <article class="card">
+            <h3>Coming Soon</h3>
+            <p>次期ラインナップを準備中です。</p>
+            <div class="actions"><a class="btn" href="/">トップへ</a></div>
+          </article>
+        </div>
       </div>
-    </div>
-  </section>
-</main>
+    </section>
+  </main>
 
-<footer class="site-footer">
-  <div class="container foot">
-    <small>© NEXSPACE</small>
-    <nav class="foot-links">
-      <a href="../legal/terms.html">利用規約</a>
-      <a href="../legal/privacy.html">プライバシー</a>
-      <a href="../legal/refund.html">返金</a>
-      <a href="../legal/tokusho.html">特定商取引法</a>
-    </nav>
-  </div>
-</footer>
+  <footer class="site-footer">
+    <div class="container foot">
+      <small>© NEXSPACE</small>
+      <nav class="foot-links">
+        <a href="/legal/terms.html">利用規約</a>
+        <a href="/legal/privacy.html">プライバシー</a>
+        <a href="/legal/refund.html">返金</a>
+        <a href="/legal/tokusho.html">特定商取引法</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>
-
