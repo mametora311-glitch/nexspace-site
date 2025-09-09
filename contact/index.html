@@ -1,1 +1,76 @@
-<!DOCTYPE html><html lang="ja"><head>  <meta charset="UTF-8" />  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  <title>お問い合わせ | NEXSPACE</title>  <meta name="description" content="導入相談・見積もり・技術的なご質問はこちらのフォームからご連絡ください。">  <!-- 相対パスに修正 -->  <link rel="stylesheet" href="../css/base.css?v=20250906150754">  <link rel="stylesheet" href="../css/params.css?v=20250906150754">  <link rel="stylesheet" href="../css/pages/contact.css?v=20250906150754"></head><body>  <header class="site-header">    <div class="nav container">      <a class="brand" href="../index.html"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>      <nav class="nav-links">        <a href="../products/index.html">製品一覧</a>        <a href="../about/index.html">会社情報</a>        <a aria-current="page">お問い合わせ</a>        <a href="../legal/index.html">ご利用にあたって</a>      </nav>    </div>  </header>  <section class="hero">    <div class="grid-overlay" aria-hidden="true"></div>    <div class="container hero-inner">      <h1 class="hero-title">お問い合わせ</h1>      <p class="hero-sub">内容を確認のうえ、原則数営業日以内にご連絡します。</p>    </div>  </section>  <main>    <section class="section">      <div class="container">        <!-- 成功ページの相対パスへ修正（/contact/ → ../succes/） -->        <form class="form" id="contactForm" action="../succes/index.html" method="GET" novalidate>          <div class="sr-only" aria-hidden="true">            <label for="hp_field">Leave this field empty</label>            <input type="text" id="hp_field" name="website" tabindex="-1" autocomplete="off" />          </div>          <label>お名前（必須）            <input class="input" name="name" id="name" placeholder="山田 太郎" required maxlength="100" autocomplete="name" />          </label>          <label>メールアドレス（必須）            <input class="input" name="email" id="email" type="email" placeholder="taro@example.com" required maxlength="254" autocomplete="email" />          </label>          <label>電話番号（任意）            <input class="input" name="tel" id="tel" type="tel" placeholder="090-1234-5678" inputmode="tel" maxlength="20" />          </label>          <label>お問い合わせ内容（必須）            <textarea class="input" name="body" id="body" placeholder="ご用件をご記入ください" required></textarea>          </label>          <label class="agree"><input type="checkbox" required> プライバシーポリシーに同意します（<a href="../legal/privacy.html">プライバシー</a>）。</label>          <p><button class="btn primary" type="submit">送信する</button></p>        </form>      </div>    </section>  </main>  <footer class="site-footer">    <div class="container foot">      <small>© NEXSPACE</small>      <nav class="foot-links">        <a href="../legal/terms.html">利用規約</a>        <a href="../legal/privacy.html">プライバシー</a>        <a href="../legal/refund.html">返金</a>        <a href="../legal/tokusho.html">特定商取引法</a>      </nav>    </div>  </footer></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>お問い合わせ | NEXSPACE</title>
+<meta name="description" content="導入相談・見積もり・技術的なご質問はこちらのフォームからご連絡ください。">
+<!-- 相対パスに修正 -->
+<link rel="stylesheet" href="../css/base.css?v=20250906150754">
+<link rel="stylesheet" href="../css/params.css?v=20250906150754">
+<link rel="stylesheet" href="../css/pages/contact.css?v=20250906150754">
+</head>
+<body>
+<header class="site-header">
+<div class="nav container">
+<a class="brand" href="../index.html">
+<span class="logo-dot">
+</span>
+<span class="brand-text">NEXSPACE</span>
+</a>
+<nav class="nav-links">
+<a href="../products/index.html">製品一覧</a>
+<a href="../about/index.html">会社情報</a>
+<a aria-current="page">お問い合わせ</a>
+<a href="../legal/index.html">ご利用にあたって</a>
+</nav>
+</div>
+</header>
+<section class="hero">
+<div class="grid-overlay" aria-hidden="true">
+</div>
+<div class="container hero-inner">
+<h1 class="hero-title">お問い合わせ</h1>
+<p class="hero-sub">内容を確認のうえ、原則数営業日以内にご連絡します。</p>
+</div>
+</section>
+<main>
+<section class="section">
+<div class="container">
+<!-- 成功ページの相対パスへ修正（/contact/ → ../succes/） -->
+<form class="form" id="contactForm" action="../succes/index.html" method="GET" novalidate>
+<div class="sr-only" aria-hidden="true">
+<label for="hp_field">Leave this field empty</label>
+<input type="text" id="hp_field" name="website" tabindex="-1" autocomplete="off" />
+</div>
+<label>お名前（必須）            <input class="input" name="name" id="name" placeholder="山田 太郎" required maxlength="100" autocomplete="name" />
+</label>
+<label>メールアドレス（必須）            <input class="input" name="email" id="email" type="email" placeholder="taro@example.com" required maxlength="254" autocomplete="email" />
+</label>
+<label>電話番号（任意）            <input class="input" name="tel" id="tel" type="tel" placeholder="090-1234-5678" inputmode="tel" maxlength="20" />
+</label>
+<label>お問い合わせ内容（必須）            <textarea class="input" name="body" id="body" placeholder="ご用件をご記入ください" required>
+</textarea>
+</label>
+<label class="agree">
+<input type="checkbox" required> プライバシーポリシーに同意します（<a href="../legal/privacy.html">プライバシー</a>）。</label>
+<p>
+<button class="btn primary" type="submit">送信する</button>
+</p>
+</form>
+</div>
+</section>
+</main>
+<footer class="site-footer">
+<div class="container foot">
+<small>© NEXSPACE</small>
+<nav class="foot-links">
+<a href="../legal/terms.html">利用規約</a>
+<a href="../legal/privacy.html">プライバシー</a>
+<a href="../legal/refund.html">返金</a>
+<a href="../legal/tokusho.html">特定商取引法</a>
+</nav>
+</div>
+</footer>
+</body>
+</html>
