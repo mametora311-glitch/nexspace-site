@@ -1,0 +1,74 @@
+/* ===========================
+   NEXSPACE params.css（強化版）
+   これだけ触れば、全ページのトーン＆レイアウトが弄れます。
+   - 先に /css/base.css を読み込んでいる前提
+   =========================== */
+
+:root{
+  /* ====== カラーテーマ ====== */
+  --nx-hero-start: #0e1420;    /* ヒーロー上側の色 */
+  --nx-hero-end:   #0b1220;    /* ヒーロー下側の色 */
+  --nx-grid: rgba(255,255,255,0.03); /* ヒーローの格子の濃さ（0〜0.1） */
+
+  --nx-bg:    #ffffff;         /* ページ背景 */
+  --nx-card:  #ffffff;         /* カード背景 */
+  --nx-text:  #0b0f14;         /* 本文色 */
+  --nx-muted: #4b5563;         /* 補助テキスト色 */
+  --nx-primary: #0b63ff;       /* 主要ボタン色 */
+  --nx-border:  #e6eaf0;       /* 枠線色 */
+  --nx-shadow:  0 10px 24px rgba(16,24,40,.08); /* 影 */
+  --nx-radius:  18px;          /* カードの角丸(px) */
+
+  /* ====== スペーシング・タイポ ====== */
+  --container-w: 1100px;       /* コンテナの最大幅：全体の“横の密度” */
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 20px;
+  --space-5: 28px;
+  --space-6: 40px;
+  --space-7: 56px;
+
+  --fz-hero:   32px;           /* ヒーローの見出しサイズ */
+  --fz-h2:     24px;           /* セクション見出し */
+  --fz-h3:     20px;           /* カード見出し */
+  --fz-body:   16px;           /* 本文 */
+  --lh-body:   1.65;           /* 本文行間 */
+
+  /* ====== ヒーロー領域サイズ（上下の高さ） ====== */
+  --hero-pad-top:    72px;     /* 通常ヒーロー上パディング */
+  --hero-pad-bottom: 72px;     /* 通常ヒーロー下パディング */
+  --hero-pad-small:  64px;     /* .hero.small */
+  --hero-pad-xsmall: 40px;     /* .hero.xsmall */
+
+  /* ====== グリッドとカードのサイズ感 ====== */
+  --grid-gap: 24px;            /* カード間の隙間 */
+  --card-min-two:   320px;     /* 2列グリッドの最小幅 */
+  --card-min-three: 280px;     /* 3列グリッドの最小幅 */
+  --card-min-four:  240px;     /* 4列グリッドの最小幅 */
+  --card-pad: 22px;            /* カード内余白 */
+  --card-min-h: 200px;         /* カード最小高さ */
+  --card-shadow: 0 10px 22px rgba(16,24,40,.06); /* カード影（上書き用） */
+
+  /* ====== ページ上下の余白（ヘッダー直下/フッター直前） ====== */
+  --gap-top:    24px;          /* 最初のブロックの上余白 */
+  --gap-bottom: 56px;          /* 最後のブロックの下余白 */
+
+  /* ====== トップのProductsを“ヒーロー背景”にした時の微調整 ====== */
+  --hero-bg-card-bg:  #0f1622; /* ダーク面のカード色 */
+  --hero-bg-border:   rgba(255,255,255,.12);
+  --hero-bg-text:     #eaf2ff;
+  --hero-bg-muted:    #c8d3e6;
+  --hero-bg-btn:      #162136;
+}
+
+/* ▼ダークテーマ例（必要なら差し替え）
+:root{
+  --nx-hero-start:#0c121b; --nx-hero-end:#0b1220; --nx-grid:rgba(255,255,255,0.04);
+  --nx-bg:#0c121b; --nx-card:#121a25; --nx-text:#eaf2ff; --nx-muted:#a9b3c6;
+  --nx-primary:#5ea0ff; --nx-border:#243044; --nx-shadow:0 10px 24px rgba(0,0,0,.35);
+  --nx-radius:18px; --container-w:1100px;
+  --fz-hero:32px; --fz-h2:24px; --fz-h3:20px; --fz-body:16px; --lh-body:1.7;
+  --hero-pad-top:64px; --hero-pad-bottom:48px; --grid-gap:24px;
+}
+*/

@@ -1,0 +1,10 @@
+/* success.css - /succes(または /success)/index.html 専用 */
+/* 文言は一切変更しない／体裁のみ調整 */
+
+/* カードを中央寄せ・幅を絞って読みやすく */
+.section .card{
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* 余白・行間は base.css のトークンを継承（変更なし） */

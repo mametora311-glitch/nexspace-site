@@ -1,0 +1,56 @@
+/* home.css - /index.html 専用
+   役割：
+   - トップProducts帯を全幅ダークに（左右余白ゼロ）
+   - Productsグリッド密度の微調整
+   - Domainsのチップ→カード化スタイル
+   - セクション見出しの余白微調整
+*/
+
+/* 見出しの頭出し（トップだけ） */
+.section.hero-bg .section-title{
+  margin-top: 0;
+}
+
+/* Products：グリッドを少しゆったり */
+.section.hero-bg .grid.two{
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--card-min-two) + 20px), 1fr));
+}
+
+/* Domains：カード化（チップから移行） */
+.card-domain{
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+.card-domain h3{
+  margin: 0 0 6px 0;
+  font-size: var(--fz-h3);
+}
+.card-domain .muted{
+  color: var(--nx-muted);
+}
+
+/* Products：セクションを“横一杯のダーク帯”にしつつ、中身は中央寄せ */
+.section.hero-bg.full{
+  /* 外側余白はゼロ。上下だけパディング付与 */
+  margin: 0;
+  padding: var(--space-6) 0;
+
+  /* main の左右 padding(var(--space-4)) を相殺して全幅に広げる */
+  margin-left: calc(-1 * var(--space-4));
+  margin-right: calc(-1 * var(--space-4));
+
+  /* 上の .section.light のボーダー(1px) を食い潰してスキマ消す */
+  margin-top: -1px;
+
+  background: linear-gradient(180deg, var(--nx-hero-start), var(--nx-hero-end));
+}
+
+/* 中身のコンテナは通常幅＋左右余白あり（安全域） */
+.section.hero-bg.full > .container{
+  max-width: var(--container-w);
+  padding: var(--space-5) var(--space-4);
+  margin: 0 auto;
+}

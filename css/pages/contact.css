@@ -1,0 +1,7 @@
+/* contact.css - /contact/index.html 専用 */
+/* 既存の意図を維持し、必要最小のみ追加 */
+
+.form .btn.primary{ min-width: 160px; }
+
+/* フォーム幅 720px の中央寄せ（base.cssのmax-widthを活かす） */
+.form{ margin: 0 auto; }

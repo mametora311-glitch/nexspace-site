@@ -1,0 +1,18 @@
+/* about.css - /about/index.html 専用（文言は変更しない） */
+
+/* カードの読みやすさ確保：幅と中央寄せ */
+.section .container.grid.three {
+  /* base.css の grid を継承（列数はそのまま） */
+}
+
+/* 1カラム時の横幅を少し絞って中央寄せ（広い画面でも読みやすく） */
+@media (max-width: 720px) {
+  .section .container {
+    max-width: 92%;
+  }
+}
+
+/* 見出し直下が詰まりすぎないよう微調整 */
+.hero + main .section .card h3 {
+  margin-top: 0;
+}

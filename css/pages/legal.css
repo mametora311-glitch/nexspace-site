@@ -1,0 +1,13 @@
+/* legal.css - /legal/* 共通（最小調整。文言・構造は変更しない） */
+
+/* 詳細ページ本文カードの読みやすさ */
+.section .card{
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+/* リンクカード（一覧）をブロック化（クリック領域の確保） */
+.linkcard{ display:block; }
+
+/* 補助：小さめヒーローでも余白が詰まないように */
+.hero.xsmall + main .section .card h2{ margin-top: 0; }
