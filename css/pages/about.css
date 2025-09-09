@@ -1,7 +1,7 @@
 /* about.css - /about/index.html 専用（文言は変更しない） */
 
 /* カードの読みやすさ確保：幅と中央寄せ */
-.section .container.grid.three {
+.section.container.grid.three {
   /* base.css の grid を継承（列数はそのまま） */
 }
 
