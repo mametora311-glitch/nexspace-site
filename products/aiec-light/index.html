@@ -74,21 +74,6 @@
 
 <!-- ここから下は「順序厳守」：Stripe → AIEC_CONFIG → buy.js -->
 <script src="https://js.stripe.com/v3"></script>
-<script>
-  (function () {
-    // 本番判定：HTTPS かつ nexspace.jp ドメイン
-    var isProd =
-      location.protocol === 'https:' && /(^|\.)nexspace\.jp$/.test(location.hostname);
-
-    // 既存があればマージして上書き（undefined防止）
-    window.AIEC_CONFIG = Object.assign({}, window.AIEC_CONFIG || {}, {
-      API_BASE: isProd ? 'https://aiec-api-1.onrender.com' : 'http://127.0.0.1:8000',
-      STRIPE_PUBLISHABLE_KEY: isProd ? 'pk_live_51RzC5ODObxTEUuKDs77DdvjuD5paQlsgAvX1yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP' : 'pk_test_********'
-      // PRICE_ID を固定したい場合だけ↓を開ける
-      // ,PRICE_ID: 'price_xxxxxxxxx'
-    });
-  })();
-</script>
 <script src="./buy.js" defer></script>
 </body>
 </html>

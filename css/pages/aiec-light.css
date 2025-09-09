@@ -1,5 +1,39 @@
-.section .container > .card:first-child{ margin-top: 6px; }
-/* ヘッダーが大きく被っている場合の安全策 */
-.site-header{ position:sticky; top:0; z-index:100; }
-.hero .container{ position:relative; z-index:1; }
-#buyButton{ position:relative; z-index:5; pointer-events:auto; }
+/* z-indexレイヤ定義（任意） */
+:root {
+  --z-header: 100;
+  --z-hero: 1;
+  --z-btn: 10;
+}
+
+/* ヘッダー（既存を整理） */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+}
+
+/* ヒーロー周りの積層を明示 */
+.hero .container {
+  position: relative;       /* stacking context を作る */
+  z-index: var(--z-hero);   /* ヒーロー本文はオーバーレイより上 */
+}
+
+/* 背景グリッド/オーバーレイはクリック透過＆最背面 */
+.hero .grid-overlay,
+.hero::before,
+.hero::after {
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 購入ボタンは常にクリック可能で前面 */
+#buyButton,
+[data-buy] {
+  position: relative;
+  z-index: var(--z-btn);
+  pointer-events: auto;     /* 念のため明示 */
+  isolation: isolate;       /* 交差影響を減らす（新しい積層文脈） */
+}
+
+/* 既存の about.css の一部はそのままでOK */
+.section .container > .card:first-child { margin-top: 6px; }
