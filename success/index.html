@@ -1,147 +1,69 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>決済が完了しました | Nexspace</title>
-<style>
-        :root {
-            --bg: #0b0f1a;
-            --card: #101828;
-            --text: #e5e7eb;
-            --muted: #9ca3af;
-            --accent: #22d3ee;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: linear-gradient(180deg, #0b0f1a 0%, #111827 60%, #0b0f1a 100%);
-            color: var(--text);
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100dvh;
-            display: grid;
-            place-items: center;
-            padding: 24px;
-        }
-
-        .card {
-            width: min(720px, 100%);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 28px;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-        }
-
-        h1 {
-            margin: 0 0 8px;
-            font-size: 28px;
-            letter-spacing: .2px;
-        }
-
-        p {
-            margin: 6px 0;
-            color: var(--muted);
-            line-height: 1.7;
-        }
-
-        .ok {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 14px 0 4px;
-        }
-
-        .code {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-            background: #0c1220;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: #d1d5db;
-            max-width: 100%;
-            word-break: break-all;
-        }
-
-        .btn {
-            appearance: none;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: #0e1628;
-            color: #e5e7eb;
-            border-radius: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            transition: transform .02s ease;
-        }
-
-        .btn:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(1px);
-        }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 18px;
-            flex-wrap: wrap;
-        }
-
-        .hint {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 10px;
-        }
-
-        .warn {
-            color: #fbbf24;
-            font-weight: 600;
-        }
-
-        a.btn {
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .hr {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.08);
-            margin: 18px 0;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>購入完了 | Nexspace</title>
+  <style>
+    :root { --bg:#0b0f1a; --card:#101828; --text:#e5e7eb; --muted:#9ca3af; --accent:#22d3ee; }
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0f1a;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+         min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:min(720px,100%);background:#0f172a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px}
+    h1{margin:0 0 8px;font-size:24px}.ok{color:var(--accent);font-weight:600}
+    p{margin:8px 0;color:var(--muted);line-height:1.7}
+    .actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .btn{border:1px solid rgba(255,255,255,.15);background:#0e1628;color:#e5e7eb;border-radius:10px;
+         padding:10px 14px;text-decoration:none;display:inline-block}
+    .warn{color:#fbbf24;font-weight:600}
+  </style>
 </head>
 <body>
-<main class="card" role="main">
-<h1>決済が完了しました <span class="ok">✓</span>
-</h1>
-<p>ご利用ありがとうございます。以下はこの取引のセッションIDです（サポート向け）。</p>
-<div class="row">
-<div id="session" class="code">読み込み中...</div>
-<button id="copy" class="btn" type="button"
-                aria-label="セッションIDをコピー">コピー</button>
-</div>
-<div class="actions">
-<a href="/products/aiec-light/index.html" class="btn">製品ページへ戻る</a>
-<a href="/"
-                class="btn">トップへ</a>
-</div>
-<div class="hr">
-</div>
-<p class="hint">※ このページを直接開いた場合（ブックマーク/URL直打ち）は <span class="warn">セッションIDがありません</span>。購入フローからアクセスしてください。</p>
+<main class="card" role="main" aria-live="polite">
+  <h1>ご購入ありがとうございます <span class="ok">✓</span></h1>
+  <p id="status">ダウンロードを開始します…</p>
+  <div class="actions">
+    <a href="/products/aiec-light/index.html" class="btn">製品ページへ戻る</a>
+    <a href="/" class="btn">トップへ</a>
+    <a id="manual" class="btn" rel="nofollow" style="display:none">自動で始まらない場合はこちら</a>
+  </div>
+  <p id="nosid" style="display:none"><span class="warn">セッション情報が見つかりません。</span> 購入フローから再度お試しください。</p>
 </main>
-<script>    (function () { const params = new URLSearchParams(location.search); const id = params.get('session_id') || ''; const el = document.getElementById('session'); const copyBtn = document.getElementById('copy'); function trimId(s) { return s.length > 48 ? s.slice(0, 24) + '…' + s.slice(-16) : s; } if (id) { el.textContent = id; el.title = id; } else { el.textContent = 'セッションIDが見つかりません（このURLを直接開いていませんか？）'; copyBtn.disabled = true; } copyBtn.addEventListener('click', async () => { try { await navigator.clipboard.writeText(id); copyBtn.textContent = 'コピー済み'; setTimeout(() => copyBtn.textContent = 'コピー', 1400); } catch (e) { alert('クリップボードにコピーできませんでした。'); console.error(e); } }, { passive: true }); })();  </script>
+
+<script>
+(function () {
+  // success_url の ?session_id={CHECKOUT_SESSION_ID} を使用（画面表示しない）
+  const sid = new URLSearchParams(location.search).get("session_id");
+  const statusEl = document.getElementById("status");
+  const manual = document.getElementById("manual");
+  const nosid = document.getElementById("nosid");
+
+  if (!sid) {
+    statusEl.style.display = "none";
+    manual.style.display = "none";
+    nosid.style.display = "block";
+    return;
+  }
+
+  // 基点URLは使わない。同一オリジンの /download に相対で飛ばす
+  const url = "/download?session_id=" + encodeURIComponent(sid);
+
+  // フォールバック用の手動リンク
+  manual.href = url;
+  manual.download = "";
+  manual.style.display = "inline-block";
+
+  // 自動開始（非表示 iframe で遷移）
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = url;
+  document.body.appendChild(iframe);
+
+  setTimeout(() => {
+    statusEl.textContent = "自動開始しない場合は「自動で始まらない場合はこちら」を押してください。";
+  }, 2500);
+})();
+</script>
 </body>
 </html>
+
