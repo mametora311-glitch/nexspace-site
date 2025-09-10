@@ -1,1 +1,104 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>サイト調整ガイド | NEXSPACE</title><link rel="stylesheet" ="=20250906150754" /><link rel="stylesheet" ="=20250906150754" /><link rel="stylesheet" ="=20250906150754" /><style>    /* ドキュメント用の軽い装飾だけ追加（既存と競合しない） */    .doc h2{margin:0 0 12px 0;font-size:var(--fz-h2)}    .doc h3{margin:18px 0 8px 0;font-size:var(--fz-h3)}    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#111827;color:#e5e7eb;padding:2px 6px;border-radius:6px}    .mono{font-family:ui-monospace,Menlo,Consolas,monospace}    .tips{color:var(--nx-muted)}  </style></head><body><header class="site-header"><div class="nav container"><a class="brand" href="/"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a><nav class="nav-links"><a href="/products/index.html">製品一覧</a><a href="/about/index.html">会社情報</a><a href="/contact/index.html">お問い合わせ</a><a href="/legal/index.html">ご利用にあたって</a></nav></div></header><section class="hero small"><div class="grid-overlay" aria-hidden="true"></div><div class="container hero-inner"><h1 class="hero-title">サイト調整ガイド</h1><p class="hero-sub">色・余白・カードサイズ・ヒーロー高さなどを変数で一発調整。</p></div></section><main><section class="section"><div class="container"><article class="card doc"><h2>1. 変えるのは <span class="kbd">/css/params.css</span> だけ</h2><p>以下の代表パラメータを変更するとサイト全体に反映されます。</p><h3>色まわり</h3><pre class="mono">--nx-hero-start / --nx-hero-end     … ヒーローの上/下色--nx-grid                           … ヒーロー格子の濃さ(0〜0.1)--nx-bg / --nx-card / --nx-text     … ページ背景 / カード / 本文色--nx-muted / --nx-primary / --nx-border / --nx-shadow / --nx-radius</pre><h3>タイポ・横幅・余白</h3><pre class="mono">--container-w     … コンテナ最大幅（例: 1100px→1200px）--fz-hero/h2/h3   … 見出しサイズ--fz-body, --lh-body … 本文サイズ/行間--gap-top/bottom  … ヘッダー直下/フッター直前の全体余白</pre><h3>ヒーローの上下サイズ</h3><pre class="mono">--hero-pad-top / --hero-pad-bottom--hero-pad-small / --hero-pad-xsmall</pre><p class="tips">例：高さを増やすなら <code>--hero-pad-top:84px; --hero-pad-bottom:64px;</code></p><h3>カードの大きさ・並び</h3><pre class="mono">--grid-gap          … カード同士の間隔--card-min-two      … 2列グリッドの最小幅（大きいほど1枚が広く）--card-min-three/four--card-pad, --card-min-h, --card-shadow</pre><h2>2. トップのProductsをヒーロー調にする</h2><p>トップページの対象セクションに <span class="kbd">class="section hero-bg"</span> を付与します。            色味は params.css の以下で調整します。</p><pre class="mono">--hero-bg-card-bg / --hero-bg-border / --hero-bg-text / --hero-bg-muted / --hero-bg-btn</pre><h2>3. ページ別の微調整</h2><p><span class="kbd">/css/pages/*.css</span> に追記します。例：</p><pre class="mono">/css/pages/aiec-light.css.section .container &gt; .card:first-child{ margin-top:6px; }</pre><h2>4. 差し替えリクエストのルール</h2><p>今後、私からの差し替え指示はこの形式で出します：</p><ul><li><strong>ファイル指定：</strong>例）<span class="kbd">/css/base.css</span></li><li><strong>範囲指定：</strong>例）<span class="kbd">.hero{ の &quot;padding:&quot; 行〜次の &quot;}&quot; まで</span></li><li><strong>置換内容：</strong>置換後コードを完全提示（前後の数行を合わせて明示）</li></ul><p class="tips">行番号は環境差でズレるため、基本は「開始トークン〜終了トークン」で範囲を特定します。</p></article></div></section></main><footer class="site-footer"><div class="container foot"><small>© NEXSPACE</small><nav class="foot-links"><a href="/legal/terms.html">利用規約</a><a href="/legal/privacy.html">プライバシー</a><a href="/legal/refund.html">返金</a><a href="/legal/tokusho.html">特定商取引法</a></nav></div></footer></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>サイト調整ガイド | NEXSPACE</title>
+    <link rel="stylesheet"="=20250906150754" />
+    <link rel="stylesheet"="=20250906150754" />
+    <link rel="stylesheet"="=20250906150754" />
+    <style>
+        /* ドキュメント用の軽い装飾だけ追加（既存と競合しない） */
+        .doc h2 {
+            margin: 0 0 12px 0;
+            font-size: var(--fz-h2)
+        }
+
+        .doc h3 {
+            margin: 18px 0 8px 0;
+            font-size: var(--fz-h3)
+        }
+
+        .kbd {
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            background: #111827;
+            color: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 6px
+        }
+
+        .mono {
+            font-family: ui-monospace, Menlo, Consolas, monospace
+        }
+
+        .tips {
+            color: var(--nx-muted)
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav container"><a class="brand" href="/"><span class="logo-dot"></span><span
+                    class="brand-text">NEXSPACE</span></a>
+            <nav class="nav-links"><a href="/products/index.html">製品一覧</a><a href="/about/index.html">会社情報</a><a
+                    href="/contact/index.html">お問い合わせ</a><a href="/legal/index.html">ご利用にあたって</a></nav>
+        </div>
+    </header>
+    <section class="hero small">
+        <div class="grid-overlay" aria-hidden="true"></div>
+        <div class="container hero-inner">
+            <h1 class="hero-title">サイト調整ガイド</h1>
+            <p class="hero-sub">色・余白・カードサイズ・ヒーロー高さなどを変数で一発調整。</p>
+        </div>
+    </section>
+    <main>
+        <section class="section">
+            <div class="container">
+                <article class="card doc">
+                    <h2>1. 変えるのは <span class="kbd">/css/params.css</span> だけ</h2>
+                    <p>以下の代表パラメータを変更するとサイト全体に反映されます。</p>
+                    <h3>色まわり</h3>
+                    <pre
+                        class="mono">--nx-hero-start / --nx-hero-end     … ヒーローの上/下色--nx-grid                           … ヒーロー格子の濃さ(0〜0.1)--nx-bg / --nx-card / --nx-text     … ページ背景 / カード / 本文色--nx-muted / --nx-primary / --nx-border / --nx-shadow / --nx-radius</pre>
+                    <h3>タイポ・横幅・余白</h3>
+                    <pre
+                        class="mono">--container-w     … コンテナ最大幅（例: 1100px→1200px）--fz-hero/h2/h3   … 見出しサイズ--fz-body, --lh-body … 本文サイズ/行間--gap-top/bottom  … ヘッダー直下/フッター直前の全体余白</pre>
+                    <h3>ヒーローの上下サイズ</h3>
+                    <pre class="mono">--hero-pad-top / --hero-pad-bottom--hero-pad-small / --hero-pad-xsmall</pre>
+                    <p class="tips">例：高さを増やすなら <code>--hero-pad-top:84px; --hero-pad-bottom:64px;</code></p>
+                    <h3>カードの大きさ・並び</h3>
+                    <pre
+                        class="mono">--grid-gap          … カード同士の間隔--card-min-two      … 2列グリッドの最小幅（大きいほど1枚が広く）--card-min-three/four--card-pad, --card-min-h, --card-shadow</pre>
+                    <h2>2. トップのProductsをヒーロー調にする</h2>
+                    <p>トップページの対象セクションに <span class="kbd">class="section hero-bg"</span> を付与します。 色味は params.css
+                        の以下で調整します。</p>
+                    <pre
+                        class="mono">--hero-bg-card-bg / --hero-bg-border / --hero-bg-text / --hero-bg-muted / --hero-bg-btn</pre>
+                    <h2>3. ページ別の微調整</h2>
+                    <p><span class="kbd">/css/pages/*.css</span> に追記します。例：</p>
+                    <pre
+                        class="mono">/css/pages/aiec-light.css.section .container &gt; .card:first-child{ margin-top:6px; }</pre>
+                    <h2>4. 差し替えリクエストのルール</h2>
+                    <p>今後、私からの差し替え指示はこの形式で出します：</p>
+                    <ul>
+                        <li><strong>ファイル指定：</strong>例）<span class="kbd">/css/base.css</span></li>
+                        <li><strong>範囲指定：</strong>例）<span class="kbd">.hero{ の &quot;padding:&quot; 行〜次の &quot;}&quot;
+                                まで</span></li>
+                        <li><strong>置換内容：</strong>置換後コードを完全提示（前後の数行を合わせて明示）</li>
+                    </ul>
+                    <p class="tips">行番号は環境差でズレるため、基本は「開始トークン〜終了トークン」で範囲を特定します。</p>
+                </article>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="container foot"><small>© NEXSPACE</small>
+            <nav class="foot-links"><a href="/legal/terms.html">利用規約</a><a href="/legal/privacy.html">プライバシー</a><a
+                    href="/legal/refund.html">返金</a><a href="/legal/tokusho.html">特定商取引法</a></nav>
+        </div>
+    </footer>
+</body>
+
+</html>
