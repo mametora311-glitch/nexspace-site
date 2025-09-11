@@ -1,72 +1,141 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>お問い合わせ | NEXSPACE</title>
-    <meta name="description" content="NEXSPACEへのご質問・ご相談はこちらから。サービス内容、導入支援、協業についてなど、お気軽にお問い合わせください。">
-    <link rel="stylesheet" href="../css/base.css" />
-    <link rel="stylesheet" href="../css/params.css" />
-    <link rel="stylesheet" href="../css/pages/contact.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>お問い合わせ | NEXSPACE</title>
+  <meta name="description" content="NEXSPACEへのご質問・ご相談はこちらから。サービス内容、導入支援、協業についてなど、お気軽にお問い合わせください。">
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/params.css" />
+  <link rel="stylesheet" href="../css/pages/contact.css" />
+  <style>
+    .note{font-size:12px;color:#64748b;margin-top:8px}
+    .status{margin-top:12px;font-size:14px}
+    .status.ok{color:#16a34a}.status.ng{color:#dc2626}
+  </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="nav container">
-            <a class="brand" href="../index.html">
-                <span class="logo-dot"></span><span class="brand-text">NEXSPACE</span>
-            </a>
-            <nav class="nav-links">
-                <a href="../products/index.html">製品一覧</a>
-                <a href="../about/index.html">会社情報</a>
-                <a aria-current="page">お問い合わせ</a>
-                <a href="../legal/index.html">ご利用にあたって</a>
-            </nav>
-        </div>
-    </header>
-    <section class="hero small">
-        <div class="grid-overlay" aria-hidden="true"></div>
-        <div class="container hero-inner">
-            <h1 class="hero-title">お問い合わせ</h1>
-            <p class="hero-sub">ご質問・ご相談など、お気軽にご連絡ください。</p>
-        </div>
+  <header class="site-header">
+    <div class="nav container">
+      <a class="brand" href="../index.html"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
+      <nav class="nav-links" aria-label="グローバル">
+        <a href="../products/index.html">製品一覧</a>
+        <a href="../about/index.html">会社情報</a>
+        <a aria-current="page">お問い合わせ</a>
+        <a href="../legal/index.html">ご利用にあたって</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero small">
+    <div class="container hero-inner">
+      <h1 class="hero-title">お問い合わせ</h1>
+      <p class="hero-sub">ご質問・ご相談など、お気軽にご連絡ください。</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <form id="contactForm" class="form" method="POST" novalidate>
+          <div class="field">
+            <label for="name" class="label">お名前</label>
+            <input id="name" name="name" type="text" class="input" required>
+          </div>
+          <div class="field">
+            <label for="email" class="label">メールアドレス</label>
+            <input id="email" name="email" type="email" class="input" required>
+          </div>
+          <div class="field">
+            <label for="tel" class="label">電話番号（任意）</label>
+            <input id="tel" name="tel" type="tel" class="input" inputmode="tel">
+          </div>
+          <div class="field">
+            <label for="message" class="label">お問い合わせ内容</label>
+            <textarea id="message" name="message" class="textarea" required></textarea>
+          </div>
+          <div class="actions">
+            <button id="sendBtn" class="btn primary" type="submit">送信する</button>
+          </div>
+          <p class="note">※外部フォーム（Formspree等）に送信します。未設定時はメール作成画面が開きます。</p>
+          <div id="status" class="status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
     </section>
-    <main>
-        <section class="section">
-            <div class="container">
-                <form class="form" action="https://formspree.io/f/{contact@nexspace.jp}" method="POST">
-                    <div class="field">
-                        <label for="name" class="label">お名前</label>
-                        <input id="name" name="name" type="text" class="input" required>
-                    </div>
-                    <div class="field">
-                        <label for="email" class="label">メールアドレス</label>
-                        <input id="email" name="email" type="email" class="input" required>
-                    </div>
-                    <div class="field">
-                        <label for="tel" class="label">電話番号（任意）</label>
-                        <input id="tel" name="tel" type="tel" class="input">
-                    </div>
-                    <div class="field">
-                        <label for="message" class="label">お問い合わせ内容</label>
-                        <textarea id="message" name="message" class="textarea" required></textarea>
-                    </div>
-                    <div class="actions">
-                        <button class="btn primary" type="submit">送信する</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-    </main>
-    <footer class="site-footer">
-        <div class="container foot">
-            <small>© NEXSPACE</small>
-            <nav class="foot-links">
-                <a href="../legal/terms.html">利用規約</a>
-                <a href="../legal/privacy.html">プライバシー</a>
-                <a href="../legal/refund.html">返金</a>
-                <a href="../legal/tokusho.html">特定商取引法</a>
-            </nav>
-        </div>
-    </footer>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container foot">
+      <small>© NEXSPACE</small>
+      <nav class="foot-links" aria-label="フッター">
+        <a href="../legal/terms.html">利用規約</a>
+        <a href="../legal/privacy.html">プライバシー</a>
+        <a href="../legal/refund.html">返金</a>
+        <a href="../legal/tokusho.html">特定商取引法</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // ここに Formspree 等のエンドポイントを設定すると fetch 送信になります。
+    // 例: window.CONTACT_FORM_ENDPOINT = "https://formspree.io/f/xxxxxxxx";
+    window.CONTACT_FORM_ENDPOINT = window.CONTACT_FORM_ENDPOINT || null;
+
+    (function(){
+      const f = document.getElementById('contactForm');
+      const btn = document.getElementById('sendBtn');
+      const status = document.getElementById('status');
+
+      function setStatus(msg, ok){
+        status.textContent = msg || '';
+        status.className = 'status ' + (ok ? 'ok':'ng');
+      }
+
+      f.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        setStatus('');
+
+        // validate
+        if(!f.reportValidity()){ setStatus('未入力/形式不正の項目があります。', false); return; }
+
+        const fd = new FormData(f);
+        const name = String(fd.get('name')||'').trim();
+        const email = String(fd.get('email')||'').trim();
+        const tel = String(fd.get('tel')||'').trim();
+        const message = String(fd.get('message')||'').trim();
+
+        btn.disabled = true;
+
+        if (window.CONTACT_FORM_ENDPOINT){
+          try{
+            const res = await fetch(window.CONTACT_FORM_ENDPOINT, {
+              method:'POST',
+              headers:{ 'Accept':'application/json' },
+              body: fd
+            });
+            if(!res.ok){ throw new Error('サーバが一時的に混雑しています。時間をおいて再度お試しください。'); }
+            setStatus('送信しました。折り返しご連絡いたします。', true);
+            f.reset();
+          }catch(err){
+            console.error(err);
+            setStatus(err && err.message ? err.message : '送信に失敗しました。時間をおいて再試行してください。', false);
+          }finally{
+            btn.disabled = false;
+          }
+          return;
+        }
+
+        // フォームエンドポイント未設定 → メール起動（必ず“飛ぶ”）
+        const subject = encodeURIComponent('お問い合わせ: ' + name);
+        const body =
+          'お名前: ' + encodeURIComponent(name) + '%0D%0A' +
+          'メール: ' + encodeURIComponent(email) + '%0D%0A' +
+          '電話: ' + encodeURIComponent(tel) + '%0D%0A' +
+          '内容:%0D%0A' + encodeURIComponent(message);
+        location.href = 'mailto:contact@nexspace.jp?subject=' + subject + '&body=' + body;
+        btn.disabled = false;
+      });
+    })();
+  </script>
 </body>
 </html>

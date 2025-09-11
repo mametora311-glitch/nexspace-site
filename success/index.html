@@ -4,66 +4,110 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>購入完了 | Nexspace</title>
+  <meta name="robots" content="noindex" />
   <style>
-    :root { --bg:#0b0f1a; --card:#101828; --text:#e5e7eb; --muted:#9ca3af; --accent:#22d3ee; }
+    :root { --bg:#0b0f1a; --panel:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --accent:#22d3ee; --warn:#fbbf24; --ok:#34d399; }
     *{box-sizing:border-box}
-    body{margin:0;background:#0b0f1a;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-         min-height:100dvh;display:grid;place-items:center;padding:24px}
-    .card{width:min(720px,100%);background:#0f172a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px}
-    h1{margin:0 0 8px;font-size:24px}.ok{color:var(--accent);font-weight:600}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:min(720px,100%);background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px}
+    h1{margin:0 0 8px;font-size:24px}
+    .ok{color:var(--ok);font-weight:600}
     p{margin:8px 0;color:var(--muted);line-height:1.7}
     .actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
-    .btn{border:1px solid rgba(255,255,255,.15);background:#0e1628;color:#e5e7eb;border-radius:10px;
-         padding:10px 14px;text-decoration:none;display:inline-block}
-    .warn{color:#fbbf24;font-weight:600}
+    .btn{border:1px solid rgba(255,255,255,.15);background:#0e1628;color:#e5e7eb;border-radius:10px;padding:10px 14px;text-decoration:none;display:inline-block}
+    .btn.primary{border-color:rgba(34,211,238,.35)}
+    .warn{color:var(--warn);font-weight:600}
+    .note{font-size:12px;color:#94a3b8;margin-top:10px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:12px}
+    .hide{display:none}
   </style>
 </head>
 <body>
 <main class="card" role="main" aria-live="polite">
   <h1>ご購入ありがとうございます <span class="ok">✓</span></h1>
   <p id="status">ダウンロードを開始します…</p>
-  <div class="actions">
-    <a href="/products/aiec-light/index.html" class="btn">製品ページへ戻る</a>
-    <a href="/" class="btn">トップへ</a>
-    <a id="manual" class="btn" rel="nofollow" style="display:none">自動で始まらない場合はこちら</a>
+
+  <div id="hint-initial" class="note">
+    初回アクセス時はサーバ復帰のため <b>10〜30秒</b> 程度待機する場合があります。
   </div>
-  <p id="nosid" style="display:none"><span class="warn">セッション情報が見つかりません。</span> 購入フローから再度お試しください。</p>
+
+  <div class="actions">
+    <a href="https://nexspace.jp/products/aiec-light/" class="btn">製品ページへ戻る</a>
+    <a href="https://nexspace.jp/" class="btn">トップへ</a>
+    <a id="manual" class="btn primary hide" rel="nofollow">自動で始まらない場合はこちら</a>
+  </div>
+
+  <p id="nosid" class="hide"><span class="warn">セッション情報が見つかりません。</span> 決済完了後の画面から遷移し直してください。</p>
+  <details class="note"><summary>ヘルプ（ダウンロードが始まらない場合）</summary>
+    <ol class="note">
+      <li>上の「自動で始まらない場合はこちら」を押してください。</li>
+      <li>ブラウザのポップアップ/ダウンロード許可をオンにしてください。</li>
+      <li>数分待っても開始しない場合、時間をおいて再試行してください（サーバのスリープ復帰直後など）。</li>
+    </ol>
+    <div id="diag" class="mono"></div>
+  </details>
+
+  <p class="note">特商法 / 返金 / プライバシーはサイト下部の法務リンクをご確認ください。</p>
+  <noscript><p class="warn">JavaScript を有効にして再読み込みしてください。</p></noscript>
 </main>
 
 <script>
 (function () {
-  // success_url の ?session_id={CHECKOUT_SESSION_ID} を使用（画面表示しない）
-  const sid = new URLSearchParams(location.search).get("session_id");
+  const API_BASE = "https://aiec-api-1.onrender.com"; // 本番API固定
+  const q = new URLSearchParams(location.search);
+  const sid = q.get("session_id");
   const statusEl = document.getElementById("status");
   const manual = document.getElementById("manual");
   const nosid = document.getElementById("nosid");
+  const diag = document.getElementById("diag");
+
+  function show(el){ el.classList.remove("hide"); }
+  function hide(el){ el.classList.add("hide"); }
 
   if (!sid) {
-    statusEl.style.display = "none";
-    manual.style.display = "none";
-    nosid.style.display = "block";
+    statusEl.textContent = "購入セッションが確認できません。";
+    show(nosid);
+    hide(manual);
     return;
   }
 
-  // 基点URLは使わない。同一オリジンの /download に相対で飛ばす
-  const url = "/download?session_id=" + encodeURIComponent(sid);
+  const url = API_BASE + "/download?session_id=" + encodeURIComponent(sid);
+  manual.href = url; manual.download = ""; show(manual);
 
-  // フォールバック用の手動リンク
-  manual.href = url;
-  manual.download = "";
-  manual.style.display = "inline-block";
+  // まず HEAD で疎通とヘッダ（ファイル名/ハッシュ）を軽く確認
+  fetch(url, { method: "HEAD", mode: "no-cors" })
+    .catch(()=>{}) // no-cors では検査できないが、サーバ起床待ちの時間稼ぎになる
 
-  // 自動開始（非表示 iframe で遷移）
+  // 実ダウンロードは不可視 iframe（標準的な自動DL手法）
   const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
+  iframe.style.display="none";
   iframe.src = url;
   document.body.appendChild(iframe);
 
-  setTimeout(() => {
-    statusEl.textContent = "自動開始しない場合は「自動で始まらない場合はこちら」を押してください。";
-  }, 2500);
+  // 起動待ちガイダンスを段階的に表示
+  let t = 0;
+  const tips = [
+    "サーバ起動中…（初回は最大30秒程度）",
+    "開始しない場合は青いボタンから手動ダウンロードできます。",
+    "ポップアップやダウンロードがブロックされていないかご確認ください。"
+  ];
+  const timer = setInterval(()=>{
+    t++;
+    statusEl.textContent = tips[Math.min(t, tips.length-1)];
+    if (t > 30) clearInterval(timer); // 30秒で更新打ち切り
+  }, 1000);
+
+  // 簡易診断（ユーザー提示用）
+  try {
+    const info = [
+      ["session_id", sid.slice(0,8)+"…"],
+      ["api", API_BASE],
+      ["time", new Date().toISOString()],
+      ["ua", navigator.userAgent]
+    ].map(([k,v]) => `${k}: ${v}`).join("\n");
+    diag.textContent = info;
+  } catch(e){}
 })();
 </script>
 </body>
 </html>
-
