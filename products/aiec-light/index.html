@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Easy Coder Light | NEXSPACE</title>
-  <meta name="description" content="AI Easy Coder (AIEC) Lightは、定型的なコーディング作業をAIが自動化し、生産性を劇的に向上させるためのツールです。">
+  <meta name="description" content="AI Easy Coder (AIEC) Light は定型コーディングをAIで自動化するツールです。">
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/params.css" />
+  <!-- 404回避のため相対にも対応させたい場合は ../../css/aiec-light.css に変更 -->
   <link rel="stylesheet" href="/css/aiec-light.css" />
 </head>
 <body>
-  <!-- Header -->
   <header class="site-header">
     <div class="nav container">
       <a class="brand" href="/"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
@@ -23,7 +23,6 @@
     </div>
   </header>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="container hero-inner">
       <h1 class="hero-title">AI Easy Coder Light</h1>
@@ -33,31 +32,18 @@
   </section>
 
   <main>
-    <!-- Features -->
     <section class="section light">
       <div class="container">
         <h2 class="section-title">主な機能</h2>
         <div class="grid three">
           <div class="card"><h3>リアルタイムコード生成</h3><p>自然言語で指示するだけで、高品質なコードを即座に生成。</p></div>
-          <div class="card"><h3>自動レビュー＆リファクタリング</h3><p>既存コードの改善提案とバグ低減。</p></div>
-          <div class="card"><h3>マルチ言語対応</h3><p>Python, JavaScript, Java, C# ほか主要言語。</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cases -->
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">導入事例</h2>
-        <div class="grid two">
-          <div class="card"><h3>株式会社TechFirm様</h3><p>APIクライアント実装時間を80%削減。</p></div>
-          <div class="card"><h3>スタートアップ QuickDev様</h3><p>少人数チームの迅速なプロトタイピングに貢献。</p></div>
+          <div class="card"><h3>自動レビュー＆リファクタ</h3><p>既存コードの改善提案とバグ低減。</p></div>
+          <div class="card"><h3>マルチ言語対応</h3><p>Python, JS, Java, C# ほか。</p></div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="container foot">
       <small>© NEXSPACE</small>
@@ -70,16 +56,17 @@
     </div>
   </footer>
 
-  <!-- Stripe & Purchase -->
+  <!-- Stripe（client-only 方式。サーバfetch不要） -->
   <script src="https://js.stripe.com/v3"></script>
   <script>
-    // ここで公開鍵を上書きできます（未設定なら buy.js の既定を使用）
     window.AIEC_CONFIG = {
-      PRICE_ID: null,                 // 特定のpriceを固定したい場合は 'price_live_xxx'
-      STRIPE_PUBLISHABLE_KEY: null    // 'pk_live_xxx'（APIのアカウントと一致させる）
+      // ★あなたの live キーと price を設定（必須）
+      STRIPE_PUBLISHABLE_KEY: "pk_live_51RzC5ODObxTEUuKDs77DdvjuD5paQlsgAvX1yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP",
+      PRICE_ID: "price_1S5PKhDObxTEUuKDOV5OazEe",
+      SUCCESS_URL: "https://nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
+      CANCEL_URL: "https://nexspace.jp/products/aiec-light/"
     };
   </script>
-  <script src="/js/aiec-boot.js" defer></script>
   <script src="/products/aiec-light/buy.js" defer></script>
 </body>
 </html>
