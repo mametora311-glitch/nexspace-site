@@ -1,62 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NEXSPACE | AIと共に、次の宇宙へ。</title>
-  <meta name="description" content="NEXSPACEは、AI技術と宇宙開発を融合させ、人の可能性を拡張するソリューションを提供するテクノロジーカンパニーです。">
-  <meta name="robots" content="index,follow" />
-  <style>
-    :root{
-      --bg:#0b0f1a;--panel:#0f172a;--text:#e5e7eb;--muted:#9ca3af;--brand:#22d3ee;
-      --card:#ffffff;--cardText:#0f172a;--border:rgba(0,0,0,.08)
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1120px;margin:0 auto;padding:0 20px}
-    /* header */
-    .site-header{position:sticky;top:0;background:rgba(11,15,26,.8);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06);z-index:10}
-    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.6px}
-    .logo-dot{width:10px;height:10px;border-radius:50%;background:var(--brand);display:inline-block}
-    .brand-text{font-size:14px}
-    .nav-links a{margin-left:16px;color:#cbd5e1}
-    .nav-links a[aria-current="page"]{color:#fff;font-weight:600}
-    /* hero */
-    .hero{position:relative;min-height:52vh;display:grid;place-items:center;background:
-      radial-gradient(1200px 500px at 50% -10%, rgba(34,211,238,.20), transparent 60%),
-      linear-gradient(#0b0f1a,#0b0f1a)}
-    .hero-inner{text-align:center;padding:64px 0}
-    .hero-title{font-size:clamp(28px,4.2vw,48px);margin:0 0 8px}
-    .hero-sub{margin:0;color:var(--muted);font-size:clamp(14px,2vw,18px)}
-    /* sections */
-    .section{padding:56px 0}
-    .section.light{background:#f6f7fb;color:#0b1220}
-    .section-title{margin:0 0 16px;font-size:22px;letter-spacing:.4px}
-    .grid{display:grid;gap:18px}
-    .grid.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-    .grid.four{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
-    /* cards (白背景・上下均等) */
-    .card{background:var(--card);color:var(--cardText);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;min-height:168px}
-    .card h3{margin:0 0 6px;font-size:18px}
-    .card p{margin:0;color:#475569;line-height:1.7}
-    .linkcard{position:relative;overflow:hidden}
-    .linkcard .actions{margin-top:auto}
-    .btn{display:inline-block;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;background:#fff;color:#0b1220;font-weight:600}
-    .btn.primary{border-color:#94a3b8}
-    .chev{position:absolute;right:12px;bottom:12px;color:#64748b}
-    /* footer */
-    .site-footer{border-top:1px solid rgba(255,255,255,.08);background:#0b0f1a}
-    .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 0}
-    .foot-links a{margin-left:14px;color:#9fb0c6}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEXSPACE — 宇宙とAIを実装し、日常と未来をつなぐ。</title>
+  <meta name="description" content="実装主義で、未来の体験を日常に持ち込む。NEXSPACEはAIと宇宙技術を核に、確かな成果を届けるテクノロジーカンパニーです。">
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/params.css" />
+  <link rel="stylesheet" href="/css/home.css" />
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header">
     <div class="nav container">
-      <a class="brand" href="/index.html" aria-current="page"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
+      <a class="brand" href="/"><span class="logo-dot" aria-hidden="true"></span><span class="brand-text">NEXSPACE</span></a>
       <nav class="nav-links" aria-label="グローバル">
         <a href="/products/index.html">製品一覧</a>
         <a href="/about/index.html">会社情報</a>
@@ -66,57 +23,64 @@
     </div>
   </header>
 
-  <section class="hero">
+  <!-- Hero -->
+  <section class="hero hero-home">
     <div class="container hero-inner">
-      <h1 class="hero-title">AIと共に、次の宇宙へ。</h1>
-      <p class="hero-sub">人の可能性を拡張するテクノロジーを、すべての人へ。</p>
+      <h1 class="hero-title">宇宙とAIを実装し、<br/>日常と未来をつなぐ。</h1>
+      <p class="hero-sub">— NEXSPACE / Technology through Implementation</p>
     </div>
   </section>
 
   <main>
+    <!-- Mission -->
     <section class="section">
       <div class="container">
+        <h2 class="section-title">Mission</h2>
+        <div class="grid four cards">
+          <div class="card">
+            <h3>Vision</h3>
+            <p>実装主義で、未来の体験を日常に持ち込む。</p>
+          </div>
+          <div class="card">
+            <h3>CICAS</h3>
+            <p>擬似慣性力発生装置の研究設計・試作評価。</p>
+          </div>
+          <div class="card">
+            <h3>Engineering</h3>
+            <p>再現性と安全性を重視した設計標準化。</p>
+          </div>
+          <div class="card">
+            <h3>Delivery</h3>
+            <p>小さく早く、現場で動く成果を継続提供。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section class="section light">
+      <div class="container">
         <h2 class="section-title">Products</h2>
-        <div class="grid two">
+        <div class="grid two cards">
           <a class="card linkcard" href="/products/aiec-light/index.html">
             <div>
               <h3>AI Easy Coder Light</h3>
-              <p>定型的なコーディング作業をAIが自動化。開発スピードを飛躍的に向上させます。</p>
+              <p>定型作業をAIが自動化。開発スピードを飛躍的に向上。</p>
             </div>
             <div class="actions"><span class="btn primary">詳細を見る</span></div>
             <div class="chev" aria-hidden="true">→</div>
           </a>
           <div class="card">
-            <h3>Solution B (coming soon)</h3>
+            <h3>Solution B（Coming soon）</h3>
             <p>現在準備中です。ご期待ください。</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section light">
+    <!-- Domains -->
+    <section class="section">
       <div class="container">
         <h2 class="section-title">Domains</h2>
-        <div class="grid four">
+        <div class="grid four cards">
           <div class="card"><h3>宇宙開発</h3><p>CICAS技術の研究</p></div>
-          <div class="card"><h3>AI 実装</h3><p>業務効率化・自動化</p></div>
-          <div class="card"><h3>ITソリューション</h3><p>Webサイト・アプリ開発</p></div>
-          <div class="card"><h3>コンサルティング</h3><p>DX・技術導入支援</p></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container foot">
-      <small>© NEXSPACE</small>
-      <nav class="foot-links" aria-label="フッター">
-        <a href="/legal/terms.html">利用規約</a>
-        <a href="/legal/privacy.html">プライバシー</a>
-        <a href="/legal/refund.html">返金</a>
-        <a href="/legal/tokusho.html">特定商取引法</a>
-      </nav>
-    </div>
-  </footer>
-</body>
-</html>
