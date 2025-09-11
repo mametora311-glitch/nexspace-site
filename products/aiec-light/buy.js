@@ -24,7 +24,7 @@
     try {
       const stripe = Stripe(cfg.STRIPE_PUBLISHABLE_KEY);
       const { error } = await stripe.redirectToCheckout({
-        mode: 'payment',
+        mode: 'subscription',
         lineItems: [{ price: cfg.PRICE_ID, quantity: 1 }],
         successUrl: cfg.SUCCESS_URL,
         cancelUrl: cfg.CANCEL_URL
