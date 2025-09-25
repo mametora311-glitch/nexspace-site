@@ -6,107 +6,51 @@
   <title>購入完了 | Nexspace</title>
   <meta name="robots" content="noindex" />
   <style>
-    :root { --bg:#0b0f1a; --panel:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --accent:#22d3ee; --warn:#fbbf24; --ok:#34d399; }
+    :root { --bg:#0b0f1a; --panel:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --ok:#34d399; --warn:#fbbf24; }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;min-height:100dvh;display:grid;place-items:center;padding:24px}
     .card{width:min(720px,100%);background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px}
-    h1{margin:0 0 8px;font-size:24px}
-    .ok{color:var(--ok);font-weight:600}
+    h1{margin:0 0 8px;font-size:24px}.ok{color:var(--ok);font-weight:600}
     p{margin:8px 0;color:var(--muted);line-height:1.7}
     .actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
     .btn{border:1px solid rgba(255,255,255,.15);background:#0e1628;color:#e5e7eb;border-radius:10px;padding:10px 14px;text-decoration:none;display:inline-block}
     .btn.primary{border-color:rgba(34,211,238,.35)}
-    .warn{color:var(--warn);font-weight:600}
-    .note{font-size:12px;color:#94a3b8;margin-top:10px}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:12px}
     .hide{display:none}
   </style>
 </head>
 <body>
 <main class="card" role="main" aria-live="polite">
   <h1>ご購入ありがとうございます <span class="ok">✓</span></h1>
-  <p id="status">ダウンロードを開始します…</p>
-
-  <div id="hint-initial" class="note">
-    初回アクセス時はサーバ復帰のため <b>10〜30秒</b> 程度待機する場合があります。
-  </div>
-
+  <p id="status">ダウンロードを開始します…（初回はサーバ復帰で10〜30秒かかる場合があります）</p>
   <div class="actions">
     <a href="https://nexspace.jp/products/aiec-light/" class="btn">製品ページへ戻る</a>
     <a href="https://nexspace.jp/" class="btn">トップへ</a>
     <a id="manual" class="btn primary hide" rel="nofollow">自動で始まらない場合はこちら</a>
   </div>
-
-  <p id="nosid" class="hide"><span class="warn">セッション情報が見つかりません。</span> 決済完了後の画面から遷移し直してください。</p>
-  <details class="note"><summary>ヘルプ（ダウンロードが始まらない場合）</summary>
-    <ol class="note">
-      <li>上の「自動で始まらない場合はこちら」を押してください。</li>
-      <li>ブラウザのポップアップ/ダウンロード許可をオンにしてください。</li>
-      <li>数分待っても開始しない場合、時間をおいて再試行してください（サーバのスリープ復帰直後など）。</li>
-    </ol>
-    <div id="diag" class="mono"></div>
-  </details>
-
-  <p class="note">特商法 / 返金 / プライバシーはサイト下部の法務リンクをご確認ください。</p>
-  <noscript><p class="warn">JavaScript を有効にして再読み込みしてください。</p></noscript>
+  <p id="nosid" class="hide"><span style="color:var(--warn);font-weight:600">セッション情報が見つかりません。</span> 決済完了後の画面から遷移し直してください。</p>
 </main>
 
 <script>
 (function () {
-  const API_BASE = "https://aiec-api-1.onrender.com"; // 本番API固定
-  const q = new URLSearchParams(location.search);
-  const sid = q.get("session_id");
+  const API_BASE = "https://aiec-api-1.onrender.com";
+  const sid = new URLSearchParams(location.search).get("session_id");
   const statusEl = document.getElementById("status");
   const manual = document.getElementById("manual");
   const nosid = document.getElementById("nosid");
-  const diag = document.getElementById("diag");
-
-  function show(el){ el.classList.remove("hide"); }
-  function hide(el){ el.classList.add("hide"); }
-
-  if (!sid) {
-    statusEl.textContent = "購入セッションが確認できません。";
-    show(nosid);
-    hide(manual);
-    return;
-  }
+  if (!sid) { statusEl.style.display="none"; manual.classList.add("hide"); nosid.classList.remove("hide"); return; }
 
   const url = API_BASE + "/download?session_id=" + encodeURIComponent(sid);
-  manual.href = url; manual.download = ""; show(manual);
+  manual.href = url; manual.download = ""; manual.classList.remove("hide");
 
-  // まず HEAD で疎通とヘッダ（ファイル名/ハッシュ）を軽く確認
-  fetch(url, { method: "HEAD", mode: "no-cors" })
-    .catch(()=>{}) // no-cors では検査できないが、サーバ起床待ちの時間稼ぎになる
+  // 起動ウォームアップ（失敗しても続行）
+  fetch(API_BASE + "/healthz").catch(()=>{}); 
 
-  // 実ダウンロードは不可視 iframe（標準的な自動DL手法）
+  // 自動DL（不可視iframe）
   const iframe = document.createElement("iframe");
-  iframe.style.display="none";
-  iframe.src = url;
+  iframe.style.display = "none"; iframe.src = url;
   document.body.appendChild(iframe);
 
-  // 起動待ちガイダンスを段階的に表示
-  let t = 0;
-  const tips = [
-    "サーバ起動中…（初回は最大30秒程度）",
-    "開始しない場合は青いボタンから手動ダウンロードできます。",
-    "ポップアップやダウンロードがブロックされていないかご確認ください。"
-  ];
-  const timer = setInterval(()=>{
-    t++;
-    statusEl.textContent = tips[Math.min(t, tips.length-1)];
-    if (t > 30) clearInterval(timer); // 30秒で更新打ち切り
-  }, 1000);
-
-  // 簡易診断（ユーザー提示用）
-  try {
-    const info = [
-      ["session_id", sid.slice(0,8)+"…"],
-      ["api", API_BASE],
-      ["time", new Date().toISOString()],
-      ["ua", navigator.userAgent]
-    ].map(([k,v]) => `${k}: ${v}`).join("\n");
-    diag.textContent = info;
-  } catch(e){}
+  setTimeout(()=>{ statusEl.textContent = "自動開始しない場合は「自動で始まらない場合はこちら」を押してください。"; }, 2500);
 })();
 </script>
 </body>
