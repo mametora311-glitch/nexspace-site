@@ -31,26 +31,53 @@
 </main>
 
 <script>
-(function () {
-  const API_BASE = "https://aiec-api-1.onrender.com";
-  const sid = new URLSearchParams(location.search).get("session_id");
+(async () => {
+  const BASE = "https://aiec-gate-bbsaeuy2ma-an.a.run.app";  // ★実URLに
+  const qp = new URLSearchParams(location.search);
+  const sid = qp.get("session_id");
+
   const statusEl = document.getElementById("status");
-  const manual = document.getElementById("manual");
-  const nosid = document.getElementById("nosid");
-  if (!sid) { statusEl.style.display="none"; manual.classList.add("hide"); nosid.classList.remove("hide"); return; }
+  const manual   = document.getElementById("manual");
+  const nosid    = document.getElementById("nosid");
 
-  const url = API_BASE + "/download?session_id=" + encodeURIComponent(sid);
-  manual.href = url; manual.download = ""; manual.classList.remove("hide");
+  // 1) buyerメールを取得（事前保存 or クエリ or 手入力フォールバック）
+  let email = localStorage.getItem("aiec_license_key") || qp.get("buyer") || "";
+  if (!email) {
+    const input = prompt("ご購入時のメールアドレスを入力してください（ダウンロード用）");
+    if (!input) { statusEl.style.display="none"; manual.classList.add("hide"); nosid.classList.remove("hide"); return; }
+    email = input.trim();
+    localStorage.setItem("aiec_license_key", email);
+  }
+  // 2) device_id を用意
+  const device_id = (localStorage.getItem("aiec_device_id") || (navigator.userAgent||"web").slice(0,64));
+  localStorage.setItem("aiec_device_id", device_id);
 
-  // 起動ウォームアップ（失敗しても続行）
-  fetch(API_BASE + "/healthz").catch(()=>{}); 
+  // 3) JWT発行
+  const r1 = await fetch(`${BASE}/auth/issue`, {
+    method: "POST",
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify({ license_key: email, device_id })
+  });
+  if (!r1.ok) {
+    const t = await r1.text(); statusEl.textContent = "認証に失敗しました: " + t; manual.classList.add("hide"); return;
+  }
+  const { token } = await r1.json();
 
-  // 自動DL（不可視iframe）
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none"; iframe.src = url;
-  document.body.appendChild(iframe);
-
-  setTimeout(()=>{ statusEl.textContent = "自動開始しない場合は「自動で始まらない場合はこちら」を押してください。"; }, 2500);
+  // 4) Gate からDL（自動開始・手動リンクも用意）
+  async function doDownload() {
+    const resp = await fetch(`${BASE}/v1/download/light`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!resp.ok) throw new Error(await resp.text());
+    const blob = await resp.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (resp.headers.get("content-disposition")||"").match(/filename="?([^"]+)"?/)?.[1] || "AIEC-Light-Installer.zip";
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  // 自動DL
+  doDownload().catch(err => { statusEl.textContent = "自動DLに失敗: " + err.message; });
+  // 手動リンク（fetch→blob）
+  manual.classList.remove("hide");
+  manual.addEventListener("click", async (e)=>{ e.preventDefault(); try{ await doDownload(); }catch(err){ alert("DL失敗: "+err.message); }});
 })();
 </script>
 </body>

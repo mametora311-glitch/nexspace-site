@@ -3,7 +3,7 @@
   'use strict';
   const cfg = Object.assign({
     STRIPE_PUBLISHABLE_KEY: "pk_live_51RzC5ODObxTEUuKDs77DdvjuD5paQlsgAvX1yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP",
-    PRICE_ID: "price_1RzHsKDObxTEUuKDPeCNnlI9",
+    PRICE_ID: "price_1S5PKhDObxTEUuKDOV5OazEe",
     SUCCESS_URL: "https://nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
     CANCEL_URL: "https://nexspace.jp/products/aiec-light/"
   }, (window.AIEC_CONFIG || {}));
@@ -17,6 +17,10 @@
     if (!cfg.PRICE_ID)          { alert("PRICE_IDが未設定です。"); return false; }
     return true;
   }
+
+  const mail = document.getElementById('buyerEmail')?.value?.trim();
+  if (mail) localStorage.setItem('aiec_license_key', mail);
+  localStorage.setItem('aiec_device_id', (navigator.userAgent||'web').slice(0,64));
 
   btn.addEventListener('click', async () => {
     if (!guard()) return;
