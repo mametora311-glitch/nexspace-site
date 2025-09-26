@@ -1,7 +1,7 @@
 // js/aiec-boot.js (最終版・フルコード)
 
 // ★★★ 必ずご自身のCloud Runの本番URLに書き換えてください ★★★
-const API_BASE_URL = "https://aiec-gate-766292311890.asia-northeast1.run.app";
+const API_BASE_URL = "https://aiec-gate-bbsaeuy2ma-an.a.run.app";
 
 document.addEventListener("DOMContentLoaded", function() {
     const licenseKeyDisplay = document.getElementById("license-key-display");
