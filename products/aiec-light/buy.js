@@ -4,8 +4,8 @@
   const cfg = Object.assign({
     STRIPE_PUBLISHABLE_KEY: "pk_live_51RzC5ODObxTEUuKDs77DdvjuD5paQlsgAvX1yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP",
     PRICE_ID: "price_1S5PKhDObxTEUuKDOV5OazEe",
-    SUCCESS_URL: "https://nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
-    CANCEL_URL: "https://nexspace.jp/products/aiec-light/"
+    SUCCESS_URL: "https://www.nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
+    CANCEL_URL: "https://www.nexspace.jp/products/aiec-light/"
   }, (window.AIEC_CONFIG || {}));
 
   const btn = document.getElementById('buyButton');
