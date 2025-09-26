@@ -130,3 +130,4 @@ document.addEventListener("DOMContentLoaded", function() {
     // ページ読み込み時に認証を開始
     issueTokenAndProceed();
 });
+
