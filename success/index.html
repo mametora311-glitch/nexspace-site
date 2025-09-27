@@ -1,20 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ご購入ありがとうございます</title>
-    <link rel="stylesheet" href="../css/pages/success.css"> </head>
-<body>
-    <div class="container">
-        <h1>ご購入ありがとうございます！</h1>
-        <p>決済が正常に完了しました。</p>
-        <p>以下のリンクから製品ダウンロードページへお進みください。</p>
-        
-        <a href="../download/" id="download-link" class="button" style="display:none;">製品ダウンロードページへ進む</a>
-        <p id="error-message" style="color:red;"></p>
-    </div>
 
-    <script src="../js/success.js"></script>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ご購入ありがとうございます｜NEXSPACE</title>
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <base href="/" />
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            padding: 32px;
+            max-width: 860px;
+            margin: auto
+        }
+
+        h1 {
+            font-size: clamp(20px, 2.4vw, 28px);
+            margin: 0 0 12px
+        }
+
+        .note {
+            color: #444;
+            margin: 0 0 20px
+        }
+
+        .error {
+            color: #b00020
+        }
+
+        .ok {
+            color: #0a7
+        }
+
+        .muted {
+            color: #666
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ご購入ありがとうございます！</h1>
+    <p class="note">決済が正常に完了しました。自動でダウンロードを開始します。</p>
+    <p id="fallback" class="muted">自動で始まらない場合は、しばらく待ってからこのページを再読み込みしてください。</p>
+    <noscript>
+        <p class="error">※JavaScriptを有効にしてください。ダウンロードが開始できません。</p>
+    </noscript>
+
+    <!-- 外部JS（※ファイル内に<script>を書かないこと） -->
+    <script src="/success/success.js" defer></script>
 </body>
+
 </html>

@@ -20,9 +20,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // キーがない場合はボタンを無効化して終了
     if (!license_key || !device_id) {
-        if(licenseKeyDisplay) licenseKeyDisplay.textContent = "ライセンス情報が見つかりません";
-        if(downloadButton) downloadButton.disabled = true;
-        if(copyButton) copyButton.disabled = true;
+        if(licenseKeyDisplay){
+            licenseKeyDisplay.textContent = "ライセンス情報が見つかりません";
+        }
+        if(downloadButton){ downloadButton.disabled = true; }
+        if(copyButton){ copyButton.disabled = true; }
         return;
     }
     
@@ -58,7 +60,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // --- コピー処理 ---
     if (copyButton) {
         copyButton.addEventListener('click', () => {
-            if (!license_key) return;
+            if (!license_key) {
+                return;
+            }
             navigator.clipboard.writeText(license_key).then(() => {
                 copyButton.textContent = 'コピー完了!';
                 setTimeout(() => { copyButton.textContent = 'コピー'; }, 2000); // 2秒後にテキストを元に戻す
