@@ -1,37 +1,29 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const downloadLink = document.getElementById("download-link");
-    const errorMessage = document.getElementById("error-message");
+<script>
+(async () => {
+    const params = new URLSearchParams(location.search);
+    const sid = params.get('session_id'); // cs_live_...
+    const GATE = 'https://aiec-gate-bbsaeuy2ma-an.a.run.app'; // ← 現在のGate URLに合わせる
+
+    if (!sid) {document.body.insertAdjacentHTML('beforeend', '<p>session_id がありません</p>'); return; }
 
     try {
-        const urlParams = new URLSearchParams(window.location.search);
-        // Stripeは checkout session id を `session_id` というクエリパラメータで返す
-        const stripeSessionId = urlParams.get('session_id'); 
+    // 1) クレーム → DLトークン取得
+    const r = await fetch(`${GATE}/v1/claim`, {
+        method: 'POST',
+    headers: {'Content-Type': 'application/json' },
+    body: JSON.stringify({session_id: sid })
+    });
+    if (!r.ok) throw new Error(`claim ${r.status}`);
+    const {download_token} = await r.json();
 
-        if (stripeSessionId) {
-            // ライセンスキーとしてブラウザのlocalStorageに保存
-            localStorage.setItem("aiec_license_key", stripeSessionId);
-
-            // デバイスIDもなければ簡易的に生成して保存
-            if (!localStorage.getItem("aiec_device_id")) {
-                const deviceId = "web-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
-                localStorage.setItem("aiec_device_id", deviceId);
-            }
-            
-            console.log("ライセンスキーを保存しました:", stripeSessionId);
-            
-            // 成功したのでダウンロードリンクを表示
-            if(downloadLink) {
-                downloadLink.style.display = 'inline-block';
-            }
-
-        } else {
-            // URLにsession_idがなかった場合
-            throw new Error("決済情報が見つかりませんでした。");
-        }
-    } catch (error) {
-        console.error("処理に失敗しました:", error);
-        if(errorMessage) {
-            errorMessage.textContent = "エラーが発生しました。決済は完了していますが、製品のダウンロードができません。お手数ですが、サポートまでお問い合わせください。";
-        }
+    // 2) そのままDL開始（クエリに token を付与）
+    const url = `${GATE}/v1/download/light?token=${encodeURIComponent(download_token)}`;
+    // 自動DL + フォールバックリンク
+    const a = document.createElement('a'); a.href = url; a.download = ''; document.body.appendChild(a); a.click();
+    document.body.insertAdjacentHTML('beforeend', `<p>自動で始まらない場合は <a href="${url}">こちら</a></p>`);
+    } catch (e) {
+        console.error(e);
+    document.body.insertAdjacentHTML('beforeend','<p>ダウンロード処理に失敗しました。時間をおいて再試行してください。</p>');
     }
-});
+})();
+</script>
