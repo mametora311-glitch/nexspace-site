@@ -1,55 +1,78 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>ご購入ありがとうございます｜NEXSPACE</title>
-    <meta http-equiv="Cache-Control" content="no-store" />
-    <base href="/" />
-    <style>
-        body {
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.7;
-            padding: 32px;
-            max-width: 860px;
-            margin: auto
-        }
-
-        h1 {
-            font-size: clamp(20px, 2.4vw, 28px);
-            margin: 0 0 12px
-        }
-
-        .note {
-            color: #444;
-            margin: 0 0 20px
-        }
-
-        .error {
-            color: #b00020
-        }
-
-        .ok {
-            color: #0a7
-        }
-
-        .muted {
-            color: #666
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ご購入ありがとうございます｜NEXSPACE</title>
+  <meta http-equiv="Cache-Control" content="no-store">
+  <base href="/">
+  <link rel="stylesheet" href="/aiec-light.css">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.7;padding:32px;max-width:860px;margin:auto}
+    h1{font-size:clamp(20px,2.4vw,28px);margin:0 0 12px}
+    .note{color:#444;margin:0 0 20px}
+    .error{color:#b00020}
+    .ok{color:#0a7}
+    .muted{color:#666}
+  </style>
 </head>
-
 <body>
-    <h1>ご購入ありがとうございます！</h1>
-    <p class="note">決済が正常に完了しました。自動でダウンロードを開始します。</p>
-    <p id="fallback" class="muted">自動で始まらない場合は、しばらく待ってからこのページを再読み込みしてください。</p>
-    <noscript>
-        <p class="error">※JavaScriptを有効にしてください。ダウンロードが開始できません。</p>
-    </noscript>
+  <h1>ご購入ありがとうございます！</h1>
+  <p class="note">決済が正常に完了しました。自動でダウンロードを開始します。</p>
+  <p id="fallback" class="muted">自動で始まらない場合は、<a id="manual-link" href="#">こちら</a> から保存してください。</p>
+  <noscript><p class="error">※JavaScriptを有効にしてください。</p></noscript>
 
-    <!-- 外部JS（※ファイル内に<script>を書かないこと） -->
-    <script src="/js/success.js" defer></script>
+  <script>
+    (async () => {
+      // ★Gate（サーバー）のURLはここやで！
+      const GATE = 'https://aiec-gate-bbsaeuy2ma-an.a.run.app';
+
+      const fallback = document.getElementById('fallback');
+      const manualLink = document.getElementById('manual-link');
+
+      try {
+        const params = new URLSearchParams(location.search);
+        const sid = params.get('session_id'); // cs_live_...
+        if (!sid) {
+          throw new Error('支払い証明書（session_id）が見つかりません。');
+        }
+
+        // 1. Gateに支払い証明書(sid)を渡して、ダウンロード許可証(token)をもらう
+        const claimResponse = await fetch(`${GATE}/v1/claim`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ session_id: sid })
+        });
+        if (!claimResponse.ok) {
+          const errorText = await claimResponse.text();
+          throw new Error(`ダウンロードの準備に失敗しました: ${errorText}`);
+        }
+        const { download_token } = await claimResponse.json();
+        if (!download_token) {
+          throw new Error('ダウンロード許可証を取得できませんでした。');
+        }
+
+        // 2. 許可証を使ってダウンロードポイントのURLを作る
+        const downloadUrl = `${GATE}/v1/download/light?token=${encodeURIComponent(download_token)}`;
+
+        // 3. 自動ダウンロードを開始！
+        fallback.textContent = 'ダウンロードを開始しました！';
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = ''; // ファイル名はサーバーが教えてくれる
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // 手動リンクにも正しいURLを設定
+        manualLink.href = downloadUrl;
+        document.getElementById('fallback').innerHTML = `自動で始まらない場合は <a href="${downloadUrl}">こちら</a> から保存してください。`;
+
+      } catch (e) {
+        console.error(e);
+        fallback.innerHTML = `<span class="error">エラーが発生しました: ${e.message}</span>`;
+      }
+    })();
+  </script>
 </body>
-
 </html>
