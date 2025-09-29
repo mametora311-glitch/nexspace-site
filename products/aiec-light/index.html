@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Easy Coder ライト版 | NEXSPACE</title>
-  <meta name="description" content="AI Easy Coder ライト版の機能・料金・FAQ。内包クレジットで運用する小規模向け構成。">
-  <link rel="stylesheet" ="=20250906150754">
-  <link rel="stylesheet" ="=20250906150754">
-  <link rel="stylesheet" ="=20250906150754">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Easy Coder Light | NEXSPACE</title>
+  <meta name="description" content="AI Easy Coder (AIEC) Light は定型コーディングをAIで自動化するツールです。">
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/params.css" />
+  <!-- 404回避のため相対にも対応させたい場合は ../../css/aiec-light.css に変更 -->
+  <link rel="stylesheet" href="/css/pages/aiec-light.css" />
+  <script>if(location.protocol!=='https:')location.replace('https://'+location.host+location.pathname+location.search+location.hash);</script>
+
 </head>
 <body>
   <header class="site-header">
     <div class="nav container">
       <a class="brand" href="/"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
-      <nav class="nav-links">
-        <a href="/products/index.html">製品一覧</a>
+      <nav class="nav-links" aria-label="グローバル">
+        <a href="/products/index.html" aria-current="page">製品一覧</a>
         <a href="/about/index.html">会社情報</a>
         <a href="/contact/index.html">お問い合わせ</a>
         <a href="/legal/index.html">ご利用にあたって</a>
@@ -23,47 +26,22 @@
   </header>
 
   <section class="hero">
-    <div class="grid-overlay" aria-hidden="true"></div>
     <div class="container hero-inner">
-      <h1 class="hero-title">AI Easy Coder ライト版</h1>
-      <p class="hero-sub">設計→生成→レビューを、軽量に。月額内包クレジットで運用できます。</p>
+      <h1 class="hero-title">AI Easy Coder Light</h1>
+      <p class="hero-sub">退屈な定型コーディングは、AIに任せよう。</p>
+      <div class="actions"><button id="buyButton" class="btn primary">今すぐ購入</button></div>
     </div>
   </section>
 
   <main>
-    <section class="section">
-      <div class="container">
-       <article class="card">
-         <h2 class="section-title">主な機能</h2>
-         <ul class="list">
-            <li>プロンプト設計テンプレート</li>
-            <li>コード生成と差分レビュー</li>
-            <li>簡易エラーパターン検査</li>
-            <li>導入ガイドとFAQ</li>
-         </ul>
-       </article>
-      </div>
-    </section>
-
     <section class="section light">
       <div class="container">
-        <h2 class="section-title">料金</h2>
-        <div class="grid one">
-          <article class="card">
-            <h3>ライト</h3>
-            <p>月額 ¥3,980（内包クレジットでの運用想定）</p>
-            <p class="muted">※ 超過対応や拡張は別プランをご検討ください。</p>
-          </article>
+        <h2 class="section-title">主な機能</h2>
+        <div class="grid three">
+          <div class="card"><h3>リアルタイムコード生成</h3><p>自然言語で指示するだけで、高品質なコードを即座に生成。</p></div>
+          <div class="card"><h3>自動レビュー＆リファクタ</h3><p>既存コードの改善提案とバグ低減。</p></div>
+          <div class="card"><h3>マルチ言語対応</h3><p>Python, JS, Java, C# ほか。</p></div>
         </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">FAQ</h2>
-        <details class="faq"><summary>導入は難しいですか？</summary><p>推奨ガイドに沿って環境を整えるだけで開始できます。</p></details>
-        <details class="faq"><summary>返金は可能ですか？</summary><p><a href="/legal/refund.html">返金ポリシー</a>をご確認ください。</p></details>
-        <div class="actions"><a class="btn primary" href="/contact/index.html">導入相談する</a></div>
       </div>
     </section>
   </main>
@@ -71,7 +49,7 @@
   <footer class="site-footer">
     <div class="container foot">
       <small>© NEXSPACE</small>
-      <nav class="foot-links">
+      <nav class="foot-links" aria-label="フッター">
         <a href="/legal/terms.html">利用規約</a>
         <a href="/legal/privacy.html">プライバシー</a>
         <a href="/legal/refund.html">返金</a>
@@ -79,6 +57,19 @@
       </nav>
     </div>
   </footer>
+
+  <!-- Stripe（client-only 方式。サーバfetch不要） -->
+  <script src="https://js.stripe.com/v3"></script>
+  <script>
+    window.AIEC_CONFIG = {
+      // ★あなたの live キーと price を設定（必須）
+      STRIPE_PUBLISHABLE_KEY: "pk_live_51RzC5ODObxTEUuKDs77DdvjuD5paQlsgAvX1yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP",
+      PRICE_ID: "price_1S5PKhDObxTEUuKDOV5OazEe",
+      SUCCESS_URL: "https://www.nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
+      CANCEL_URL: "https://www.nexspace.jp/products/aiec-light/"
+    };
+  </script>
+  <script src="/products/aiec-light/buy.js" defer></script>
 </body>
 </html>
 
