@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,25 +9,52 @@
   <link rel="stylesheet" href="/css/pages/success.css" />
   <title>ご購入ありがとうございます｜NEXSPACE</title>
   <meta http-equiv="Cache-Control" content="no-store">
-  <base href="/"><style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.7;padding:32px;max-width:860px;margin:auto}
-    h1{font-size:clamp(20px,2.4vw,28px);margin:0 0 12px}
-    .note{color:#444;margin:0 0 20px}
-    .error{color:#b00020}
-    .ok{color:#0a7}
-    .muted{color:#666}
+  <base href="/">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.7;
+      padding: 32px;
+      max-width: 860px;
+      margin: auto
+    }
+
+    h1 {
+      font-size: clamp(20px, 2.4vw, 28px);
+      margin: 0 0 12px
+    }
+
+    .note {
+      color: #444;
+      margin: 0 0 20px
+    }
+
+    .error {
+      color: #b00020
+    }
+
+    .ok {
+      color: #0a7
+    }
+
+    .muted {
+      color: #666
+    }
   </style>
 </head>
+
 <body>
   <h1>ご購入ありがとうございます！</h1>
   <p class="note">決済が正常に完了しました。自動でダウンロードを開始します。</p>
   <p id="fallback" class="muted">自動で始まらない場合は、<a id="manual-link" href="#">こちら</a> から保存してください。</p>
-  <noscript><p class="error">※JavaScriptを有効にしてください。</p></noscript>
+  <noscript>
+    <p class="error">※JavaScriptを有効にしてください。</p>
+  </noscript>
 
   <script>
     (async () => {
       // ★ あなたの Gate(Cloud Run) のURLに置換
-      const GATE = 'https://aiec-gate-bbsaeuy2ma-an.a.run.app';
+      const GATE = 'https://aiec-gate-766292311890.asia-northeast1.run.app';
 
       const fallback = document.getElementById('fallback');
       const manualLink = document.getElementById('manual-link');
@@ -41,12 +69,12 @@
         // 1) 支払い証明書を Gate に提示 → 許可証を受け取る
         const claimRes = await fetch(`${GATE}/v1/claim`, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ session_id: sid })
         });
 
         if (!claimRes.ok) {
-          const text = await claimRes.text().catch(()=> '');
+          const text = await claimRes.text().catch(() => '');
           throw new Error(`ダウンロードの準備に失敗しました（${claimRes.status}）。${text || ''}`.trim());
         }
 
@@ -86,5 +114,5 @@
     })();
   </script>
 </body>
-</html>
 
+</html>
