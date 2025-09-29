@@ -37,41 +37,39 @@
     </div>
 
     <script>
-  // ★ あなたの Gate(Cloud Run) のURLに置換（例: https://aiec-gate-xxxxx-an.a.run.app）
-  const GATE_URL = "https://aiec-gate-766292311890.asia-northeast1.run.app";
+        // ★ あなたの Gate(Cloud Run) のURLに置換（例: https://aiec-gate-xxxxx-an.a.run.app）
+        const GATE_URL = "https://aiec-gate-766292311890.asia-northeast1.run.app";
 
-  const btn = document.getElementById("download-button");
-  const btnText = btn?.querySelector(".button-text");
+        const btn = document.getElementById("download-button");
+        const btnText = btn?.querySelector(".button-text");
 
-  async function getPermitAndEnable() {
-    try {
-      // 許可証（download_token）を取得：空POSTは Content-Length:0 を明示
-      const r = await fetch(`${GATE_URL}/diag/mint`, {
-        method: "POST",
-        headers: {"Content-Length":"0"},
-        mode: "cors",
-        credentials: "omit"
-      });
-      if (!r.ok) throw new Error(`mint ${r.status}`);
-      const j = await r.json();
+        async function getPermitAndEnable() {
+            try {
+                // 許可証（download_token）を取得：空POSTは Content-Length:0 を明示
+                const r = await fetch(`${GATE_URL}/diag/mint`, {
+                    method: "POST",
+                    mode: "cors",
+                    credentials: "omit"
+                });
+                if (!r.ok) throw new Error(`mint ${r.status}`);
+                const j = await r.json();
 
-      if (!j.download_token) throw new Error("no token");
+                if (!j.download_token) throw new Error("no token");
 
-      // クリックで遷移DL（302→署名URL→200）
-      const url = `${GATE_URL}/v1/download/light?token=${encodeURIComponent(j.download_token)}`;
-      btn.removeAttribute("disabled");
-      if (btnText) btnText.textContent = "ダウンロードを開始";
-      btn.onclick = () => { window.location.href = url; };
-    } catch (e) {
-      console.error(e);
-      if (btnText) btnText.textContent = "許可証の取得に失敗";
-    }
-  }
+                // クリックで遷移DL（302→署名URL→200）
+                const url = `${GATE_URL}/v1/download/light?token=${encodeURIComponent(j.download_token)}`;
+                btn.removeAttribute("disabled");
+                if (btnText) btnText.textContent = "ダウンロードを開始";
+                btn.onclick = () => { window.location.href = url; };
+            } catch (e) {
+                console.error(e);
+                if (btnText) btnText.textContent = "許可証の取得に失敗";
+            }
+        }
 
-  // ページ表示時に許可証を取得してボタンを有効化
-  getPermitAndEnable();
-</script>
+        // ページ表示時に許可証を取得してボタンを有効化
+        getPermitAndEnable();
+    </script>
 </body>
 
 </html>
-
