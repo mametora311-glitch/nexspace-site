@@ -53,66 +53,60 @@
 
   <script>
     (async () => {
-      // ★ あなたの Gate(Cloud Run) のURLに置換
-      const GATE = 'https://aiec-gate-766292311890.asia-northeast1.run.app';
-
+      const GATE = 'https://aiec-gate-766292311890.asia-northeast1.run.app'; // 既に正しい設定のままでOK
+      const sid = new URLSearchParams(location.search).get('session_id');
       const fallback = document.getElementById('fallback');
       const manualLink = document.getElementById('manual-link');
 
-      try {
-        const params = new URLSearchParams(location.search);
-        const sid = params.get('session_id'); // cs_...（ライブ）
-        if (!sid) {
-          throw new Error('支払い証明書（session_id）が見つかりません。');
-        }
+      function alertSlice(label, txt, n = 200) {
+        alert(`${label}\n` + (txt ? txt.slice(0, n) : '(空)'));
+      }
 
-        // 1) 支払い証明書を Gate に提示 → 許可証を受け取る
-        const claimRes = await fetch(`${GATE}/v1/claim`, {
+      try {
+        if (!sid) { alert('session_id がURLにありません'); return; }
+
+        // 1) claim
+        const res = await fetch(`${GATE}/v1/claim`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ session_id: sid })
         });
 
-        if (!claimRes.ok) {
-          const text = await claimRes.text().catch(() => '');
-          throw new Error(`ダウンロードの準備に失敗しました（${claimRes.status}）。${text || ''}`.trim());
+        const raw = await res.text();
+        if (res.status !== 200) {
+          alertSlice(`claim 失敗 status=${res.status}`, raw);
+          return;
         }
 
-        // 2) レスポンスのキー名差異に防御的に対応
+        // 2) JSONとして解釈を試みる（ダメなら中身を表示）
         let payload = null;
-        try { payload = await claimRes.json(); } catch { payload = null; }
+        try { payload = JSON.parse(raw); } catch { alertSlice('claim 200 だがJSONでない', raw); return; }
 
-        const download_token =
+        const token =
           payload?.download_token ??
           payload?.token ??
           payload?.downloadToken ??
-          payload?.data?.download_token ??
-          null;
+          payload?.data?.download_token ?? null;
 
-        if (!download_token || typeof download_token !== 'string') {
-          console.error('claim payload:', payload);
-          throw new Error('ダウンロード許可証を取得できませんでした。');
+        if (!token) {
+          alertSlice('claim 200 だが token見当たらず。payload:', raw);
+          return;
         }
 
-        // 3) 許可証でダウンロード開始（ページ遷移で 302→署名URL→200）
-        const downloadUrl = `${GATE}/v1/download/light?token=${encodeURIComponent(download_token)}`;
-        manualLink.href = downloadUrl;
-        fallback.innerHTML = `自動で始まらない場合は <a href="${downloadUrl}">こちら</a> から保存してください。`;
+        // 3) tokenあり → 手動リンク＋自動DL
+        const url = `${GATE}/v1/download/light?token=${encodeURIComponent(token)}`;
+        manualLink.href = url;
+        fallback.innerHTML = `自動で始まらない場合は <a href="${url}">こちら</a> から保存してください。`;
 
-        // 自動開始（アンカー・クリック）
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = ''; // サーバの Content-Disposition に従う
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        // 自動DL
+        location.href = url;
 
       } catch (e) {
-        console.error(e);
-        fallback.innerHTML = `<span class="error">エラーが発生しました: ${e.message}</span>`;
+        alert(`例外: ${e?.message || e}`);
       }
     })();
   </script>
+
 </body>
 
 </html>
