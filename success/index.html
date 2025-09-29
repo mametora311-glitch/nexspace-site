@@ -2,111 +2,194 @@
 <html lang="ja">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/params.css" />
-  <link rel="stylesheet" href="/css/pages/success.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ご購入ありがとうございます｜NEXSPACE</title>
   <meta http-equiv="Cache-Control" content="no-store">
-  <base href="/">
   <style>
+    :root {
+      --bg: #0b0f17;
+      --fg: #e6ecf1;
+      --muted: #9db0c3;
+      --accent: #42b0ff;
+      --err: #ff5d6c;
+      --ok: #76f1a6
+    }
+
     body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.7;
-      padding: 32px;
-      max-width: 860px;
-      margin: auto
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: var(--bg);
+      color: var(--fg)
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 8vh auto;
+      padding: 24px
+    }
+
+    .card {
+      background: #101825;
+      border: 1px solid #1d2a3a;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, .35)
     }
 
     h1 {
-      font-size: clamp(20px, 2.4vw, 28px);
-      margin: 0 0 12px
+      margin: 0 0 8px;
+      font-weight: 700
     }
 
-    .note {
-      color: #444;
-      margin: 0 0 20px
+    p {
+      color: var(--muted);
+      line-height: 1.7
     }
 
-    .error {
-      color: #b00020
+    .log {
+      background: #0c1320;
+      border: 1px solid #1a2637;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 16px;
+      height: 200px;
+      overflow: auto;
+      font-family: ui-monospace, Consolas, Menlo, monospace;
+      font-size: 13px;
+      white-space: pre-wrap
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--accent);
+      color: #001018;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none
+    }
+
+    .btn[disabled] {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    .err {
+      color: var(--err);
+      font-weight: 700
     }
 
     .ok {
-      color: #0a7
+      color: var(--ok);
+      font-weight: 700
     }
 
-    .muted {
-      color: #666
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px
     }
   </style>
 </head>
 
 <body>
-  <h1>ご購入ありがとうございます！</h1>
-  <p class="note">決済が正常に完了しました。自動でダウンロードを開始します。</p>
-  <p id="fallback" class="muted">自動で始まらない場合は、<a id="manual-link" href="#">こちら</a> から保存してください。</p>
-  <noscript>
-    <p class="error">※JavaScriptを有効にしてください。</p>
-  </noscript>
+  <div class="wrap">
+    <div class="card">
+      <h1>ご購入ありがとうございます！</h1>
+      <p>決済が正常に完了しました。自動でダウンロードを開始します。</p>
+      <div id="status" class="hint">初期化中…</div>
+      <div id="log" class="log" aria-live="polite"></div>
+      <a id="retry" class="btn" style="display:none">やり直す</a>
+      <a id="dl" class="btn" style="display:none">手動でダウンロード</a>
+    </div>
+  </div>
 
   <script>
-    (async () => {
-      const GATE = 'https://aiec-gate-766292311890.asia-northeast1.run.app'; // 既に正しい設定のままでOK
-      const sid = new URLSearchParams(location.search).get('session_id');
-      const fallback = document.getElementById('fallback');
-      const manualLink = document.getElementById('manual-link');
+    // ★ Gate（実URL固定・空欄なし）
+    const GATE = "https://aiec-gate-766292311890.asia-northeast1.run.app";
 
-      function alertSlice(label, txt, n = 200) {
-        alert(`${label}\n` + (txt ? txt.slice(0, n) : '(空)'));
+    // ---- util ----
+    const $ = s => document.querySelector(s);
+    const log = (m) => { const el = $("#log"); el.textContent += m + "\n"; el.scrollTop = el.scrollHeight; };
+    const setStatus = (h) => $("#status").innerHTML = h;
+
+    async function postJSON(url, body, headers = {}) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: Object.assign({ "Content-Type": "application/json" }, headers),
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch (_) { }
+      return { ok: res.ok, status: res.status, data, text };
+    }
+
+    function qs(name) { const u = new URL(location.href); return u.searchParams.get(name); }
+
+    async function run() {
+      const sid = qs("session_id");
+      if (!sid) {
+        setStatus('<span class="err">session_id が見つかりません。Checkoutの success_url に <code>?session_id={CHECKOUT_SESSION_ID}</code> を付けてください。</span>');
+        return;
+      }
+      setStatus("決済セッションを確認中…");
+      log(`session_id=${sid}`);
+
+      // 1) 支払い確定→ライセンス発行（claim）
+      log(`POST ${GATE}/v1/claim`);
+      const claim = await postJSON(`${GATE}/v1/claim`, { session_id: sid });
+
+      if (!claim.ok) {
+        setStatus(`<span class="err">claim 失敗</span>（HTTP ${claim.status}）`);
+        log(`ERROR: ${claim.text || JSON.stringify(claim.data)}`);
+        $("#retry").style.display = "inline-block";
+        return;
+      }
+      if (!claim.data || claim.data.paid !== true) {
+        setStatus('<span class="err">支払い未確定のため停止</span>');
+        log(`paid=${claim.data && claim.data.paid}`);
+        $("#retry").style.display = "inline-block";
+        return;
       }
 
-      try {
-        if (!sid) { alert('session_id がURLにありません'); return; }
+      const license_key = claim.data.license_key || sid; // 実装上、SID=ライセンス方式
+      log(`paid=true, license_key=${license_key}`);
 
-        // 1) claim
-        const res = await fetch(`${GATE}/v1/claim`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: sid })
-        });
+      // 2) ダウンロード許可証（JWT）発行
+      setStatus("ダウンロード許可証を発行中…");
+      const device_id = `web-${crypto.randomUUID().slice(0, 8)}`;
+      log(`POST ${GATE}/auth/issue device_id=${device_id}`);
+      const issue = await postJSON(`${GATE}/auth/issue`, { license_key, device_id });
 
-        const raw = await res.text();
-        if (res.status !== 200) {
-          alertSlice(`claim 失敗 status=${res.status}`, raw);
-          return;
-        }
-
-        // 2) JSONとして解釈を試みる（ダメなら中身を表示）
-        let payload = null;
-        try { payload = JSON.parse(raw); } catch { alertSlice('claim 200 だがJSONでない', raw); return; }
-
-        const token =
-          payload?.download_token ??
-          payload?.token ??
-          payload?.downloadToken ??
-          payload?.data?.download_token ?? null;
-
-        if (!token) {
-          alertSlice('claim 200 だが token見当たらず。payload:', raw);
-          return;
-        }
-
-        // 3) tokenあり → 手動リンク＋自動DL
-        const url = `${GATE}/v1/download/light?token=${encodeURIComponent(token)}`;
-        manualLink.href = url;
-        fallback.innerHTML = `自動で始まらない場合は <a href="${url}">こちら</a> から保存してください。`;
-
-        // 自動DL
-        location.href = url;
-
-      } catch (e) {
-        alert(`例外: ${e?.message || e}`);
+      if (!issue.ok || !issue.data || !issue.data.token) {
+        setStatus(`<span class="err">許可証の発行に失敗</span>（HTTP ${issue.status}）`);
+        log(`ERROR: ${issue.text || JSON.stringify(issue.data)}`);
+        $("#retry").style.display = "inline-block";
+        return;
       }
-    })();
+      const token = issue.data.token;
+      log("token=…（発行成功）");
+
+      // 3) ダウンロード（302→署名URL→200）
+      setStatus('<span class="ok">ダウンロードを開始します…</span>');
+      const dlUrl = `${GATE}/v1/download/light?token=${encodeURIComponent(token)}`;
+      $("#dl").href = dlUrl;
+      $("#dl").style.display = "inline-block";
+      location.href = dlUrl; // 自動遷移
+    }
+
+    $("#retry").addEventListener("click", () => location.reload());
+
+    run().catch(e => {
+      setStatus('<span class="err">致命的なエラー</span>');
+      log(String(e?.stack || e));
+      $("#retry").style.display = "inline-block";
+    });
   </script>
-
 </body>
 
 </html>
