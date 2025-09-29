@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <link rel="stylesheet" href="/aiec-light.css">
+    <style>
+        /* コピーボタン用の簡易スタイル */
+        .license-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #copy-button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>AIEC-Light インストーラー</h1>
+        <p>ご購入いただきありがとうございます。</p>
+
+        <p>アプリで以下のライセンスキーを入力してください。</p>
+        <div class="license-container">
+            <strong id="license-key-display">読み込み中...</strong>
+            <button id="copy-button">コピー</button>
+        </div>
+
+        <div class="button-container">
+            <button id="download-button" class="button" disabled>
+                <span class="button-text">ライセンス認証中...</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- \1 -->
+</body>
+
+</html>
+
