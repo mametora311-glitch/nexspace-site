@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ご購入ありがとうございます｜NEXSPACE</title>
+  <meta http-equiv="Cache-Control" content="no-store">
+  <base href="/">
+  <link rel="stylesheet" href="/aiec-light.css">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.7;padding:32px;max-width:860px;margin:auto}
+    h1{font-size:clamp(20px,2.4vw,28px);margin:0 0 12px}
+    .note{color:#444;margin:0 0 20px}
+    .error{color:#b00020}
+    .ok{color:#0a7}
+    .muted{color:#666}
+  </style>
+</head>
+<body>
+  <h1>ご購入ありがとうございます！</h1>
+  <p class="note">決済が正常に完了しました。自動でダウンロードを開始します。</p>
+  <p id="fallback" class="muted">自動で始まらない場合は、<a id="manual-link" href="#">こちら</a> から保存してください。</p>
+  <noscript><p class="error">※JavaScriptを有効にしてください。</p></noscript>
+
+  <script>
+    (async () => {
+      // ★ あなたの Gate(Cloud Run) のURLに置換
+      const GATE = 'https://aiec-gate-bbsaeuy2ma-an.a.run.app';
+
+      const fallback = document.getElementById('fallback');
+      const manualLink = document.getElementById('manual-link');
+
+      try {
+        const params = new URLSearchParams(location.search);
+        const sid = params.get('session_id'); // cs_...（ライブ）
+        if (!sid) {
+          throw new Error('支払い証明書（session_id）が見つかりません。');
+        }
+
+        // 1) 支払い証明書を Gate に提示 → 許可証を受け取る
+        const claimRes = await fetch(`${GATE}/v1/claim`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ session_id: sid })
+        });
+
+        if (!claimRes.ok) {
+          const text = await claimRes.text().catch(()=> '');
+          throw new Error(`ダウンロードの準備に失敗しました（${claimRes.status}）。${text || ''}`.trim());
+        }
+
+        // 2) レスポンスのキー名差異に防御的に対応
+        let payload = null;
+        try { payload = await claimRes.json(); } catch { payload = null; }
+
+        const download_token =
+          payload?.download_token ??
+          payload?.token ??
+          payload?.downloadToken ??
+          payload?.data?.download_token ??
+          null;
+
+        if (!download_token || typeof download_token !== 'string') {
+          console.error('claim payload:', payload);
+          throw new Error('ダウンロード許可証を取得できませんでした。');
+        }
+
+        // 3) 許可証でダウンロード開始（ページ遷移で 302→署名URL→200）
+        const downloadUrl = `${GATE}/v1/download/light?token=${encodeURIComponent(download_token)}`;
+        manualLink.href = downloadUrl;
+        fallback.innerHTML = `自動で始まらない場合は <a href="${downloadUrl}">こちら</a> から保存してください。`;
+
+        // 自動開始（アンカー・クリック）
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = ''; // サーバの Content-Disposition に従う
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+      } catch (e) {
+        console.error(e);
+        fallback.innerHTML = `<span class="error">エラーが発生しました: ${e.message}</span>`;
+      }
+    })();
+  </script>
+</body>
+</html>
