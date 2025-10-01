@@ -1,42 +1,34 @@
-/* AIEC Light — Stripe client-only checkout (no server fetch) */
-(() => {
-  'use strict';
-  const cfg = Object.assign({
-    STRIPE_PUBLISHABLE_KEY: "pk_live_51RzC5ODObxTEUuKDs77DdvjuD5...yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP",
-    PRICE_ID: "price_1S5PKhDObxTEUuKDOV5OazEe",
-    SUCCESS_URL: "https://www.nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
-    CANCEL_URL: "https://www.nexspace.jp/products/aiec-light/"
-  }, (window.AIEC_CONFIG || {}));
+const GATE = (window.AIEC_GATE_BASE || "").replace(/\/$/, "");
+const SUCCESS_URL = (window.AIEC_SUCCESS_URL || location.origin).replace(/\/$/, "");
+const CANCEL_URL = (window.AIEC_CANCEL_URL || location.origin).replace(/\/$/, "");
 
-  const btn = document.getElementById('buyButton');
-  if (!btn) { console.error('[AIEC] buyButton not found'); return; }
 
-  function guard() {
-    if (!window.Stripe)         { alert("Stripe.jsの読み込みに失敗しました。"); return false; }
-    if (!cfg.STRIPE_PUBLISHABLE_KEY){ alert("Stripe公開鍵が未設定です。"); return false; }
-    if (!cfg.PRICE_ID)          { alert("価格IDが未設定です。"); return false; }
-    return true;
-  }
+async function j(url, opts) { const r = await fetch(url, opts); if (!r.ok) throw new Error(`HTTP ${r.status}`); return await r.json(); }
+function el(tag, props = {}, html = "") { const x = Object.assign(document.createElement(tag), props); if (html) x.innerHTML = html; return x; }
 
-  btn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    if (!guard()) return;
 
-    btn.disabled = true;
-    try {
-      const stripe = Stripe(cfg.STRIPE_PUBLISHABLE_KEY);
-
-      const { error } = await stripe.redirectToCheckout({
-        mode: 'payment',
-        lineItems: [{ price: cfg.PRICE_ID, quantity: 1 }],
-        successUrl: cfg.SUCCESS_URL,
-        cancelUrl: cfg.CANCEL_URL
-      });
-      if (error) alert(error.message || 'Checkoutへ移動できませんでした。');
-    } catch (e) {
-      alert(e?.message || 'エラーが発生しました。');
-    } finally {
-      btn.disabled = false;
+async function render() {
+    const list = await j(`${GATE}/v1/plans`);
+    const root = document.getElementById('plans');
+    root.innerHTML = '';
+    for (const p of list) {
+        const card = el('div', { className: 'card' });
+        card.innerHTML = `
+<h2 style="margin:0 0 6px 0">${p.name} ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}</h2>
+<p style="opacity:.8;margin:0 0 12px 0">${p.tagline || ''}</p>
+<label>請求間隔</label>
+<select data-k="interval">${p.intervals.map(iv => `<option value="${iv}">${iv === 'month' ? '月額' : '年額'}</option>`).join('')}</select>
+<div style="height:8px"></div>
+<button data-k="buy">このプランで申し込む</button>
+<div style="height:12px"></div>
+<div><strong>含まれるもの</strong><ul>${(p.features || []).map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+        card.querySelector('button[data-k="buy"]').addEventListener('click', async () => {
+            const interval = card.querySelector('select[data-k="interval"]').value;
+            const body = { plan: p.key, interval, mode: 'subscription', success_url: SUCCESS_URL, cancel_url: CANCEL_URL };
+            const resp = await j(`${GATE}/v1/checkout/session`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            location.href = resp.url;
+        });
+        root.appendChild(card);
     }
-  }, { passive: true });
-})();
+}
+render().catch(e => { console.error(e); alert('初期化に失敗しました'); });
