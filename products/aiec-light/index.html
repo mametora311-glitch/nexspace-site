@@ -1,90 +1,76 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AI Easy Coder Light | NEXSPACE</title>
-    <meta name="description" content="AI Easy Coder (AIEC) Lightは、定型的なコーディングタスクをAIが自動化し、開発者の生産性を劇的に向上させるためのツールです。">
-    <link rel="stylesheet" href="../../css/base.css" />
-    <link rel="stylesheet" href="../../css/params.css" />
-    <link rel="stylesheet" href="./aiec-light.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Easy Coder Light | NEXSPACE</title>
+  <meta name="description" content="AI Easy Coder (AIEC) Light は定型コーディングをAIで自動化するツールです。">
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/params.css" />
+  <!-- 404回避のため相対にも対応させたい場合は ../../css/aiec-light.css に変更 -->
+  <link rel="stylesheet" href="/css/pages/aiec-light.css" />
+  <script>if(location.protocol!=='https:')location.replace('https://'+location.host+location.pathname+location.search+location.hash);</script>
+
 </head>
 <body>
-    <header class="site-header">
-        <div class="nav container">
-            <a class="brand" href="../../index.html">
-                <span class="logo-dot"></span><span class="brand-text">NEXSPACE</span>
-            </a>
-            <nav class="nav-links">
-                <a href="../index.html">製品一覧</a>
-                <a href="../../about/index.html">会社情報</a>
-                <a href="../../contact/index.html">お問い合わせ</a>
-            </nav>
+  <header class="site-header">
+    <div class="nav container">
+      <a class="brand" href="/"><span class="logo-dot"></span><span class="brand-text">NEXSPACE</span></a>
+      <nav class="nav-links" aria-label="グローバル">
+        <a href="/products/index.html" aria-current="page">製品一覧</a>
+        <a href="/about/index.html">会社情報</a>
+        <a href="/contact/index.html">お問い合わせ</a>
+        <a href="/legal/index.html">ご利用にあたって</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <h1 class="hero-title">AI Easy Coder Light</h1>
+      <p class="hero-sub">退屈な定型コーディングは、AIに任せよう。</p>
+      <div class="actions"><button id="buyButton" class="btn primary">今すぐ購入</button></div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section light">
+      <div class="container">
+        <h2 class="section-title">主な機能</h2>
+        <div class="grid three">
+          <div class="card"><h3>リアルタイムコード生成</h3><p>自然言語で指示するだけで、高品質なコードを即座に生成。</p></div>
+          <div class="card"><h3>自動レビュー＆リファクタ</h3><p>既存コードの改善提案とバグ低減。</p></div>
+          <div class="card"><h3>マルチ言語対応</h3><p>Python, JS, Java, C# ほか。</p></div>
         </div>
-    </header>
-    <section class="hero">
-        <div class="grid-overlay" aria-hidden="true"></div>
-        <div class="container hero-inner">
-            <h1 class="hero-title">AI Easy Coder Light</h1>
-            <p class="hero-sub">退屈な定型コーディングは、AIに任せよう。</p>
-            <div class="actions">
-                <button id="buyButton" class="btn primary">今すぐ購入</button>
-            </div>
-        </div>
+      </div>
     </section>
-    <main>
-        <section class="section light">
-            <div class="container">
-                <h2 class="section-title">主な機能</h2>
-                <div class="grid three">
-                    <div class="card">
-                        <h3>リアルタイムコード生成</h3>
-                        <p>自然言語で指示するだけで、高品質なコードスニペットを即座に生成します。</p>
-                    </div>
-                    <div class="card">
-                        <h3>自動レビュー＆リファクタリング</h3>
-                        <p>既存のコードを読み込ませることで、バグの発見やパフォーマンス改善の提案を行います。</p>
-                    </div>
-                    <div class="card">
-                        <h3>マルチ言語対応</h3>
-                        <p>Python, JavaScript, Java, C#など、主要なプログラミング言語に対応しています。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section">
-            <div class="container">
-                <h2 class="section-title">導入事例</h2>
-                <div class="grid two">
-                    <div class="card">
-                        <h3>株式会社TechFirm様</h3>
-                        <p>「単純なAPIクライアントの実装にかかる時間が80%削減され、より創造的な作業に集中できるようになった」</p>
-                    </div>
-                    <div class="card">
-                        <h3>スタートアップ QuickDev様</h3>
-                        <p>「少人数のチームで迅速なプロトタイピングが求められる中、AIEC Lightは不可欠なツールです」</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <footer class="site-footer">
-        <div class="container foot">
-            <small>© NEXSPACE</small>
-            <nav class="foot-links">
-                <a href="../../legal/terms.html">利用規約</a>
-                <a href="../../legal/privacy.html">プライバシー</a>
-                <a href="../../legal/refund.html">返金</a>
-                <a href="../../legal/tokusho.html">特定商取引法</a>
-            </nav>
-        </div>
-    </footer>
-    <script>
-        window.AIEC_CONFIG = {
-            PRICE_ID: 'price_1RzCDzDObxTEUuKDxL9c8Y9o'
-        };
-    </script>
-    <script src="../../js/aiec-boot.js" defer></script>
-    <script src="../../js/buy.js" defer></script>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container foot">
+      <small>© NEXSPACE</small>
+      <nav class="foot-links" aria-label="フッター">
+        <a href="/legal/terms.html">利用規約</a>
+        <a href="/legal/privacy.html">プライバシー</a>
+        <a href="/legal/refund.html">返金</a>
+        <a href="/legal/tokusho.html">特定商取引法</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Stripe（client-only 方式。サーバfetch不要） -->
+  <script src="https://js.stripe.com/v3"></script>
+  <script>
+    window.AIEC_CONFIG = {
+      // ★あなたの live キーと price を設定（必須）
+      STRIPE_PUBLISHABLE_KEY: "pk_live_51RzC5ODObxTEUuKDs77DdvjuD5paQlsgAvX1yaYop8Kvp4mbkzUYSlJJrDBQHvOpOL2RWv3kIXXkPKXDat5Umh0q009DUTenRP",
+      PRICE_ID: "price_1S5PKhDObxTEUuKDOV5OazEe",
+      SUCCESS_URL: "https://www.nexspace.jp/success/?session_id={CHECKOUT_SESSION_ID}",
+      CANCEL_URL: "https://www.nexspace.jp/products/aiec-light/"
+    };
+  </script>
+  <script src="/products/aiec-light/buy.js" defer></script>
 </body>
 </html>
+
+
