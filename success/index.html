@@ -1,118 +1,79 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>購入完了 | Nexspace</title>
+  <meta charset="UTF-8">
+  <title>ご購入ありがとうございます ✓</title>
   <style>
-    :root {
-      --bg: #0b0f1a;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #22d3ee;
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      min-height: 100dvh;
-      display: grid;
-      place-items: center;
-      padding: 24px
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 2em auto;
+      padding: 1em;
     }
 
-    .card {
-      width: min(720px, 100%);
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 16px;
-      padding: 28px
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 24px
-    }
-
-    .ok {
-      color: var(--accent);
-      font-weight: 600
-    }
-
-    p {
-      margin: 8px 0;
-      color: var(--muted);
-      line-height: 1.7
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap
-    }
-
-    .btn {
-      border: 1px solid rgba(255, 255, 255, .15);
-      background: #0e1628;
-      color: #e5e7eb;
-      border-radius: 10px;
-      padding: 10px 14px;
-      text-decoration: none;
-      display: inline-block
-    }
-
-    .warn {
-      color: #fbbf24;
-      font-weight: 600
+    button {
+      padding: 8px 16px;
     }
   </style>
 </head>
 
 <body>
-  <main class="card" role="main" aria-live="polite">
-    <h1>ご購入ありがとうございます <span class="ok">✓</span></h1>
-    <p id="status">ダウンロードページへ移動します…</p>
-    <div class="actions">
-      <a href="/products/aiec-light/index.html" class="btn">製品ページへ戻る</a>
-      <a href="/" class="btn">トップへ</a>
-      <a id="manual" class="btn" rel="nofollow" style="display:none">自動で始まらない場合はこちら</a>
-    </div>
-    <p id="nosid" style="display:none"><span class="warn">セッション情報が見つかりません。</span> 購入フローから再度お試しください。</p>
-  </main>
+  <h1>ご購入ありがとうございます ✓</h1>
+  <p>ダウンロードページへ移動します…</p>
+  <div id="status">処理中…</div>
+  <div id="error" style="color:red;display:none;"></div>
+  <a id="manual" href="/download" style="display:none;">自動で始まらない場合はこちら</a>
+  <br><a href="/aiec-light">製品ページへ戻る</a> | <a href="/">トップへ</a>
 
   <script>
-    (function () {
-      const sid = new URLSearchParams(location.search).get("session_id");
-      const statusEl = document.getElementById("status");
-      const manual = document.getElementById("manual");
-      const nosid = document.getElementById("nosid");
+    const GATE = window.AIEC_GATE_BASE || '';  // Gate URL
+    const params = new URLSearchParams(location.search);
+    const sessionId = params.get('session_id');
+    const statusEl = document.getElementById('status');
+    const errorEl = document.getElementById('error');
+    const manualEl = document.getElementById('manual');
 
-      if (!sid) {
-        statusEl.style.display = "none";
-        manual.style.display = "none";
-        nosid.style.display = "block";
-        return;
+    async function api(url, opts) {
+      const r = await fetch(`${GATE}${url}`, opts);
+      if (!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
+      return await r.json();
+    }
+
+    if (!sessionId) {
+      statusEl.textContent = 'セッション情報が見つかりません。購入フローから再度お試しください。';
+      manualEl.style.display = 'inline';
+      throw new Error('No session_id');
+    }
+
+    (async () => {
+      try {
+        statusEl.textContent = 'ライセンスを確認中…';
+        const claimRes = await api('/v1/claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId })
+        });
+        if (!claimRes.paid) throw new Error('未払い');
+
+        const licenseKey = claimRes.license_key || sessionId;  // Firestoreから
+        statusEl.textContent = '認証トークンを発行中…';
+        const authRes = await api('/auth/issue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ license_key: licenseKey, device_id: 'default-device' })  // device_idは後でカスタム
+        });
+        const token = authRes.token;
+
+        statusEl.innerHTML = `認証完了！ <a href="${GATE}/v1/download/light?token=${token}">ダウンロード開始</a>`;
+        // 自動DL: 5秒後リダイレクト
+        setTimeout(() => location.href = `${GATE}/v1/download/light?token=${token}`, 3000);
+      } catch (e) {
+        console.error(e);
+        errorEl.textContent = e.message;
+        errorEl.style.display = 'block';
+        manualEl.style.display = 'inline';
       }
-
-      // 同一オリジンの /download/ に session_id を中継
-      const url = "/download/?session_id=" + encodeURIComponent(sid);
-      manual.href = url;
-      manual.style.display = "inline-block";
-
-      // 即時遷移
-      location.replace(url);
-      // 念のため 2.5s 後にメッセージ更新
-      setTimeout(() => {
-        statusEl.textContent = "自動遷移しない場合は「自動で始まらない場合はこちら」を押してください。";
-      }, 2500);
     })();
   </script>
 </body>
