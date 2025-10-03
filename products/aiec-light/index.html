@@ -13,14 +13,32 @@ body{font-family:system-ui,Segoe UI,Arial,sans-serif;margin:0;background:#0b0f1a
 button{width:100%;padding:12px 16px;border-radius:12px;border:0;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer}
 select{width:100%;padding:8px;border-radius:8px;border:1px solid #24314d;background:#0f172a;color:#fff}
 ul{padding-left:18px}
+.notice{background:#0f1b33;border:1px solid #1b2440;border-radius:12px;padding:12px;margin:12px 0}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>AIEC – プラン選択</h1>
-<div class="grid" id="plans"></div>
+  <h1>AIEC – プラン選択</h1>
+
+  <div class="notice">
+    <strong>ご利用手順</strong>
+    <ol>
+      <li>プランと請求間隔を選び「申し込む」</li>
+      <li>Stripe画面で決済完了 → 自動で<strong>成功ページ</strong>へ</li>
+      <li>成功ページがライセンス確認・認証トークン発行 → <strong>ダウンロード</strong></li>
+    </ol>
+  </div>
+
+  <!-- ここにGate/URL類を設定してください -->
+  <script>
+    window.AIEC_GATE_BASE   = window.AIEC_GATE_BASE   || "https://aiec-gate-766292311890.asia-northeast1.run.app";   // 末尾スラ無し可
+    window.AIEC_SUCCESS_URL = window.AIEC_SUCCESS_URL || "https://www.nexspace.jp/success/";
+    window.AIEC_CANCEL_URL  = window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/");
+  </script>
+
+  <div class="grid" id="plans"></div>
 </div>
-<script>window.AIEC_GATE_BASE = "https://<your-gate-url>"; window.AIEC_SUCCESS_URL = "https://nexspace.jp/success/"; window.AIEC_CANCEL_URL = location.origin;</script>
+
 <script type="module" src="./buy.js"></script>
 </body>
 </html>

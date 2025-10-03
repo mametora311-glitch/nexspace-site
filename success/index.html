@@ -1,81 +1,72 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-  <meta charset="UTF-8">
-  <title>ご購入ありがとうございます ✓</title>
+  <meta charset="UTF-8" />
+  <title>ご購入ありがとうございます</title>
+  <meta name="robots" content="noindex" />
   <style>
-    body {
-      font-family: sans-serif;
-      max-width: 600px;
-      margin: 2em auto;
-      padding: 1em;
-    }
-
-    button {
-      padding: 8px 16px;
-    }
+    body{font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:640px;margin:2em auto;padding:1em}
+    .muted{opacity:.8}
+    .error{color:#e11d48}
+    .box{background:#0f1b33;color:#fff;border:1px solid #1b2440;border-radius:12px;padding:12px}
   </style>
 </head>
-
 <body>
-  <h1>ご購入ありがとうございます ✓</h1>
-  <p>ダウンロードページへ移動します…</p>
-  <div id="status">処理中…</div>
-  <div id="error" style="color:red;display:none;"></div>
-  <a id="manual" href="/download" style="display:none;">自動で始まらない場合はこちら</a>
-  <br><a href="/aiec-light">製品ページへ戻る</a> | <a href="/">トップへ</a>
+  <h1>ご購入ありがとうございます</h1>
+  <p class="muted">ライセンス確認と認証処理を行っています。完了後、自動的にダウンロードへ移動します。</p>
 
   <script>
-    const GATE = window.AIEC_GATE_BASE || '';  // Gate URL
+    // 必要に応じて明示指定（本番はホストされていれば location.origin でOK）
+    window.AIEC_GATE_BASE   = window.AIEC_GATE_BASE   || "https://aiec-gate-766292311890.asia-northeast1.run.app";   // 末尾スラ不要
+    window.AIEC_DOWNLOAD_URL= window.AIEC_DOWNLOAD_URL|| (location.origin + "/download/");
+  </script>
+
+  <div id="status" class="box">処理中…</div>
+  <div id="error" class="error" style="display:none"></div>
+
+  <script>
+    const GATE = (window.AIEC_GATE_BASE || '').replace(/\/$/,'');
+    const DOWNLOAD = (window.AIEC_DOWNLOAD_URL || (location.origin + "/download/")).replace(/\/$/,'') + "/";
     const params = new URLSearchParams(location.search);
     const sessionId = params.get('session_id');
+
     const statusEl = document.getElementById('status');
-    const errorEl = document.getElementById('error');
-    const manualEl = document.getElementById('manual');
+    const errorEl  = document.getElementById('error');
 
-    async function api(url, opts) {
-      const r = await fetch(`${GATE}${url}`, opts);
-      if (!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
-      return await r.json();
-    }
-
-    if (!sessionId) {
-      statusEl.textContent = 'セッション情報が見つかりません。購入フローから再度お試しください。';
-      manualEl.style.display = 'inline';
-      throw new Error('No session_id');
+    async function api(path, body){
+      const r = await fetch(GATE + path, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(body || {})
+      });
+      if(!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
+      return r.json();
     }
 
     (async () => {
-      try {
-        statusEl.textContent = 'ライセンスを確認中…';
-        const claimRes = await api('/v1/claim', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: sessionId })
-        });
-        if (!claimRes.paid) throw new Error('未払い');
+      if(!GATE){ throw new Error('Gate URL 未設定（window.AIEC_GATE_BASE）'); }
+      if(!sessionId){ throw new Error('セッション情報がありません（?session_id=…）'); }
 
-        const licenseKey = claimRes.license_key || sessionId;  // Firestoreから
-        statusEl.textContent = '認証トークンを発行中…';
-        const authRes = await api('/auth/issue', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ license_key: licenseKey, device_id: 'default-device' })  // device_idは後でカスタム
-        });
-        const token = authRes.token;
+      statusEl.textContent = 'ライセンス確認中…';
+      const claim = await api('/v1/claim', { session_id: sessionId });
+      if(!claim?.paid) throw new Error('決済確認が未完了です。時間を置いて再読込してください。');
 
-        statusEl.innerHTML = `認証完了！ <a href="${GATE}/v1/download/light?token=${token}">ダウンロード開始</a>`;
-        // 自動DL: 5秒後リダイレクト
-        setTimeout(() => location.href = `${GATE}/v1/download/light?token=${token}`, 3000);
-      } catch (e) {
-        console.error(e);
-        errorEl.textContent = e.message;
-        errorEl.style.display = 'block';
-        manualEl.style.display = 'inline';
-      }
-    })();
+      const licenseKey = claim.license_key || sessionId;
+      try{ localStorage.setItem('aiec-license', licenseKey); }catch{}
+
+      statusEl.textContent = '認証トークンを発行中…';
+      const auth = await api('/auth/issue', { license_key: licenseKey, device_id: 'web-auto' });
+      const token = auth?.token;
+      if(!token) throw new Error('認証トークンの取得に失敗しました。');
+
+      statusEl.textContent = 'ダウンロードへ移動しています…';
+      location.href = DOWNLOAD + '?token=' + encodeURIComponent(token);
+    })().catch(e=>{
+      console.error(e);
+      statusEl.style.display='none';
+      errorEl.textContent = e.message || String(e);
+      errorEl.style.display='block';
+    });
   </script>
 </body>
-
 </html>

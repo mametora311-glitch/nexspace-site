@@ -1,95 +1,66 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <title>AIEC-Light インストーラー</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 600px;
-            margin: 2em auto;
-            padding: 1em;
-        }
-
-        input,
-        button {
-            padding: 8px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>AIEC-Light ダウンロード</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    body{font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:640px;margin:2em auto;padding:1em}
+    .muted{opacity:.8}
+    .ok{color:#16a34a}
+    .error{color:#e11d48}
+    .box{background:#0f1b33;color:#fff;border:1px solid #1b2440;border-radius:12px;padding:12px}
+  </style>
 </head>
-
 <body>
-    <h1>AIEC-Light インストーラー</h1>
-    <p>ご購入ありがとうございます。認証後にダウンロードが開始できます。</p>
+  <h1>AIEC-Light ダウンロード</h1>
+  <p class="muted">購入が完了していれば自動でダウンロードが開始されます。</p>
 
-    <div id="license-section">
-        <label>ライセンスキー</label>
-        <input type="text" id="license-key" placeholder="例: cs_test_xxx" readonly>
-        <button onclick="navigator.clipboard.writeText(document.getElementById('license-key').value);">コピー</button>
-    </div>
+  <script>
+    window.AIEC_GATE_BASE = window.AIEC_GATE_BASE || "https://aiec-gate-766292311890.asia-northeast1.run.app";
+  </script>
 
-    <form id="auth-form">
-        <label>デバイスID（任意、PC名など）</label>
-        <input type="text" id="device-id" value="default-device" placeholder="未入力でデフォルト">
-        <button type="submit">認証してダウンロード</button>
-        <div id="auth-status">認証処理中…</div>
-    </form>
+  <div id="msg" class="box">準備中…</div>
+  <div id="error" class="error" style="display:none"></div>
 
-    <div id="dl-section" style="display:none;">
-        <p>ダウンロードリンク: <a id="dl-link" href="#">インストーラー.zip</a></p>
-    </div>
+  <script>
+    const GATE = (window.AIEC_GATE_BASE || '').replace(/\/$/,'');
+    const msgEl = document.getElementById('msg');
+    const errEl = document.getElementById('error');
 
-    <script>
-        const GATE = window.AIEC_GATE_BASE || '';
-        const licenseInput = document.getElementById('license-key');
-        const authForm = document.getElementById('auth-form');
-        const statusEl = document.getElementById('auth-status');
-        const dlSection = document.getElementById('dl-section');
-        const dlLink = document.getElementById('dl-link');
+    (async () => {
+      if(!GATE){ throw new Error('Gate URL 未設定（window.AIEC_GATE_BASE）'); }
 
-        // successからのtoken自動適用（query?token=xxx）
-        const urlParams = new URLSearchParams(location.search);
-        const autoToken = urlParams.get('token');
-        if (autoToken) {
-            licenseInput.value = '自動認証済み';
-            dlLink.href = `${GATE}/v1/download/light?token=${autoToken}`;
-            dlSection.style.display = 'block';
-            authForm.style.display = 'none';
-            return;
-        }
+      const q = new URLSearchParams(location.search);
+      let token = q.get('token');
 
-        // 手動フォーム
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const licenseKey = licenseInput.value.trim();
-            if (!licenseKey) return alert('ライセンスキーを入力/コピーしてください');
-            const deviceId = document.getElementById('device-id').value.trim() || 'default-device';
+      // 保険：successで保存済みのライセンスから token を取り直す（UI表示せず自動）
+      if(!token){
+        const license = (localStorage.getItem('aiec-license') || '').trim();
+        if(!license) throw new Error('ダウンロード用トークンが見つかりません（successページから遷移してください）');
 
-            try {
-                statusEl.textContent = '認証中…';
-                const res = await fetch(`${GATE}/auth/issue`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ license_key: licenseKey, device_id: deviceId })
-                });
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const data = await res.json();
-                const token = data.token;
-
-                dlLink.href = `${GATE}/v1/download/light?token=${token}`;
-                dlSection.style.display = 'block';
-                authForm.style.display = 'none';
-                statusEl.textContent = '認証完了！';
-            } catch (err) {
-                statusEl.textContent = `エラー: ${err.message}`;
-            }
+        msgEl.textContent = '認証トークンを再発行中…';
+        const r = await fetch(GATE + '/auth/issue', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ license_key: license, device_id: 'web-auto' })
         });
+        if(!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
+        const j = await r.json();
+        token = j?.token;
+        if(!token) throw new Error('トークン再発行に失敗しました');
+      }
 
-        // ライセンスキー初期化（ローカルストレージor空）
-        licenseInput.value = localStorage.getItem('aiec-license') || '';
-        licenseInput.addEventListener('input', (e) => localStorage.setItem('aiec-license', e.target.value));
-    </script>
+      const dlUrl = `${GATE}/v1/download/light?token=${encodeURIComponent(token)}`;
+      msgEl.innerHTML = `ダウンロードを開始します…<br><a class="ok" href="${dlUrl}">開始されない場合はこちら</a>`;
+      // 1秒後に自動遷移（ブラウザの自動DL制限に配慮）
+      setTimeout(()=> location.href = dlUrl, 1000);
+    })().catch(e=>{
+      console.error(e);
+      msgEl.style.display='none';
+      errEl.textContent = e.message || String(e);
+      errEl.style.display='block';
+    });
+  </script>
 </body>
-
 </html>
