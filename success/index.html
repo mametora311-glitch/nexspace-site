@@ -25,48 +25,54 @@
   <div id="error" class="error" style="display:none"></div>
 
   <script>
-    const GATE = (window.AIEC_GATE_BASE || '').replace(/\/$/,'');
-    const DOWNLOAD = (window.AIEC_DOWNLOAD_URL || (location.origin + "/download/")).replace(/\/$/,'') + "/";
-    const params = new URLSearchParams(location.search);
-    const sessionId = params.get('session_id');
-
-    const statusEl = document.getElementById('status');
-    const errorEl  = document.getElementById('error');
-
-    async function api(path, body){
-      const r = await fetch(GATE + path, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(body || {})
-      });
-      if(!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`);
-      return r.json();
-    }
-
+  addEventListener("DOMContentLoaded", () => {
     (async () => {
-      if(!GATE){ throw new Error('Gate URL 未設定（window.AIEC_GATE_BASE）'); }
-      if(!sessionId){ throw new Error('セッション情報がありません（?session_id=…）'); }
+      const GATE = (window.AIEC_GATE_BASE || "").replace(/\/$/,"");
+      const DOWNLOAD = (window.AIEC_DOWNLOAD_URL || (location.origin + "/download/")).replace(/\/$/,"") + "/";
+      const statusEl = document.getElementById("status");
+      const errorEl  = document.getElementById("error");
 
-      statusEl.textContent = 'ライセンス確認中…';
-      const claim = await api('/v1/claim', { session_id: sessionId });
-      if(!claim?.paid) throw new Error('決済確認が未完了です。時間を置いて再読込してください。');
+      function must(v, name){ if(!v) throw new Error(`${name} 未設定`); return v; }
+      must(GATE, "AIEC_GATE_BASE");
 
-      const licenseKey = claim.license_key || sessionId;
-      try{ localStorage.setItem('aiec-license', licenseKey); }catch{}
+      const params = new URLSearchParams(location.search);
+      const sessionId = params.get("session_id");
+      must(sessionId, "session_id");
 
-      statusEl.textContent = '認証トークンを発行中…';
-      const auth = await api('/auth/issue', { license_key: licenseKey, device_id: 'web-auto' });
-      const token = auth?.token;
-      if(!token) throw new Error('認証トークンの取得に失敗しました。');
+      async function api(path, body){
+        const r = await fetch(GATE + path, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(body || {})
+        });
+        const txt = await r.text();
+        if(!r.ok) throw new Error(`HTTP ${r.status}: ${txt}`);
+        try { return JSON.parse(txt); } catch { return {}; }
+      }
 
-      statusEl.textContent = 'ダウンロードへ移動しています…';
-      location.href = DOWNLOAD + '?token=' + encodeURIComponent(token);
-    })().catch(e=>{
+      statusEl.textContent = "ライセンス確認中…";
+      const claim = await api("/v1/claim", { session_id: sessionId });
+      // paid:false でも license_key が来ていれば前進（0円・trial対応）
+      const licenseKey = (claim && claim.license_key) || sessionId;
+      if (!licenseKey) throw new Error("ライセンス情報の取得に失敗: " + JSON.stringify(claim));
+      try { localStorage.setItem("aiec-license", licenseKey); } catch {}
+
+      statusEl.textContent = "認証トークンを発行中…";
+      const auth = await api("/auth/issue", { license_key: licenseKey, device_id: "web-auto" });
+      const token = auth && auth.token;
+      if (!token) throw new Error("認証トークンの取得に失敗: " + JSON.stringify(auth));
+
+      statusEl.textContent = "ダウンロードへ移動しています…";
+      location.href = DOWNLOAD + "?token=" + encodeURIComponent(token);
+    })().catch(e => {
       console.error(e);
-      statusEl.style.display='none';
+      const statusEl = document.getElementById("status");
+      const errorEl  = document.getElementById("error");
+      statusEl.style.display = "none";
       errorEl.textContent = e.message || String(e);
-      errorEl.style.display='block';
+      errorEl.style.display = "block";
     });
-  </script>
+  });
+</script>
 </body>
 </html>
