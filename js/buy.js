@@ -9,15 +9,15 @@ const RAW_SUCCESS = (window.AIEC_SUCCESS_URL || (location.origin + "/success/ind
 const RAW_CANCEL  = (window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/index.html")).replace(/\/+$/,"") + "/";
 
   // success_url に ?session_id={CHECKOUT_SESSION_ID} を必ず付与
-  function withSessionId(url) {
-    const u  = new URL(url, location.origin);
-    if (!u.searchParams.has("session_id")) {
-      u.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
-    }
-    return u.toString();
-  }
-  const SUCCESS_URL = withSessionId(RAW_SUCCESS);
-  const CANCEL_URL  = RAW_CANCEL;
+  function withSessionIdRaw(url) {
+  let u = String(url);
+  // 既に session_id= があればそのまま
+  if (/[?&]session_id=/.test(u)) return u;
+  // ? or & を選んで “生の {CHECKOUT_SESSION_ID}” を付ける（URLエンコードしない）
+  return u + (u.includes("?") ? "&" : "?") + "session_id={CHECKOUT_SESSION_ID}";
+}
+  const SUCCESS_URL = withSessionIdRaw(RAW_SUCCESS);
+  const CANCEL_URL  = withSessionIdRaw(RAW_CANCEL);
 
   async function asJson(r){
     const ct = r.headers.get("content-type") || "";
