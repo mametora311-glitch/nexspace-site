@@ -1,74 +1,97 @@
-// buy.js
-const GATE = (window.AIEC_GATE_BASE || "").replace(/\/$/, "");
-const RAW_SUCCESS = (window.AIEC_SUCCESS_URL || (location.origin + "/products/aiec-light/success/")).replace(/\/$/, "") + "/";
-const RAW_CANCEL  = (window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/")).replace(/\/$/, "") + "/";
+// /products/aiec-light/buy.js
+(function(){
+  "use strict";
 
-// success_url に ?session_id={CHECKOUT_SESSION_ID} を必ず付与
-function withSessionId(url) {
-  const u = new URL(url, location.origin);
-  const qs = u.search ? "&" : "?";
-  // 既に session_id 指定があれば尊重
-  if (!u.search.includes("session_id=")) {
-    u.search += `${qs}session_id={CHECKOUT_SESSION_ID}`;
+  const GATE = (window.AIEC_GATE_BASE || "").replace(/\/+$/,"");
+  if(!GATE){ console.error("AIEC_GATE_BASE 未設定"); }
+
+const RAW_SUCCESS = (window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html")).replace(/\/+$/,"") + "/";
+const RAW_CANCEL  = (window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/index.html")).replace(/\/+$/,"") + "/";
+
+  // success_url に ?session_id={CHECKOUT_SESSION_ID} を必ず付与
+  function withSessionId(url) {
+    const u  = new URL(url, location.origin);
+    if (!u.searchParams.has("session_id")) {
+      u.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+    }
+    return u.toString();
   }
-  return u.toString();
-}
-const SUCCESS_URL = withSessionId(RAW_SUCCESS);
-const CANCEL_URL  = RAW_CANCEL;
+  const SUCCESS_URL = withSessionId(RAW_SUCCESS);
+  const CANCEL_URL  = RAW_CANCEL;
 
-async function j(url, opts) {
-  const r = await fetch(url, opts);
-  if (!r.ok) {
-    let msg = `HTTP ${r.status}`;
-    try { msg += `: ${await r.text()}`; } catch {}
-    throw new Error(msg);
+  async function asJson(r){
+    const ct = r.headers.get("content-type") || "";
+    return ct.includes("application/json") ? r.json() : r.text();
   }
-  const ct = r.headers.get("content-type") || "";
-  return ct.includes("application/json") ? r.json() : r.text();
-}
-function el(tag, props = {}, html = "") { const x = Object.assign(document.createElement(tag), props); if (html) x.innerHTML = html; return x; }
+  async function j(url, opts){
+    const r = await fetch(url, opts);
+    if(!r.ok){
+      let body = "";
+      try{ body = await r.text(); }catch{}
+      throw new Error(`HTTP ${r.status}: ${body}`);
+    }
+    return asJson(r);
+  }
+  function el(tag, props={}, html=""){
+    const x = Object.assign(document.createElement(tag), props);
+    if(html) x.innerHTML = html;
+    return x;
+  }
 
-async function render() {
-  const list = await j(`${GATE}/v1/plans`);
-  const root = document.getElementById("plans");
-  root.innerHTML = "";
+  async function render() {
+    const root = document.getElementById("plans");
+    const errEl = document.getElementById("error");
+    if(!root){ return; }
 
-  for (const p of list) {
-    const card = el("div", { className: "card" });
-    card.innerHTML = `
-<h2 style="margin:0 0 6px 0">${p.name} ${p.badge ? `<span class="badge">${p.badge}</span>` : ""}</h2>
+    try{
+      if(!GATE) throw new Error("AIEC_GATE_BASE が設定されていません。");
+      // プラン一覧
+      const plans = await j(`${GATE}/v1/plans`);
+      root.innerHTML = "";
+      plans.forEach(p => {
+        const card = el("div",{className:"card"});
+        card.innerHTML = `
+<h2 style="margin:0 0 6px 0">${p.name || p.key}${p.badge ? ` <span class="badge">${p.badge}</span>` : ""}</h2>
 <p style="opacity:.8;margin:0 0 12px 0">${p.tagline || ""}</p>
 <label>請求間隔</label>
-<select data-k="interval">${p.intervals.map(iv => `<option value="${iv}">${iv === "month" ? "月額" : "年額"}</option>`).join("")}</select>
+<select data-k="interval">${(p.intervals||["month"]).map(iv => `<option value="${iv}">${iv==="month"?"月額":"年額"}</option>`).join("")}</select>
 <div style="height:8px"></div>
 <button data-k="buy">このプランで申し込む</button>
 <div style="height:12px"></div>
-<div><strong>含まれるもの</strong><ul>${(p.features || []).map(f => `<li>${f}</li>`).join("")}</ul></div>`;
-
-    card.querySelector('button[data-k="buy"]').addEventListener("click", async () => {
-      try {
-        const interval = card.querySelector('select[data-k="interval"]').value;
-        const body = {
-          plan: p.key,
-          interval,
-          mode: "subscription",
-          success_url: SUCCESS_URL,
-          cancel_url: CANCEL_URL
-        };
-        const resp = await j(`${GATE}/v1/checkout/session`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
+<div><strong>含まれるもの</strong><ul>${(p.features||[]).map(f=>`<li>${f}</li>`).join("")}</ul></div>`;
+        card.querySelector('button[data-k="buy"]').addEventListener("click", async () => {
+          const btn = card.querySelector('button[data-k="buy"]');
+          btn.disabled = true;
+          try{
+            const interval = card.querySelector('select[data-k="interval"]').value;
+            const body = {
+              plan: p.key,
+              interval,
+              mode: "subscription",
+              success_url: SUCCESS_URL,
+              cancel_url: CANCEL_URL
+            };
+            const resp = await j(`${GATE}/v1/checkout/session`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body)
+            });
+            if(!resp?.url) throw new Error("Checkout URL の生成に失敗しました。");
+            location.href = resp.url;
+          }catch(e){
+            console.error(e);
+            alert(`購入手続きに失敗しました。\n${e.message || e}`);
+          }finally{
+            btn.disabled = false;
+          }
         });
-        if (!resp?.url) throw new Error("Checkout URL生成に失敗しました");
-        location.href = resp.url;
-      } catch (e) {
-        console.error(e);
-        alert(`購入手続きに失敗しました。\n${e.message || e}`);
-      }
-    });
-
-    root.appendChild(card);
+        root.appendChild(card);
+      });
+    }catch(e){
+      console.error(e);
+      if(errEl){ errEl.style.display="block"; errEl.textContent = e.message || String(e); }
+    }
   }
-}
-render().catch(e => { console.error(e); alert("初期化に失敗しました: " + (e?.message || e)); });
+
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", render) : render();
+})();

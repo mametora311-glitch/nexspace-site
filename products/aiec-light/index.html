@@ -1,44 +1,53 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AIEC – プラン選択</title>
-<style>
-body{font-family:system-ui,Segoe UI,Arial,sans-serif;margin:0;background:#0b0f1a;color:#fff}
-.wrap{max-width:1080px;margin:0 auto;padding:32px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.card{background:#101728;border:1px solid #1b2440;border-radius:16px;padding:20px}
-.badge{font-size:12px;border:1px solid #394b7a;padding:2px 8px;border-radius:999px;margin-left:8px}
-button{width:100%;padding:12px 16px;border-radius:12px;border:0;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer}
-select{width:100%;padding:8px;border-radius:8px;border:1px solid #24314d;background:#0f172a;color:#fff}
-ul{padding-left:18px}
-.notice{background:#0f1b33;border:1px solid #1b2440;border-radius:12px;padding:12px;margin:12px 0}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AIEC – プラン選択</title>
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root{--bg:#0f172a;--panel:#0b1220;--border:#1f2a44;--text:#e2e8f0;--muted:#94a3b8;--accent:#22c55e;--accentText:#052e16}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .wrap{max-width:1000px;margin:40px auto;padding:0 16px}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h1{margin:0 0 16px 0}
+    .help{opacity:.85;margin:0 0 18px 0;line-height:1.7}
+    #plans > .card{padding:16px;border:1px solid #263554;border-radius:12px;background:#0b1220;margin:14px 0}
+    .badge{font-size:12px;background:#1d4ed8;color:#fff;padding:2px 8px;border-radius:999px;margin-left:8px}
+    button{background:var(--accent);border:0;color:var(--accentText);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+    button[disabled]{opacity:.6;cursor:not-allowed}
+    select{background:#0b1220;color:#cbd5e1;border:1px solid #334155;padding:8px;border-radius:8px}
+    .err{margin-top:12px;color:#fecaca}
+    a{color:#93c5fd}
+  </style>
+
+  <!-- ▼ 設定（ゲートURLは重複プロトコルを正規化して利用） -->
+  <script>
+    (function(){
+      const RAW_GATE   = "https://https://aiec-gate-766292311890.asia-northeast1.run.app";
+      const GATE = RAW_GATE.replace(/^https?:\/\/https?:\/\//i,'https://').replace(/\/+$/,'');
+      window.AIEC_GATE_BASE   = GATE;
+      window.AIEC_SUCCESS_URL = "https://www.nexspace.jp/products/aiec-light/success/";
+      window.AIEC_CANCEL_URL  = "https://www.nexspace.jp/products/aiec-light/cancel/";
+    })();
+  </script>
 </head>
 <body>
-<div class="wrap">
-  <h1>AIEC – プラン選択</h1>
-
-  <div class="notice">
-    <strong>ご利用手順</strong>
-    <ol>
-      <li>プランと請求間隔を選び「申し込む」</li>
-      <li>Stripe画面で決済完了 → 自動で<strong>成功ページ</strong>へ</li>
-      <li>成功ページがライセンス確認・認証トークン発行 → <strong>ダウンロード</strong></li>
-    </ol>
+  <div class="wrap">
+    <h1>AIEC – プラン選択</h1>
+    <div class="panel">
+      <p class="help">
+        <strong>ご利用手順</strong><br>
+        1. プランと請求間隔を選択 →「申し込む」<br>
+        2. Stripeの決済画面で完了 → 自動で成功ページへ<br>
+        3. 成功ページでライセンス確定 → 認証トークンでダウンロード
+      </p>
+      <div id="plans"></div>
+      <div id="error" class="err" style="display:none"></div>
+    </div>
   </div>
 
-  <!-- ここにGate/URL類を設定してください -->
-  <script>
-    window.AIEC_GATE_BASE   = window.AIEC_GATE_BASE   || "https://aiec-gate-766292311890.asia-northeast1.run.app";   // 末尾スラ無し可
-    window.AIEC_SUCCESS_URL = window.AIEC_SUCCESS_URL || "https://www.nexspace.jp/success/";
-    window.AIEC_CANCEL_URL  = window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/");
-  </script>
-
-  <div class="grid" id="plans"></div>
-</div>
-
-<script type="module" src="./buy.js"></script>
+  <script src="/js/buy.js" defer></script>
 </body>
 </html>
