@@ -31,13 +31,12 @@
 
   <script>
 (async () => {
-  const GATE = (window.AIEC_GATE_BASE || "").replace(/\/+$/,"");
-  const statusEl = document.getElementById("status");
-  const errorEl  = document.getElementById("error");
-  const manual   = document.getElementById("manual");
+  const RAW_GATE = (window.AIEC_GATE_BASE || "");
+  const GATE = RAW_GATE.replace(/^https?:\/\/https?:\/\//,'https://').replace(/\/+$/,'');
+  function apiUrl(p){ return new URL(p, GATE).href; }   // ← これ
 
   async function api(path, body){
-    const r = await fetch(GATE + path, {
+    const r = await fetch(apiUrl(path), {               // ← ここも置換
       method: "POST",
       headers: {"Content-Type":"application/json"},
       body: JSON.stringify(body||{})
