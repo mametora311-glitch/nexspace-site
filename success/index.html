@@ -1,24 +1,56 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AIEC – ご購入ありがとうございました</title>
   <style>
-    body{margin:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial}
-    .wrap{max-width:800px;margin:40px auto;padding:0 16px}
-    .panel{background:#0b1220;border:1px solid #1f2a44;border-radius:16px;padding:20px}
-    .muted{opacity:.85}
-    .err{color:#fecaca;margin-top:12px}
-    a{color:#93c5fd}
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial
+    }
+
+    .wrap {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 16px
+    }
+
+    .panel {
+      background: #0b1220;
+      border: 1px solid #1f2a44;
+      border-radius: 16px;
+      padding: 20px
+    }
+
+    .muted {
+      opacity: .85
+    }
+
+    .err {
+      color: #fecaca;
+      margin-top: 12px;
+      white-space: pre-wrap
+    }
+
+    a {
+      color: #93c5fd
+    }
   </style>
   <script>
-    (function(){
+    (function () {
       const RAW_GATE = "https://https://aiec-gate-766292311890.asia-northeast1.run.app";
-      window.AIEC_GATE_BASE = RAW_GATE.replace(/^https?:\/\/https?:\/\//i,'https://').replace(/\/+$/,'');
+      const GATE = RAW_GATE.replace(/^https?:\/\/https?:\/\//, 'https://').replace(/\/+$/, '');
+      const ORIGIN = location.origin;
+      window.AIEC_GATE_BASE = GATE;
+      window.AIEC_DOWNLOAD_URL = ORIGIN + "/download/index.html";
     })();
   </script>
 </head>
+
 <body>
   <div class="wrap">
     <h1>ご購入ありがとうございました</h1>
@@ -29,59 +61,58 @@
     </div>
   </div>
 
+
   <script>
-(async () => {
-  const RAW_GATE = (window.AIEC_GATE_BASE || "");
-  const GATE = RAW_GATE.replace(/^https?:\/\/https?:\/\//,'https://').replace(/\/+$/,'');
-  function apiUrl(p){ return new URL(p, GATE).href; }   // ← これ
+    (async () => {
+      const GATE = (window.AIEC_GATE_BASE || "").replace(/^https?:\/\/https?:\/\//, 'https://').replace(/\/+$/, '');
+      const DL = (window.AIEC_DOWNLOAD_URL || (location.origin + "/download/index.html"));
+      const statusEl = document.getElementById("status");
+      const errorEl = document.getElementById("error");
+      const manual = document.getElementById("manual");
 
-  async function api(path, body){
-    const r = await fetch(apiUrl(path), {               // ← ここも置換
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(body||{})
-    });
-    const txt = await r.text();
-    if(!r.ok) throw new Error(`HTTP ${r.status}: ${txt}`);
-    try{ return JSON.parse(txt); }catch{ return {}; }
-  }
 
-  // 1) まず URL から session_id を拾う
-  const sid = new URLSearchParams(location.search).get("session_id");
+      function apiUrl(p) { return new URL(p, GATE).href; }
+      async function api(path, body) {
+        const r = await fetch(apiUrl(path), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+        const txt = await r.text();
+        if (!r.ok) throw new Error(`HTTP ${r.status}: ${txt}`);
+        try { return JSON.parse(txt); } catch { return {}; }
+      }
 
-  // 2) license を持っていれば、それを優先（= リロード耐性）
-  let licenseKey = localStorage.getItem("aiec-license");
 
-  // 3) 初回遷移（sidあり & license未保存）なら claim → 保存
-  if (!licenseKey && sid) {
-    statusEl.textContent = "ライセンスを確定中…";
-    const claim = await api("/v1/claim", { session_id: sid });
-    licenseKey = (claim && claim.license_key) || sid;
-    if (!licenseKey) throw new Error("ライセンス情報の取得に失敗: " + JSON.stringify(claim));
-    try { localStorage.setItem("aiec-license", licenseKey); } catch {}
-  }
+      if (!GATE) throw new Error("AIEC_GATE_BASE 未設定");
 
-  // 4) ここまでで license が無い＝直アクセス/古いURL等 → 明示エラー
-  if (!licenseKey) throw new Error("このページは直接開けません。お手続き完了後に自動遷移してください。");
 
-  // 5) issue → ダウンロード
-  statusEl.textContent = "認証トークンを発行中…";
-  const issue = await api("/auth/issue", { license_key: licenseKey, device_id: "web-auto" });
-  const token = issue && issue.token;
-  if (!token) throw new Error("認証トークンの発行に失敗: " + JSON.stringify(issue));
+      // 1) リロード耐性：まず localStorage
+      let licenseKey = localStorage.getItem("aiec-license");
 
-  const url = `${GATE}/v1/download/light?token=${encodeURIComponent(token)}`;
-  manual.href = url;
-  statusEl.textContent = "ダウンロードへ遷移しています…";
-  location.href = url;
-})().catch(e=>{
-  console.error(e);
-  const statusEl = document.getElementById("status");
-  const errorEl  = document.getElementById("error");
-  statusEl.style.display="none";
-  errorEl.style.display="block";
-  errorEl.textContent = e.message || String(e);
-});
-</script>
+
+      // 2) 初回（sidあり & 未保存）なら claim
+      const sid = new URLSearchParams(location.search).get("session_id");
+      if (!licenseKey && sid) {
+        statusEl.textContent = "ライセンスを確定中…";
+        const claim = await api("/v1/claim", { session_id: sid });
+        licenseKey = (claim && claim.license_key) || sid;
+        if (!licenseKey) throw new Error("ライセンス情報の取得に失敗: " + JSON.stringify(claim));
+        try { localStorage.setItem("aiec-license", licenseKey); } catch { }
+      }
+
+
+      if (!licenseKey) throw new Error("このページは直接開けません。（license/session_id なし）");
+
+
+      // 3) issue → DL ページへ（DLページがトークンまたはライセンスから回収）
+      statusEl.textContent = "認証トークンを発行中…";
+      const issue = await api("/auth/issue", { license_key: licenseKey, device_id: "web-auto" });
+      const token = issue && issue.token;
+      if (!token) throw new Error("認証トークンの発行に失敗: " + JSON.stringify(issue));
+
+
+      const url = DL + "?token=" + encodeURIComponent(token);
+      manual.href = url; statusEl.textContent = "ダウンロードへ遷移しています…";
+      location.href = url;
+    })().catch(e => { console.error(e); statusEl.style.display = "none"; errorEl.style.display = "block"; errorEl.textContent = e.message || String(e); });
+  </script>
 </body>
+
 </html>
