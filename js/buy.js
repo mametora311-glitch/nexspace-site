@@ -1,25 +1,18 @@
 (function () {
   "use strict";
 
-
   const GATE = (window.AIEC_GATE_BASE || "").replace(/\/+$/, "");
-  function normUrl(u){
-u = String(u).trim();
-if (/\.[a-z0-9]+$/i.test(u)) return u; // 例: .../index.html → そのまま
-return u.replace(/\/+$/,"") + "/"; // 例: .../success → .../success/
-}
-  const RAW_SUCCESS = normUrl(window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html"));
-  const RAW_CANCEL  = normUrl(window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/"));
-
-  // ★ success_url に生の {CHECKOUT_SESSION_ID} を付与（URL エンコードしない）
-  function withSessionIdRaw(url) {
-    let u = String(url);
-    if (/[?&]session_id=/.test(u)) return u;
-    return u + (u.includes("?") ? "&" : "?") + "session_id={CHECKOUT_SESSION_ID}";
+  function normUrl(u) {
+    u = String(u).trim();
+    if (/\.[a-z0-9]+$/i.test(u)) return u; // 例: .../index.html → そのまま
+    return u.replace(/\/+$/, "") + "/";     // 例: .../success → .../success/
   }
-  const SUCCESS_URL = withSessionIdRaw(RAW_SUCCESS);
-  const CANCEL_URL = RAW_CANCEL;
+  const RAW_SUCCESS = normUrl(window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html"));
+  const RAW_CANCEL = normUrl(window.AIEC_CANCEL_URL || (location.origin + "/products/aiec-light/cancel/"));
 
+  // ★ {CHECKOUT_SESSION_ID} を自前で付けない（Stripe側で付与される想定）
+  const SUCCESS_URL = RAW_SUCCESS;
+  const CANCEL_URL = RAW_CANCEL;
 
   async function asJson(r) {
     const ct = r.headers.get("content-type") || "";
@@ -31,7 +24,6 @@ return u.replace(/\/+$/,"") + "/"; // 例: .../success → .../success/
     return asJson(r);
   }
   function el(tag, props = {}, html = "") { const x = Object.assign(document.createElement(tag), props); if (html) x.innerHTML = html; return x; }
-
 
   async function render() {
     const root = document.getElementById("plans");
@@ -78,7 +70,6 @@ return u.replace(/\/+$/,"") + "/"; // 例: .../success → .../success/
       });
     } catch (e) { console.error(e); if (errEl) { errEl.style.display = "block"; errEl.textContent = e.message || String(e); } }
   }
-
 
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", render) : render();
 })();
