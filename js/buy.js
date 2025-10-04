@@ -3,9 +3,13 @@
 
 
   const GATE = (window.AIEC_GATE_BASE || "").replace(/\/+$/, "");
-  const RAW_SUCCESS = (window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html")).replace(/\/+$/, "") + "/";
-  const RAW_CANCEL = (window.AIEC_CANCEL_URL || (location.origin + "/products/aiec-light/cancel/")).replace(/\/+$/, "") + "/";
-
+  function normUrl(u){
+u = String(u).trim();
+if (/\.[a-z0-9]+$/i.test(u)) return u; // 例: .../index.html → そのまま
+return u.replace(/\/+$/,"") + "/"; // 例: .../success → .../success/
+}
+  const RAW_SUCCESS = normUrl(window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html"));
+  const RAW_CANCEL  = normUrl(window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/"));
 
   // ★ success_url に生の {CHECKOUT_SESSION_ID} を付与（URL エンコードしない）
   function withSessionIdRaw(url) {
