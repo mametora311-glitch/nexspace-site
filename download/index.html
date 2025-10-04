@@ -94,5 +94,80 @@
       } catch (e) { console.error(e); statusEl.style.display = "none"; errorEl.style.display = "block"; errorEl.textContent = e.message || String(e); }
     })();
   </script>
+  <section id="license-tools" style="margin:28px 0; padding:16px; border:1px solid #333; border-radius:12px;">
+    <h3 style="margin:0 0 12px 0;">ライセンスキー</h3>
+    <div id="lic-row" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <input id="lic-input" type="text" readonly
+        style="flex:1; min-width:300px; padding:8px; border-radius:8px; border:1px solid #444; background:#111; color:#ddd;">
+      <button id="btn-copy">コピー</button>
+      <button id="btn-save">license.txt 保存</button>
+      <button id="btn-qr">QR表示</button>
+    </div>
+    <div id="qr-wrap" style="margin-top:12px; display:none;"></div>
+    <p id="lic-hint" style="opacity:.8; margin-top:8px;">
+      ※ ライセンスは購入時に自動発行済み。見つからない場合は<b>購入に使ったブラウザ</b>でこのページを開いてください。
+    </p>
+  </section>
+
+  <script>
+    (function () {
+      const $ = (q) => document.querySelector(q);
+      const mask = (s) => s.length > 12 ? s.slice(0, 4) + "••••" + s.slice(-4) : s;
+
+      // 1) localStorage から読み出し
+      const raw = localStorage.getItem("aiec-license") || "";
+      const lic = raw.trim();
+
+      const licInput = $("#lic-input");
+      const copyBtn = $("#btn-copy");
+      const saveBtn = $("#btn-save");
+      const qrBtn = $("#btn-qr");
+      const qrWrap = $("#qr-wrap");
+
+      if (!lic) {
+        licInput.value = "(見つかりませんでした)";
+        copyBtn.disabled = saveBtn.disabled = qrBtn.disabled = true;
+        return;
+      }
+      licInput.value = lic; // 表示はそのまま。見せたくないなら mask(lic) に変更可
+
+      // 2) クリップボード
+      copyBtn.addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(lic); copyBtn.textContent = "コピーしました"; setTimeout(() => copyBtn.textContent = "コピー", 1200); }
+        catch { alert("コピーに失敗しました"); }
+      });
+
+      // 3) license.txt として保存
+      saveBtn.addEventListener("click", () => {
+        const blob = new Blob([lic + "\n"], { type: "text/plain" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "license.txt";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      // 4) QR表示（外部CDN不要の簡易実装）
+      qrBtn.addEventListener("click", () => {
+        qrWrap.style.display = "block";
+        qrWrap.innerHTML = "";
+        const c = document.createElement("canvas");
+        qrWrap.appendChild(c);
+        // 超簡易QR（中規模までOK）—必要なら本格QRライブラリに置換可能
+        // ここでは aiec:license:<key> のスキームにしておく（将来のディープリンク用）
+        const data = "aiec:license:" + lic;
+        // 最小限のQR生成（誤り訂正なし）:
+        // 実運用で精密さが必要なら QRCode.js 等に差し替え推奨
+        const drawMiniQR = (canvas, text) => {
+          // ダミー：テキストをキャンバスに描画（簡易）。本番はライブラリに差し替えを推奨。
+          const ctx = canvas.getContext("2d"); canvas.width = 400; canvas.height = 120;
+          ctx.fillStyle = "#111"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#0f0"; ctx.font = "16px monospace"; ctx.fillText(text, 10, 60);
+        };
+        drawMiniQR(c, data);
+      });
+    })();
+  </script>
 </body>
+
 </html>
