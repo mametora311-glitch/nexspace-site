@@ -42,41 +42,54 @@
       root.innerHTML = "";
 
       plans.forEach((p) => {
-        const card = el("div", { className: "plan-card" });
-        card.append(
-          el("h3", {}, `${p.name}（${p.interval_label}）`),
-          el("p", {}, p.description || ""),
-          el("button", {
-            className: "buy",
-            onclick: async () => {
-              try {
-                const body = {
-                  plan: p.key,
-                  interval: p.interval,
-                  mode: "subscription",
-                  success_url: SUCCESS_URL,
-                  cancel_url: CANCEL_URL,
-                };
-                const res = await j(`${GATE}/v1/checkout/session`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(body),
-                });
-                if (!res || !res.url) throw new Error("Checkout URL が取得できませんでした。");
-                location.href = res.url;
-              } catch (e) {
-                console.error(e);
-                alert("決済の開始に失敗しました。ページを更新してもう一度お試しください。");
-              }
-            },
-          }, "今すぐ無料体験をはじめる（¥3,980/月）")
-        );
-        root.appendChild(card);
-      });
-      errEl && (errEl.textContent = "");
+        const options = p.intervals || p.interval_options || p.billing_intervals || [];
+        const pick = options[0] || { key: (p.default_interval || "month"), label: (p.interval_label || "月額") };
+
+       const intervalKey   = pick.key || "month";
+       const intervalLabel = pick.label || "月額";
+       const priceText     = p.price_label || "¥3,980/月";
+
+       const card = el("div", { className: "plan-card" });
+         card.append(
+          el("h3", {}, `${p.name}（${intervalLabel}）`),
+         el("p", {}, p.description || ""),
+          el(
+            "button",
+        {
+         className: "buy",
+         onclick: async () => {
+          try {
+            const body = {
+              plan: p.key,                 // 例: 'light'
+              interval: intervalKey,       // 例: 'month'
+              mode: "subscription",
+              success_url: SUCCESS_URL,
+              cancel_url: CANCEL_URL,
+            };
+            console.log("checkout body:", body);
+            const res = await j(`${GATE}/v1/checkout/session`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            });
+            if (!res || !res.url) throw new Error("Checkout URL が取得できませんでした。");
+            location.href = res.url;
+          } catch (e) {
+            console.error(e);
+            alert(`購入手続きに失敗しました。\n${e.message || e}`);
+          }
+        },
+      },
+      `今すぐ無料体験をはじめる（${priceText}）`
+    )
+  );
+  root.appendChild(card);
+});
     } catch (e) {
       console.error(e);
-      if (errEl) errEl.textContent = String(e.message || e);
+      errEl.innerText = e.message || e;
     }
   }
+
+  render();
 })();
