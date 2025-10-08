@@ -79,6 +79,7 @@
       if (errEl) errEl.textContent = String(e.message || e);
     }
   }
-})();
-// これだけでOK：DOM読み込み後にrenderを呼ぶ
+  // これだけでOK：DOM読み込み後にrenderを呼ぶ
 document.addEventListener("DOMContentLoaded", render);
+
+})();
