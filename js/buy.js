@@ -51,7 +51,7 @@
             const interval = card.querySelector('select[data-k="interval"]').value;
             const body = {
               plan: p.key,
-              interval:
+              interval: interval,
               mode: "subscription",
               success_url: SUCCESS_URL,
               cancel_url: CANCEL_URL
