@@ -80,5 +80,8 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", render);
+  // buy.js の末尾あたり
+const btn = document.getElementById("buy-btn");
+if (btn) btn.addEventListener("click", startCheckout);
+
 })();
