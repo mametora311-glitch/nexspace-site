@@ -79,9 +79,6 @@
       if (errEl) errEl.textContent = String(e.message || e);
     }
   }
-
-  // buy.js の末尾あたり
-const btn = document.getElementById("buy-btn");
-if (btn) btn.addEventListener("click", startCheckout);
-
 })();
+// これだけでOK：DOM読み込み後にrenderを呼ぶ
+document.addEventListener("DOMContentLoaded", render);
