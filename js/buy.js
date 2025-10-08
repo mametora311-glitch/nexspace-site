@@ -73,3 +73,17 @@
 
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", render) : render();
 })();
+
+async function startCheckout() {
+  const res = await fetch("/api/checkout", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      success_url: "https://your.site/success",
+      cancel_url: "https://your.site/cancel"
+    })
+  });
+  const { url } = await res.json();
+  location.href = url;
+}
+document.getElementById("buy-btn").addEventListener("click", startCheckout);
