@@ -60,6 +60,27 @@
   </div>
 
   <!-- 相対パスで同ディレクトリのJSを読む（キャッシュバスター付き） -->
-  <script src="./js/buy.js?v=20251020" defer></script>
+<script>
+(function () {
+  const c = 'defer';
+  function attach(src, onerr) {
+    var s = document.createElement('script');
+    s.src = src; s.defer = true;
+    s.onerror = onerr || null;
+    document.head.appendChild(s);
+  }
+  // 1) 同ディレクトリ直下
+  attach('./buy.js?v=20251020', function () {
+    // 2) サブフォルダ js/
+    attach('./js/buy.js?v=20251020', function () {
+      // 3) ルート /js/
+      attach('/js/buy.js?v=20251020', function () {
+        // 4) すべてNGなら簡易ログだけ出しておく
+        console.error('[AIEC] buy.js を読み込めませんでした。配置パスを確認してください。');
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
