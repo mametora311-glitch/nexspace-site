@@ -30,7 +30,14 @@
   // ====== API ======
   async function fetchPlans() {
     const url = `${GATE_BASE}/v1/plans`;
-    return j(url);
+    const raw = await j(url);            // そのまま受け取る
+    // いろんな返り値に対応：[], {plans:[]}, {data:{plans:[]}}
+    const list =
+      Array.isArray(raw) ? raw :
+        (raw && Array.isArray(raw.plans)) ? raw.plans :
+          (raw && raw.data && Array.isArray(raw.data.plans)) ? raw.data.plans :
+            [];
+    return list;
   }
   async function startCheckout(planKey, interval) {
     const url = `${GATE_BASE}/v1/checkout/session`;
@@ -108,11 +115,13 @@
   // ====== 起動 ======
   async function main() {
     try {
-      const plans = await fetchPlans(); // [{key,name,tagline,features,intervals,badge?}]
-      if (!Array.isArray(plans) || !plans.length) throw new Error("plans_empty");
+      const plans = await fetchPlans();
+      if (!Array.isArray(plans) || plans.length === 0) {
+        throw new Error("plans_empty");
+      }
       renderPlans(plans);
     } catch (e) {
-      console.error(e);
+      console.error("[AIEC] plans fetch error:", e);
       const err = document.getElementById("error");
       err.textContent = "プラン情報の取得に失敗しました。時間をおいて再度お試しください。";
       err.style.display = "block";
