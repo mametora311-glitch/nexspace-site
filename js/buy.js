@@ -1,21 +1,27 @@
 (async function () {
   "use strict";
 
-  // ====== 設定値 ======
-  const GATE_BASE = (window.AIEC_GATE_BASE || "").replace(/\/+$/, "");
-  const SUCCESS_URL = (window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html")).replace(/\/+$/, "");
-  const CANCEL_URL = (window.AIEC_CANCEL_URL || (location.origin + "/products/aiec-light/cancel/")).replace(/\/+$/, "") + "/";
+  // ====== 定数（index.html で未定義でも動くように） ======
+  const GATE_BASE = (window.AIEC_GATE_BASE || "https://aiec-gate-766292311890.asia-northeast1.run.app").replace(/\/+$/, "");
+  const ORIGIN = location.origin.replace(/\/+$/, "");
+  const SUCCESS_URL = (window.AIEC_SUCCESS_URL || ORIGIN + "/success/index.html").replace(/\/+$/, "");
+  const CANCEL_URL  = (window.AIEC_CANCEL_URL  || ORIGIN + "/products/aiec-light/cancel/").replace(/\/+$/, "") + "/";
 
-  if (!GATE_BASE) console.warn("[AIEC] GATE_BASE 未設定です。");
-
-  // ====== util ======
+  // ====== 汎用 fetch ======
   async function j(url, opts) {
     const r = await fetch(url, { credentials: "include", ...opts });
     const ct = (r.headers.get("content-type") || "").toLowerCase();
-    const body = ct.includes("application/json") ? await r.json() : await r.text();
-    if (!r.ok) throw new Error(typeof body === "string" ? body : (body.message || "HTTP " + r.status));
-    return body;
+    const raw = ct.includes("application/json") ? await r.json() : await r.text();
+    if (!r.ok) {
+      const err = new Error(typeof raw === "string" ? raw : (raw.detail || raw.message || "HTTP " + r.status));
+      err.status = r.status;
+      err.responseBody = typeof raw === "string" ? raw : JSON.stringify(raw);
+      throw err;
+    }
+    return raw;
   }
+
+  // ====== DOM helper ======
   function el(tag, attrs = {}, ...children) {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
@@ -29,28 +35,27 @@
 
   // ====== API ======
   async function fetchPlans() {
-    const url = `${GATE_BASE}/v1/plans`;
-    const raw = await j(url);            // そのまま受け取る
-    // いろんな返り値に対応：[], {plans:[]}, {data:{plans:[]}}
+    const raw = await j(`${GATE_BASE}/v1/plans`);
+    // [] / {plans:[]} / {data:{plans:[]}} のどれでも拾う
     const list =
       Array.isArray(raw) ? raw :
-        (raw && Array.isArray(raw.plans)) ? raw.plans :
-          (raw && raw.data && Array.isArray(raw.data.plans)) ? raw.data.plans :
-            [];
+      (raw && Array.isArray(raw.plans)) ? raw.plans :
+      (raw && raw.data && Array.isArray(raw.data.plans)) ? raw.data.plans :
+      [];
     return list;
   }
+
   async function startCheckout(planKey, interval) {
-    const url = `${GATE_BASE}/v1/checkout/session`;
-    const body = {
+    const payload = {
       plan_key: String(planKey),
-      interval: String(interval || "month"),
+      interval : String(interval || "month"),
       success_url: SUCCESS_URL,
-      cancel_url: CANCEL_URL,
+      cancel_url : CANCEL_URL,
     };
-    const res = await j(url, {
+    const res = await j(`${GATE_BASE}/v1/checkout/session`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
     });
     if (res && res.url) location.href = res.url;
     else throw new Error("checkout_url_not_returned");
@@ -59,47 +64,45 @@
   // ====== UI描画 ======
   function renderPlans(list) {
     const host = document.getElementById("plans");
-    const err = document.getElementById("error");
+    const err  = document.getElementById("error");
     host.innerHTML = "";
     err.style.display = "none";
 
     list.forEach((p) => {
-      const title = el("h2", { style: "margin:0 0 6px;font-size:18px" }, p.name);
-      const tagline = el("div", { class: "muted", style: "color:#94a3b8;margin-bottom:8px" }, p.tagline || "");
-      const badge = p.badge ? el("span", { class: "tag" }, p.badge) : null;
+      // タイトル等
+      const title   = el("h2", { style: "margin:0 0 6px;font-size:18px" }, p.name || p.key);
+      const tagline = el("div", { style: "color:#94a3b8;margin-bottom:8px" }, p.tagline || "");
+      const badge   = p.badge ? el("span", { class: "tag" }, p.badge) : null;
 
+      // 機能箇条書き
       const feat = el("ul", { class: "features" });
       (p.features || []).forEach((f) => feat.append(el("li", {}, f)));
 
-      // 月/年のトグル
-      // （差分だけ）renderPlans 内のトグル生成を置き換え
+      // interval はサーバが返したものだけ表示
       const ivs = Array.isArray(p.intervals) && p.intervals.length ? p.intervals : ["month"];
       const pill = el("div", { class: "pill" });
       ivs.forEach((iv, idx) => {
         const id = `${iv}_${p.key}`;
-        const r = el("input", { type: "radio", name: `iv_${p.key}`, id, value: iv, ...(idx === 0 ? { checked: "checked" } : {}) });
-        pill.append(
-          el("label", { for: id }, r, el("span", {}, iv === "month" ? "月額" : "年額"))
-        );
+        const r = el("input", { type: "radio", name: `iv_${p.key}`, id, value: iv, ...(idx===0?{checked:"checked"}:{}) });
+        pill.append( el("label", { for: id }, r, el("span", {}, iv === "year" ? "年額" : "月額")) );
       });
 
+      // 申込みボタン
+      const btn = el("button", { class: "primary", type: "button" }, "申し込む");
       btn.addEventListener("click", async () => {
         btn.disabled = true;
         try {
-          let interval = (pill.querySelector("input:checked") || {}).value || ivs[0];
-          // 念のため、許可されてない値は送らない
-          if (!ivs.includes(interval)) interval = ivs[0];
-          await startCheckout(p.key, interval);
+          const iv = (pill.querySelector("input:checked") || {}).value || ivs[0];
+          await startCheckout(p.key, iv);
         } catch (e) {
-          // エラー本文を必ず表示（422の原因がそのまま見える）
-          if (e.responseBody) alert(`購入手続きに失敗しました。\n${e.responseBody}`);
-          else alert(`購入手続きに失敗しました。\n${e.message || e}\nHTTP ${e.status || ""}`);
+          // 422 の本文をそのまま見せる
+          alert("購入手続きに失敗しました。\n" + (e.responseBody || e.message || ("HTTP " + (e.status||""))));
         } finally {
           btn.disabled = false;
         }
       });
 
-
+      // カード
       const card = el("div", { class: "card" },
         el("div", { class: "row" },
           el("div", { style: "flex:1 1 auto" }, title, badge || "", tagline),
@@ -116,9 +119,7 @@
   async function main() {
     try {
       const plans = await fetchPlans();
-      if (!Array.isArray(plans) || plans.length === 0) {
-        throw new Error("plans_empty");
-      }
+      if (!plans.length) throw new Error("plans_empty");
       renderPlans(plans);
     } catch (e) {
       console.error("[AIEC] plans fetch error:", e);
@@ -127,22 +128,6 @@
       err.style.display = "block";
     }
   }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", main);
-  } else {
-    main();
-  }
-  async function j(url, opts) {
-    const r = await fetch(url, { credentials: "include", ...opts });
-    const ct = (r.headers.get("content-type") || "").toLowerCase();
-    const raw = ct.includes("application/json") ? await r.json() : await r.text();
-    if (!r.ok) {
-      const err = new Error(typeof raw === "string" ? raw : (raw.detail || raw.message || "HTTP " + r.status));
-      err.status = r.status; err.responseBody = typeof raw === "string" ? raw : JSON.stringify(raw);
-      throw err;
-    }
-    return raw;
-  }
-
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", main);
+  else main();
 })();
