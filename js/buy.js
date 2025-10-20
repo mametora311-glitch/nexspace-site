@@ -47,7 +47,7 @@
 
   async function startCheckout(planKey, interval) {
     const payload = {
-      plan_key: String(planKey),
+      plan: String(planKey),
       interval : String(interval || "month"),
       success_url: SUCCESS_URL,
       cancel_url : CANCEL_URL,
