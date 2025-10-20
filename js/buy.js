@@ -1,72 +1,121 @@
 (async function () {
   "use strict";
 
-  const GATE = (window.AIEC_GATE_BASE || "").replace(/\/+$/, "");
-  function normUrl(u){u=String(u).trim(); if(/\.[a-z0-9]+$/i.test(u)) return u; return u.replace(/\/+$/,"")+"/";}
-  const SUCCESS_URL = normUrl(window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html"));
-  const CANCEL_URL  = normUrl(window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/"));
+  // ====== 設定値 ======
+  const GATE_BASE = (window.AIEC_GATE_BASE || "").replace(/\/+$/, "");
+  const SUCCESS_URL = (window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html")).replace(/\/+$/, "");
+  const CANCEL_URL  = (window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/")).replace(/\/+$/, "") + "/";
 
-  async function j(url, opts){ const r = await fetch(url, opts); if(!r.ok){throw new Error(`HTTP ${r.status}: ${await r.text().catch(()=> "")}`)}; const ct=r.headers.get("content-type")||""; return ct.includes("application/json")? r.json(): r.text(); }
+  if (!GATE_BASE) console.warn("[AIEC] GATE_BASE 未設定です。");
 
-  // 既存ページの要素をなるべく拾うためのセレクタ候補
-  const BUTTON_SEL = {
-    light:  '[data-plan="light"] button, #light button, #plan-light button',
-    middle: '[data-plan="middle"] button, #middle button, #plan-middle button',
-    pro:    '[data-plan="pro"] button, #pro button, #plan-pro button'
-  };
-  const TITLE_SEL = {
-    light:  '[data-plan="light"], #light, #plan-light',
-    middle: '[data-plan="middle"], #middle, #plan-middle',
-    pro:    '[data-plan="pro"], #pro, #plan-pro'
-  };
-
-  function findButton(plan){ return document.querySelector(BUTTON_SEL[plan]); }
-  function findRoot(plan){ return document.querySelector(TITLE_SEL[plan]); }
-
-  // クリック時：UIは触らずPOSTだけ飛ばす
-  async function startCheckout(planKey){
-    const body = {
-      plan: planKey,
-      interval: "month",                // UIを変えずに月額固定
-      mode: "subscription",
-      success_url: SUCCESS_URL,
-      cancel_url: CANCEL_URL
-    };
-    const resp = await j(`${GATE}/v1/checkout/session`, {
-      method: "POST",
-      headers: { "Content-Type":"application/json" },
-      body: JSON.stringify(body)
-    });
-    if(!resp || !resp.url) throw new Error("Checkout URL の生成に失敗しました。");
-    location.href = resp.url;
+  // ====== util ======
+  async function j(url, opts) {
+    const r = await fetch(url, { credentials: "include", ...opts });
+    const ct = (r.headers.get("content-type") || "").toLowerCase();
+    const body = ct.includes("application/json") ? await r.json() : await r.text();
+    if (!r.ok) throw new Error(typeof body === "string" ? body : (body.message || "HTTP " + r.status));
+    return body;
+  }
+  function el(tag, attrs = {}, ...children) {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") e.className = v;
+      else if (k === "html") e.innerHTML = v;
+      else e.setAttribute(k, v);
+    }
+    for (const c of children) e.append(c);
+    return e;
   }
 
-  async function wire(){
-    if(!GATE) throw new Error("AIEC_GATE_BASE が設定されていません。");
-    const plans = await j(`${GATE}/v1/plans`);     // ← ここから price_label をもらう
+  // ====== API ======
+  async function fetchPlans() {
+    const url = `${GATE_BASE}/v1/plans`;
+    return j(url);
+  }
+  async function startCheckout(planKey, interval) {
+    const url = `${GATE_BASE}/v1/checkout/session`;
+    const body = {
+      plan_key: String(planKey),
+      interval: String(interval || "month"),
+      success_url: SUCCESS_URL,
+      cancel_url: CANCEL_URL,
+    };
+    const res = await j(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res && res.url) location.href = res.url;
+    else throw new Error("checkout_url_not_returned");
+  }
 
-    // 表示価格の差し替え＆クリック付与（UIは変更しない）
-    for(const p of plans){
-      const btn = findButton(p.key);
-      if(btn){
-        // 表示価格がplansに入ってる場合のみ上書き。無ければそのまま（固定文言を残す）
-        if(p.price_label){
-          // ボタン内のテキストに価格を埋め込む（既存の「（¥xxxx/月）」を丸ごと置き換え）
-          const base = btn.textContent.replace(/（[^）]*）/g, "").trim(); // 既存の括弧付き価格を除去
-          btn.textContent = `${base}（${p.price_label}）`;
+  // ====== UI描画 ======
+  function renderPlans(list) {
+    const host = document.getElementById("plans");
+    const err = document.getElementById("error");
+    host.innerHTML = "";
+    err.style.display = "none";
+
+    list.forEach((p) => {
+      const title = el("h2", { style: "margin:0 0 6px;font-size:18px" }, p.name);
+      const tagline = el("div", { class: "muted", style: "color:#94a3b8;margin-bottom:8px" }, p.tagline || "");
+      const badge = p.badge ? el("span", { class: "tag" }, p.badge) : null;
+
+      const feat = el("ul", { class: "features" });
+      (p.features || []).forEach((f) => feat.append(el("li", {}, f)));
+
+      // 月/年のトグル
+      const pill = el("div", { class: "pill" });
+      const idm = `m_${p.key}`, idy = `y_${p.key}`;
+      const rMonth = el("input", { type: "radio", name: `iv_${p.key}`, id: idm, value: "month", checked: "checked" });
+      const rYear  = el("input", { type: "radio", name: `iv_${p.key}`, id: idy, value: "year" });
+      pill.append(
+        el("label", { for: idm }, rMonth, el("span", {}, "月額")),
+        el("label", { for: idy }, rYear,  el("span", {}, "年額")),
+      );
+
+      const btn = el("button", { class: "primary", type: "button" }, "申し込む");
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        try {
+          const interval = (pill.querySelector("input:checked") || rMonth).value;
+          await startCheckout(p.key, interval);
+        } catch (e) {
+          alert("購入手続きに失敗しました。\n" + (e.message || e));
+        } finally {
+          btn.disabled = false;
         }
-        btn.onclick = async () => {
-          btn.disabled = true;
-          try { await startCheckout(p.key); }
-          catch(e){ alert(`購入手続きに失敗しました。\n${e.message || e}`); }
-          finally { btn.disabled = false; }
-        };
-      }
-      // 見出しに「（月額）」等があるならそのまま残す。触らない。
+      });
+
+      const card = el("div", { class: "card" },
+        el("div", { class: "row" },
+          el("div", { style: "flex:1 1 auto" }, title, badge || "", tagline),
+          pill
+        ),
+        feat,
+        el("div", { class: "row" }, btn),
+      );
+      host.append(card);
+    });
+  }
+
+  // ====== 起動 ======
+  async function main() {
+    try {
+      const plans = await fetchPlans(); // [{key,name,tagline,features,intervals,badge?}]
+      if (!Array.isArray(plans) || !plans.length) throw new Error("plans_empty");
+      renderPlans(plans);
+    } catch (e) {
+      console.error(e);
+      const err = document.getElementById("error");
+      err.textContent = "プラン情報の取得に失敗しました。時間をおいて再度お試しください。";
+      err.style.display = "block";
     }
   }
 
-  document.readyState === "loading"
-    ? document.addEventListener("DOMContentLoaded", wire)
-    : wire();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", main);
+  } else {
+    main();
+  }
 })();

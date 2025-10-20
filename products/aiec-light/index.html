@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,111 +7,39 @@
   <meta name="color-scheme" content="light dark" />
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #0b1220;
-      --border: #1f2a44;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #22c55e;
-      --accentText: #052e16
+      --bg:#0f172a; --panel:#0b1220; --border:#1f2a44; --text:#e2e8f0; --muted:#94a3b8; --accent:#22c55e;
     }
-
-    * {
-      box-sizing: border-box
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial
-    }
-
-    .wrap {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 16px
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, .25)
-    }
-
-    h1 {
-      margin: 0 0 16px 0
-    }
-
-    .help {
-      opacity: .85;
-      margin: 0 0 18px 0;
-      line-height: 1.7
-    }
-
-    #plans>.card {
-      padding: 16px;
-      border: 1px solid #263554;
-      border-radius: 12px;
-      background: #0b1220;
-      margin: 14px 0
-    }
-
-    .badge {
-      font-size: 12px;
-      background: #1d4ed8;
-      color: #fff;
-      padding: 2px 8px;
-      border-radius: 999px;
-      margin-left: 8px
-    }
-
-    button {
-      background: var(--accent);
-      border: 0;
-      color: var(--accentText);
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer
-    }
-
-    button[disabled] {
-      opacity: .6;
-      cursor: not-allowed
-    }
-
-    select {
-      background: #0b1220;
-      color: #cbd5e1;
-      border: 1px solid #334155;
-      padding: 8px;
-      border-radius: 8px
-    }
-
-    .err {
-      margin-top: 12px;
-      color: #fecaca
-    }
-
-    a {
-      color: #93c5fd
-    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .wrap{max-width:1120px;margin:0 auto;padding:24px}
+    h1{margin:8px 0 16px;font-size:22px;font-weight:700}
+    .help{color:var(--muted);font-size:14px;line-height:1.6;margin:8px 0 20px}
+    #plans{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+    .tag{font-size:12px;color:#a78bfa;margin-left:6px}
+    .features{margin:12px 0;padding-left:18px}
+    .features li{margin:6px 0}
+    .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:2px;border-radius:999px;background:#0b1325;border:1px solid var(--border)}
+    .pill label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;cursor:pointer}
+    .pill input{appearance:none;width:14px;height:14px;border-radius:999px;border:2px solid #64748b}
+    .pill input:checked{background:var(--accent);border-color:var(--accent)}
+    button.primary{background:var(--accent);color:#052e16;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    button.primary:disabled{opacity:.6;cursor:progress}
+    .err{margin-top:16px;color:#ef4444}
   </style>
 
-
-  <!-- サイト設定（ゲートURL正規化＋各ページURLを現在のオリジンから生成） -->
+  <!-- ★ フロントで使う定数（必要に応じて値だけ編集） -->
   <script>
-    (function () {
-      const RAW_GATE = "https://https://aiec-gate-766292311890.asia-northeast1.run.app"; // ★与件のまま、正規化して利用
-      const GATE = RAW_GATE.replace(/^https?:\/\/https?:\/\//, 'https://').replace(/\/+$/, '');
-      const ORIGIN = location.origin;
-      window.AIEC_GATE_BASE = GATE;
-      window.AIEC_SUCCESS_URL = ORIGIN + "/success/index.html"; // ルート直下 success
-      window.AIEC_CANCEL_URL = ORIGIN + "/products/aiec-light/cancel/"; // products 配下 cancel
-      window.AIEC_DOWNLOAD_URL = ORIGIN + "/download/index.html"; // ダウンロードページ
+    (function(){
+      // 与件の値が "https://https://..." でも動くよう正規化
+      const RAW_GATE = "https://aiec-gate-766292311890.asia-northeast1.run.app";
+      const GATE = String(RAW_GATE).replace(/^https?:\/\/https?:\/\//,'https://').replace(/\/+$/,'');
+      const ORIGIN = location.origin.replace(/\/+$/,'');
+      window.AIEC_GATE_BASE   = GATE;
+      window.AIEC_SUCCESS_URL = ORIGIN + "/success/index.html";
+      window.AIEC_CANCEL_URL  = ORIGIN + "/products/aiec-light/cancel/";
+      window.AIEC_DOWNLOAD_URL= ORIGIN + "/download/index.html";
     })();
   </script>
 </head>
@@ -120,20 +47,19 @@
 <body>
   <div class="wrap">
     <h1>AIEC – プラン選択</h1>
-    <div class="panel">
-      <p class="help">
-        <strong>ご利用手順</strong><br>
-        1. プランと請求間隔を選択 →「申し込む」<br>
-        2. Stripeの決済画面で完了 → 自動で成功ページへ<br>
-        3. 成功ページでライセンス確定 → 認証トークンでダウンロード
-      </p>
-      <div id="plans"></div>
-      <div id="error" class="err" style="display:none"></div>
-    </div>
+    <p class="help">
+      <strong>ご利用手順</strong><br>
+      1. プランと請求間隔を選択 →「申し込む」<br>
+      2. Stripeの決済画面で完了 → 自動で成功ページへ<br>
+      3. 成功ページでライセンス確定 → 認証トークンでダウンロード
+    </p>
+
+    <!-- ここにJSがカードを描画する -->
+    <div id="plans"></div>
+    <div id="error" class="err" style="display:none"></div>
   </div>
 
-
-  <script src="/js/buy.js?v=20251004" defer></script>
+  <!-- 相対パスで同ディレクトリのJSを読む（キャッシュバスター付き） -->
+  <script src="./buy.js?v=20251020" defer></script>
 </body>
-
 </html>
