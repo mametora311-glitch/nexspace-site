@@ -4,7 +4,7 @@
   // ====== 設定値 ======
   const GATE_BASE = (window.AIEC_GATE_BASE || "").replace(/\/+$/, "");
   const SUCCESS_URL = (window.AIEC_SUCCESS_URL || (location.origin + "/success/index.html")).replace(/\/+$/, "");
-  const CANCEL_URL  = (window.AIEC_CANCEL_URL  || (location.origin + "/products/aiec-light/cancel/")).replace(/\/+$/, "") + "/";
+  const CANCEL_URL = (window.AIEC_CANCEL_URL || (location.origin + "/products/aiec-light/cancel/")).replace(/\/+$/, "") + "/";
 
   if (!GATE_BASE) console.warn("[AIEC] GATE_BASE 未設定です。");
 
@@ -65,27 +65,33 @@
       (p.features || []).forEach((f) => feat.append(el("li", {}, f)));
 
       // 月/年のトグル
+      // （差分だけ）renderPlans 内のトグル生成を置き換え
+      const ivs = Array.isArray(p.intervals) && p.intervals.length ? p.intervals : ["month"];
       const pill = el("div", { class: "pill" });
-      const idm = `m_${p.key}`, idy = `y_${p.key}`;
-      const rMonth = el("input", { type: "radio", name: `iv_${p.key}`, id: idm, value: "month", checked: "checked" });
-      const rYear  = el("input", { type: "radio", name: `iv_${p.key}`, id: idy, value: "year" });
-      pill.append(
-        el("label", { for: idm }, rMonth, el("span", {}, "月額")),
-        el("label", { for: idy }, rYear,  el("span", {}, "年額")),
-      );
+      ivs.forEach((iv, idx) => {
+        const id = `${iv}_${p.key}`;
+        const r = el("input", { type: "radio", name: `iv_${p.key}`, id, value: iv, ...(idx === 0 ? { checked: "checked" } : {}) });
+        pill.append(
+          el("label", { for: id }, r, el("span", {}, iv === "month" ? "月額" : "年額"))
+        );
+      });
 
-      const btn = el("button", { class: "primary", type: "button" }, "申し込む");
       btn.addEventListener("click", async () => {
         btn.disabled = true;
         try {
-          const interval = (pill.querySelector("input:checked") || rMonth).value;
+          let interval = (pill.querySelector("input:checked") || {}).value || ivs[0];
+          // 念のため、許可されてない値は送らない
+          if (!ivs.includes(interval)) interval = ivs[0];
           await startCheckout(p.key, interval);
         } catch (e) {
-          alert("購入手続きに失敗しました。\n" + (e.message || e));
+          // エラー本文を必ず表示（422の原因がそのまま見える）
+          if (e.responseBody) alert(`購入手続きに失敗しました。\n${e.responseBody}`);
+          else alert(`購入手続きに失敗しました。\n${e.message || e}\nHTTP ${e.status || ""}`);
         } finally {
           btn.disabled = false;
         }
       });
+
 
       const card = el("div", { class: "card" },
         el("div", { class: "row" },
@@ -118,4 +124,16 @@
   } else {
     main();
   }
+  async function j(url, opts) {
+    const r = await fetch(url, { credentials: "include", ...opts });
+    const ct = (r.headers.get("content-type") || "").toLowerCase();
+    const raw = ct.includes("application/json") ? await r.json() : await r.text();
+    if (!r.ok) {
+      const err = new Error(typeof raw === "string" ? raw : (raw.detail || raw.message || "HTTP " + r.status));
+      err.status = r.status; err.responseBody = typeof raw === "string" ? raw : JSON.stringify(raw);
+      throw err;
+    }
+    return raw;
+  }
+
 })();
