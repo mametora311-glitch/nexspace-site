@@ -22,6 +22,7 @@
                 <a href="./about/index.html">会社情報</a>
                 <a href="./contact/index.html">お問い合わせ</a>
                 <a href="./legal/index.html">ご利用にあたって</a>
+                <a href="#history">沿革</a>
             </nav>
         </div>
     </header>
@@ -75,6 +76,86 @@
                 </div>
             </div>
         </section>
+        <!-- ===== History (JSON-driven) ===== -->
+<section id="history" style="padding:48px 0;">
+  <div style="max-width:1100px;margin:0 auto;padding:0 20px;">
+    <h2 style="font-size:24px;margin:0 0 16px;">沿革</h2>
+    <ul id="history-list" style="list-style:none;margin:0;padding:0;"></ul>
+  </div>
+
+  <!-- 👇 ここだけ編集すればOK：上が新しい順でも古い順でもどっちでも可 -->
+  <script type="application/json" id="history-data">
+  [
+    {
+      "date": "2025-10-20",
+      "title": "AIEC Light 決済フロー刷新 / プランUI改善",
+      "desc": "Stripe Checkout連携の安定化、プラン描画の動的化。"
+    },
+    {
+      "date": "2025-07-15",
+      "title": "Primus Android 開発開始",
+      "desc": "Playストア公開予定。ios版も順次対応。"
+    },
+    {
+      "date": "UNKNOWN",
+      "title": "AIEC と Primus の統合方針の決定",
+      "desc": "学習コアと生成UIの一体化、NEXSPACE Voice（仮称）の中核設計へ。"
+    },
+    {
+      "date": "2025-09-06",
+      "title": "合同会社Nexspace 設立",
+      "desc": "事業領域：宇宙航空／IT／AI／HP制作。"
+    },
+    {
+        "date": "2025-10-05",
+        "title": "AI Easy Coder Light 公開",
+        "desc": "定型的なコーディング作業を自動化するAIツール。"
+    }
+  ]
+  </script>
+
+  <!-- レンダラ（触らなくてOK） -->
+  <script>
+  (function(){
+    const el = document.getElementById('history-list');
+    const raw = document.getElementById('history-data')?.textContent || '[]';
+    /** @type {{date:string,title:string,desc?:string}[]} */
+    let items;
+    try { items = JSON.parse(raw) } catch(e){ items = [] }
+
+    // 並び整える：UNKNOWNは末尾、他は降順(新しい→古い)
+    const pad = (s)=> String(s).padStart(2,'0');
+    const key = (d)=> d && d!=='UNKNOWN'
+        ? (d.split('-')[0] || '0000') + pad(d.split('-')[1] || '00')
+        : '000000';
+    items.sort((a,b)=> key(b).localeCompare(key(a)));
+
+    // 描画
+    const cssRow = 'padding:12px 0;border-top:1px solid #1f2a44;';
+    const cssTime= 'min-width:7ch;color:#93c5fd;font-variant-numeric:tabular-nums;';
+    const cssWrap= 'display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;';
+    const cssDesc= 'margin:6px 0 0;color:#94a3b8;';
+
+    if (!items.length) {
+      el.innerHTML = '<li style="'+cssRow+'">更新情報はありません。</li>';
+      return;
+    }
+    el.innerHTML = items.map((it,i,arr)=>{
+      const edge = (i===arr.length-1) ? 'border-bottom:1px solid #1f2a44;' : '';
+      const safe = (s)=> String(s||'').replace(/[&<>"]/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m]));
+      return `
+        <li style="${cssRow}${edge}">
+          <div style="${cssWrap}">
+            <time style="${cssTime}">${safe(it.date||'UNKNOWN')}</time>
+            <span style="font-weight:600;">${safe(it.title||'（無題）')}</span>
+          </div>
+          ${it.desc ? `<p style="${cssDesc}">${safe(it.desc)}</p>` : '' }
+        </li>`;
+    }).join('');
+  })();
+  </script>
+</section>
+<!-- ===== /History ===== -->
     </main>
     <footer class="site-footer">
         <div class="container foot">
