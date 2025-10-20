@@ -44,23 +44,77 @@
   </script>
 </head>
 
+<!-- AIEC プラン選択ページ -->
+
 <body>
-  <div class="wrap">
+  <header style="padding: 20px 30px; text-align: left;">
+    <a href="https://www.nexspace.jp/" 
+       style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px;">
+      ← トップページへ戻る
+    </a>
+  </header>
+
+  <main style="max-width: 960px; margin: 0 auto; padding: 20px;">
     <h1>AIEC – プラン選択</h1>
-    <p class="help">
-      <strong>ご利用手順</strong><br>
-      1. プランと請求間隔を選択 →「申し込む」<br>
-      2. Stripeの決済画面で完了 → 自動で成功ページへ<br>
-      3. 成功ページでライセンス確定 → 認証トークンでダウンロード
-    </p>
+    <p>ご利用手順</p>
+    <ol>
+      <li>プランと請求間隔を選択 →「申し込む」</li>
+      <li>Stripeの決済画面で完了 → 自動で成功ページへ</li>
+      <li>成功ページでライセンス確定 → 認証トークンでダウンロード</li>
+    </ol>
 
-    <!-- ここにJSがカードを描画する -->
-    <div id="plans"></div>
-    <div id="error" class="err" style="display:none"></div>
-  </div>
+    <div id="error" style="color:red; display:none; margin: 10px 0;"></div>
+    <div id="plans" style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;"></div>
+  </main>
 
-  <!-- 相対パスで同ディレクトリのJSを読む（キャッシュバスター付き） -->
-<!-- /products/aiec-light/index.html の末尾 -->
-<script src="/js/buy.js?v=20251020" defer></script>
+  <script src="/js/buy.js?v=20251020" defer></script>
+
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      background-color: #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.3);
+      width: 280px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch;
+    }
+    .pill {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .pill label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .primary {
+      background-color: #10b981;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .primary:hover {
+      background-color: #059669;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </body>
 </html>
