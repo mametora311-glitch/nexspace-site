@@ -7,7 +7,7 @@ export default function PurchasePage() {
       price: "¥3,000 〜",
       desc: "次世代AIOS「AxisOS」の開発支援。CAMPFIREにて限定リターンを提供中。",
       cta: "CAMPFIREで支援する",
-      link: "https://camp-fire.jp/projects/906665/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show", // クラファンURLに差し替え
+      link: "https://camp-fire.jp/projects/906665/view", // クラファンURLに差し替え
       highlight: true
     },
     {
