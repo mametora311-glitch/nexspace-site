@@ -91,32 +91,6 @@ export default function HomePage() {
               </div>
             </a>
 
-            <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <h3 className="text-2xl font-bold text-slate-900">NGND（Next Generation Node Deployment）</h3>
-              <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                公開論文「Integrated Immune System Architecture」の防御システム設計を応用し、
-                自社ローカルサーバーの統合管理・制御・防御を一体化。アプリUIから直感的に運用できる設計です。
-              </p>
-              <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
-                <li>
-                  統合管理UI: アプリUI上でノード一覧、稼働状況、制御状態、防御イベントを一元管理し、
-                  日常運用をシンプルにする。
-                </li>
-                <li>
-                  完全自動・ステルスデプロイ: WindowsからSSH経由で自社ローカルサーバー群
-                  （Debianを含むLinux系ノードなど）へ接続し、ディスクを汚染せずにメモリ上へWorkerを直接流し込んで実行する。
-                </li>
-                <li>
-                  物理法則による防御（IISA）: 不正アクセスを検知した瞬間、VDF Tarpitで攻撃者のCPUを
-                  10<sup>59</sup> 秒の「時間の沼」に沈める。
-                </li>
-                <li>
-                  自律型証拠隠滅: 脅威が閾値を超えると、自律判断で自分自身のメモリフットプリントと実行ファイルを
-                  0.1ms で抹消（自爆）し、絶対的な沈黙を返す。
-                </li>
-              </ul>
-            </section>
           </div>
         </RevealOnScroll>
       </section>
