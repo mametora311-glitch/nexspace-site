@@ -9,24 +9,6 @@ export default function PurchasePage() {
       cta: "CAMPFIREで支援する",
       link: "https://camp-fire.jp/projects/906665/view", // クラファンURLに差し替え
       highlight: true
-    },
-    {
-      name: "AIEC Office License",
-      status: "Available",
-      price: "調整中",
-      desc: "Excel / PPT / WordをAIで完全自動化。永久ライセンスを提供します。",
-      cta: "お問い合わせはこちら",
-      link: "/contact",
-      highlight: false
-    },
-    {
-      name: "Primus Early Access",
-      status: "Pre-order",
-      price: "開発中",
-      desc: "完全自律型AI「Primus」の先行体験権。リリース時に優先提供いたします。",
-      cta: "お問い合わせはこちら",
-      link: "/contact",
-      highlight: false
     }
   ];
 
@@ -37,12 +19,12 @@ export default function PurchasePage() {
         <h1 className="text-3xl font-bold text-slate-900 md:text-5xl tracking-tight">Purchase / Support</h1>
         <p className="mt-4 text-lg text-slate-700 max-w-2xl">
           NEXSPACEのプロダクトのご購入、およびプロジェクトへの支援はこちらから。
-          明日のクラウドファンディング開始に向けた限定プランも公開中です。
+          現在公開中の支援プランをご案内しています。
         </p>
       </section>
 
       {/* プロダクトカード群 */}
-      <div className="grid gap-8 md:grid-cols-3">
+      <div className="grid max-w-xl gap-8">
         {products.map((p, i) => (
           <div key={i} className={`flex flex-col rounded-3xl border p-8 transition-all ${
             p.highlight 

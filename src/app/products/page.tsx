@@ -2,25 +2,18 @@
 export default function ProductsPage() {
   const products = [
     {
-      title: "AIEC Office",
-      subtitle: "Office Automation Engine",
-      desc: "Excel、PowerPoint、WordなどのOfficeスイートをAIが直接駆動。定型業務を「AIに任せる」から「AIが完結させる」フェーズへと引き上げます。",
-      href: "/products/aiec",
-      tag: "Productivity",
-    },
-    {
-      title: "Primus",
-      subtitle: "Autonomous AI Assistant",
-      desc: "ユーザーの思考プロセスを学習し、デバイス内で完結する完全自律型のAI。プライバシーを確保しながら、個々に最適化された並走を実現します。",
-      href: "/products/primus",
-      tag: "Autonomous AI",
-    },
-    {
       title: "AxisOS",
       subtitle: "Next-Gen AI Operating System",
       desc: "複数のAIモデル、クラウドサービス、ローカルリソースを統合管理。AI時代のインフラストラクチャとして、複雑なタスクの自動制御を可能にします。",
       href: "/products/axis",
-      tag: "Infrastructure",
+      tag: "Core Product",
+    },
+    {
+      title: "NeutronGate",
+      subtitle: "Next Product (Details Coming Soon)",
+      desc: "新規プロダクトとして公開準備中。仕様・提供形態・導入情報は順次公開予定です。",
+      href: "/products/neutrongate",
+      tag: "Coming Soon",
     },
   ];
 
@@ -35,8 +28,8 @@ export default function ProductsPage() {
         </p>
       </section>
 
-      {/* プロダクトグリッド */}
-      <section className="grid gap-8 md:grid-cols-3">
+      {/* 現行プロダクトグリッド */}
+      <section className="grid gap-8 md:grid-cols-2">
         {products.map((product) => (
           <a
             key={product.title}
@@ -73,13 +66,19 @@ export default function ProductsPage() {
         ))}
       </section>
 
-      {/* 将来の展望セクション */}
-      <section className="mt-20 rounded-3xl bg-slate-50 p-8 text-center md:p-16">
-        <h2 className="text-xl font-bold text-slate-900">And more to come.</h2>
-        <p className="mt-4 text-slate-600">
-          私たちは現在も、新たな「AIエンジン」を開発中です。
-          現場の課題を解決するための革新的なプロダクトを、順次リリースしていきます。
+      {/* 過去プロダクト導線 */}
+      <section className="mt-20 rounded-3xl border border-slate-200 bg-slate-50 p-8 md:p-12">
+        <h2 className="text-xl font-bold text-slate-900">Past Products Archive</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600">
+          過去に公開していた AIEC Office と Primus は、アーカイブページに移動しました。
+          各プロダクトの概要と当時のコンセプトをご覧いただけます。
         </p>
+        <a
+          href="/products/legacy"
+          className="mt-6 inline-block rounded-full bg-slate-900 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-700"
+        >
+          過去のプロダクトページを見る
+        </a>
       </section>
     </div>
   );

@@ -38,22 +38,17 @@ export default function HomePage() {
               <p className="text-slate-700">次世代の自律型システム・ソリューション</p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2">
               {[
-                {
-                  title: "AIEC Office",
-                  desc: "Excel・PowerPoint・Word等のOffice業務をAIが直接駆動する、次世代の自動化ツール。",
-                  href: "/products/aiec"
-                },
-                {
-                  title: "Primus",
-                  desc: "ユーザーと共に成長し、デバイス内で完結する完全自律型のAIアシスタント。",
-                  href: "/products/primus"
-                },
                 {
                   title: "AxisOS",
                   desc: "複数のAIモデルとクラウドサービスを統合管理する、AI時代のオペレーティングシステム。",
                   href: "/products/axis"
+                },
+                {
+                  title: "NeutronGate",
+                  desc: "新規プロダクト。詳細は順次公開予定です。",
+                  href: "/products/neutrongate"
                 }
               ].map((item) => (
                 <a
