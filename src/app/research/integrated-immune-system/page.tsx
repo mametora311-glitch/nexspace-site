@@ -59,6 +59,10 @@ const keyMetrics = [
   },
 ];
 
+const doi = "10.5281/zenodo.18815443";
+const doiUrl = "https://doi.org/10.5281/zenodo.18815443";
+const zenodoRecordUrl = "https://zenodo.org/records/18815443";
+
 export default function IntegratedImmuneSystemPage() {
   return (
     <div className="w-full py-12 md:py-20">
@@ -66,7 +70,7 @@ export default function IntegratedImmuneSystemPage() {
         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700">
           Featured Research
           <span className="text-sky-300">|</span>
-          February 2026
+          Published on February 28, 2026
         </div>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-5xl leading-tight">
           Integrated Immune System Architecture
@@ -121,7 +125,7 @@ export default function IntegratedImmuneSystemPage() {
             </div>
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
               <dt className="w-28 font-semibold text-slate-400">Published</dt>
-              <dd>February 2026</dd>
+              <dd>February 28, 2026</dd>
             </div>
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
               <dt className="w-28 font-semibold text-slate-400">Pages</dt>
@@ -131,8 +135,50 @@ export default function IntegratedImmuneSystemPage() {
               <dt className="w-28 font-semibold text-slate-400">Keywords</dt>
               <dd>AI Safety, VDF, TPM, Autonomous Control</dd>
             </div>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
+              <dt className="w-28 font-semibold text-slate-400">DOI</dt>
+              <dd>
+                <a
+                  href={doiUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sky-300 underline decoration-sky-500/60 underline-offset-2 hover:text-sky-200"
+                >
+                  {doi}
+                </a>
+              </dd>
+            </div>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
+              <dt className="w-28 font-semibold text-slate-400">Source</dt>
+              <dd>
+                <a
+                  href={zenodoRecordUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sky-300 underline decoration-sky-500/60 underline-offset-2 hover:text-sky-200"
+                >
+                  Zenodo Record
+                </a>
+              </dd>
+            </div>
           </dl>
         </article>
+      </section>
+
+      <section className="mb-16 rounded-2xl border border-slate-200 bg-sky-50 p-6">
+        <h2 className="mb-3 text-lg font-bold text-slate-900">Cite This Work</h2>
+        <p className="text-sm leading-relaxed text-slate-700">
+          Matsunaga, S. (2026). Integrated Immune System Architecture: A Physically Grounded Dynamic Defense Model
+          for Autonomous AI Control. Zenodo. DOI:{" "}
+          <a
+            href={doiUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-sky-700 underline underline-offset-2 hover:text-sky-600"
+          >
+            {doi}
+          </a>
+        </p>
       </section>
 
       <section className="mb-16">
