@@ -3,7 +3,6 @@
 
 import Image from "next/image";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
-import { useLanguage } from "@/context/LanguageContext"; // 追加
 
 export default function HomePage() {
   return (
@@ -72,6 +71,25 @@ export default function HomePage() {
                 </a>
               ))}
             </div>
+
+            <a
+              href="/research/integrated-immune-system"
+              className="group block rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 p-8 shadow-sm transition-all hover:border-sky-400 hover:shadow-lg"
+            >
+              <div className="mb-3 inline-flex items-center rounded-full bg-sky-500/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-sky-300">
+                Featured Paper
+              </div>
+              <h3 className="text-2xl font-bold leading-tight text-white">
+                Integrated Immune System Architecture
+              </h3>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
+                自律AIの自己逸脱リスクに対し、VDF とハードウェア境界を使って
+                「壊されない制御層」を構築する研究論文の特設ページです。
+              </p>
+              <div className="mt-5 text-sm font-semibold text-sky-300 group-hover:text-sky-200">
+                論文特設ページを見る →
+              </div>
+            </a>
           </div>
         </RevealOnScroll>
       </section>

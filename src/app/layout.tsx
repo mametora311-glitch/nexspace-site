@@ -31,6 +31,7 @@ export default function RootLayout({
                 <nav className="hidden items-center gap-4 text-sm text-slate-600 md:flex">
                   <a href="/" className="hover:text-sky-600">トップ</a>
                   <a href="/products" className="hover:text-sky-600">プロダクト</a>
+                  <a href="/research/integrated-immune-system" className="hover:text-sky-600">論文</a>
                   <a href="/company" className="hover:text-sky-600">会社概要</a>
                   <a href="/legal" className="hover:text-sky-600">リーガル</a>
                   <a href="/purchase" className="hover:text-sky-600">購入</a>
