@@ -38,12 +38,17 @@ export default function HomePage() {
               <p className="text-slate-700">次世代の自律型システム・ソリューション</p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-3">
               {[
                 {
                   title: "AxisOS",
                   desc: "複数のAIモデルとクラウドサービスを統合管理する、AI時代のオペレーティングシステム。",
                   href: "/products/axis"
+                },
+                {
+                  title: "NGND",
+                  desc: "Next Generation Node Deployment。次世代ノード展開のための自律実行基盤。",
+                  href: "/products/ngnd"
                 },
                 {
                   title: "NeutronGate",
@@ -85,6 +90,29 @@ export default function HomePage() {
                 論文特設ページを見る →
               </div>
             </a>
+
+            <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <h3 className="text-2xl font-bold text-slate-900">NGND（Next Generation Node Deployment）</h3>
+              <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                公開論文「Integrated Immune System Architecture」の防御システム設計を応用し、
+                デプロイ基盤に物理制約ベースの制御思想を組み込んでいます。
+              </p>
+              <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
+                <li>
+                  完全自動・ステルスデプロイ: WindowsからSSH経由でDebian等へログインし、ディスクを汚染せずに
+                  メモリ上へWorkerを直接流し込んで実行する。
+                </li>
+                <li>
+                  物理法則による防御（IISA）: 不正アクセスを検知した瞬間、VDF Tarpitで攻撃者のCPUを
+                  10<sup>59</sup> 秒の「時間の沼」に沈める。
+                </li>
+                <li>
+                  自律型証拠隠滅: 脅威が閾値を超えると、自律判断で自分自身のメモリフットプリントと実行ファイルを
+                  0.1ms で抹消（自爆）し、絶対的な沈黙を返す。
+                </li>
+              </ul>
+            </section>
           </div>
         </RevealOnScroll>
       </section>

@@ -15,6 +15,13 @@ export default function ProductsPage() {
       href: "/products/neutrongate",
       tag: "Coming Soon",
     },
+    {
+      title: "NGND",
+      subtitle: "Next Generation Node Deployment",
+      desc: "完全自動・ステルスデプロイとIISA防御を統合した次世代ノードデプロイ基盤。",
+      href: "/products/ngnd",
+      tag: "Advanced Architecture",
+    },
   ];
 
   return (
@@ -29,7 +36,7 @@ export default function ProductsPage() {
       </section>
 
       {/* 現行プロダクトグリッド */}
-      <section className="grid gap-8 md:grid-cols-2">
+      <section className="grid gap-8 md:grid-cols-3">
         {products.map((product) => (
           <a
             key={product.title}
@@ -64,6 +71,29 @@ export default function ProductsPage() {
             </div>
           </a>
         ))}
+      </section>
+
+      <section className="mt-20 rounded-3xl border border-slate-200 bg-white p-8 md:p-12">
+        <h2 className="text-2xl font-bold text-slate-900">NGND（Next Generation Node Deployment）</h2>
+        <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600">
+          公開論文「Integrated Immune System Architecture」で提示した制御・防御システムを応用し、
+          ノード展開と保全を同時に成立させる設計を採用しています。
+        </p>
+        <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
+          <li>
+            完全自動・ステルスデプロイ: WindowsからSSH経由でDebian等へログインし、ディスクを汚染せずに
+            メモリ上へWorkerを直接流し込んで実行する。
+          </li>
+          <li>
+            物理法則による防御（IISA）: 不正アクセスを検知した瞬間、VDF Tarpitで攻撃者のCPUを
+            10<sup>59</sup> 秒の「時間の沼」に沈める。
+          </li>
+          <li>
+            自律型証拠隠滅: 脅威が閾値を超えると、自律判断で自分自身のメモリフットプリントと実行ファイルを
+            0.1ms で抹消（自爆）し、絶対的な沈黙を返す。
+          </li>
+        </ul>
       </section>
 
       {/* 過去プロダクト導線 */}
