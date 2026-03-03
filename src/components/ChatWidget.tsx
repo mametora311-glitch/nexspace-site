@@ -71,7 +71,7 @@ export function ChatWidget() {
       });
       const data = await response.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.content }]);
-    } catch (error) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "申し訳ありません。現在接続が不安定です。時間をおいて再度お試しください。" }
@@ -87,7 +87,7 @@ export function ChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-4 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 text-white shadow-2xl transition-all hover:scale-110 hover:bg-sky-600 active:scale-95 group"
+        className="fixed bottom-3 right-3 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-2xl transition-all hover:scale-110 hover:bg-sky-600 active:scale-95 group sm:bottom-4 sm:right-4 sm:h-14 sm:w-14"
         aria-label="アシスタントと対話する"
       >
         {/* 背後のパルス（脈動） */}
@@ -116,7 +116,7 @@ export function ChatWidget() {
       </button>
 
       {open && (
-        <div className="fixed bottom-20 right-4 z-40 w-[90vw] sm:w-[440px] overflow-hidden rounded-3xl border border-slate-700 bg-slate-900/98 shadow-2xl backdrop-blur-xl">
+        <div className="fixed bottom-20 left-3 right-3 z-40 w-auto overflow-hidden rounded-3xl border border-slate-700 bg-slate-900/98 shadow-2xl backdrop-blur-xl sm:left-auto sm:right-4 sm:w-[440px]">
           <div className="flex items-center justify-between border-b border-slate-700 bg-slate-800/50 px-4 py-3">
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 animate-pulse rounded-full bg-sky-500"></div>
@@ -135,7 +135,7 @@ export function ChatWidget() {
 
           <div
             ref={scrollRef}
-            className="max-h-[500px] min-h-[350px] space-y-6 overflow-y-auto px-6 py-6 text-[14px] leading-relaxed"
+            className="max-h-[64vh] min-h-[280px] space-y-6 overflow-y-auto px-4 py-5 text-[14px] leading-relaxed sm:max-h-[500px] sm:min-h-[350px] sm:px-6 sm:py-6"
           >
             {messages.map((m, idx) => (
               <div key={idx} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>

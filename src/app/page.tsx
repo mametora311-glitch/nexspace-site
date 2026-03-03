@@ -8,9 +8,9 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* Hero #1 */}
-      <section className="flex min-h-[80vh] flex-col items-center justify-center bg-white text-center">
+      <section className="flex min-h-[68vh] flex-col items-center justify-center bg-white px-2 py-14 text-center md:min-h-[80vh]">
         <div className="space-y-6">
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 md:text-6xl leading-tight">
+          <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl md:text-6xl">
             AIを“エンジン”にして、
             <br />
             現場で動くプロダクトをつくる。
@@ -29,7 +29,7 @@ export default function HomePage() {
       </section>
 
       {/* 中間セクション群 */}
-      <section className="mx-auto flex max-w-6xl flex-col gap-20 bg-slate-50 pb-24 pt-16 px-4">
+      <section className="mx-auto flex max-w-6xl flex-col gap-16 bg-slate-50 pb-20 pt-12 md:gap-20 md:pb-24 md:pt-16">
         {/* プロダクトカード */}
         <RevealOnScroll>
           <div className="space-y-8">
@@ -74,7 +74,7 @@ export default function HomePage() {
 
             <a
               href="/research/integrated-immune-system"
-              className="group block rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 p-8 shadow-sm transition-all hover:border-sky-400 hover:shadow-lg"
+              className="group block rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-800 p-6 shadow-sm transition-all hover:border-sky-400 hover:shadow-lg md:p-8"
             >
               <div className="mb-3 inline-flex items-center rounded-full bg-sky-500/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-sky-300">
                 Featured Paper
@@ -96,7 +96,7 @@ export default function HomePage() {
       </section>
 
       {/* 理念セクション */}
-      <section className="py-20">
+      <section className="py-16 md:py-20">
         <RevealOnScroll>
           <div className="flex flex-col gap-12">
             {/* タイトルブロック：Products（image_ae5d65.png）と完全に一致させる */}
@@ -114,10 +114,10 @@ export default function HomePage() {
                 </p>
                 <div className="mt-10 flex flex-wrap gap-4">
                   {/* 「会社概要」を「お問い合わせ」と同じ控えめなスタイルに変更 */}
-                  <a href="/company" className="rounded-full border border-slate-200 bg-white px-8 py-3 text-sm font-bold text-slate-600 transition-all hover:border-sky-500 hover:text-sky-600">
+                  <a href="/company" className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-600 transition-all hover:border-sky-500 hover:text-sky-600 md:px-8">
                     会社概要
                   </a>
-                  <a href="/contact" className="rounded-full border border-slate-200 bg-white px-8 py-3 text-sm font-bold text-slate-600 transition-all hover:border-sky-500 hover:text-sky-600">
+                  <a href="/contact" className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-600 transition-all hover:border-sky-500 hover:text-sky-600 md:px-8">
                     お問い合わせ
                   </a>
                 </div>
@@ -142,7 +142,7 @@ export default function HomePage() {
       </section>
 
       {/* Axisビジョン（現状維持しつつ文字調整） */}
-      <section className="bg-slate-950 py-24 text-white">
+      <section className="bg-slate-950 py-16 text-white md:py-24">
         <RevealOnScroll>
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-12 md:flex-row">
             <div className="flex-1">
@@ -171,7 +171,7 @@ export default function HomePage() {
               </p>
               <a
                 href="/products/axis"
-                className="inline-block rounded-full bg-sky-500 px-8 py-3 text-sm font-bold text-white transition-hover hover:bg-sky-400"
+                className="inline-block w-full rounded-full bg-sky-500 px-8 py-3 text-center text-sm font-bold text-white transition-hover hover:bg-sky-400 sm:w-auto"
               >
                 AxisOS PROJECT DETAILS
               </a>

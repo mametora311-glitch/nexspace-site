@@ -18,9 +18,9 @@ export default function PurchasePage() {
   ];
 
   return (
-    <div className="w-full py-12 md:py-20 max-w-6xl mx-auto px-4">
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 md:py-20">
       {/* ヒーローセクション */}
-      <section className="mb-16 border-l-4 border-sky-500 pl-6">
+      <section className="mb-12 border-l-4 border-sky-500 pl-4 md:mb-16 md:pl-6">
         <h1 className="text-3xl font-bold text-slate-900 md:text-5xl tracking-tight">Purchase</h1>
         <p className="mt-4 text-lg text-slate-700 max-w-2xl">
           現在、購入可能なプランは準備中です。
@@ -31,7 +31,7 @@ export default function PurchasePage() {
       {/* プロダクトカード群 */}
       <div className="grid max-w-4xl gap-8 md:grid-cols-2">
         {products.map((p, i) => (
-          <div key={i} className={`flex flex-col rounded-3xl border p-8 transition-all ${
+          <div key={i} className={`flex flex-col rounded-3xl border p-6 transition-all md:p-8 ${
             p.highlight 
               ? "border-sky-500 bg-sky-50 shadow-lg"
               : "border-slate-200 bg-white hover:border-sky-500 hover:shadow-md"
@@ -54,7 +54,7 @@ export default function PurchasePage() {
             <button
               type="button"
               disabled
-              className={`w-full py-4 rounded-full text-center text-sm font-black transition-all ${
+              className={`w-full rounded-full py-4 text-center text-sm font-black transition-all ${
                 p.highlight
                   ? "bg-slate-400 text-white cursor-not-allowed"
                   : "bg-slate-300 text-white cursor-not-allowed"
@@ -66,7 +66,7 @@ export default function PurchasePage() {
         ))}
       </div>
 
-      <section className="mt-20 rounded-3xl border border-slate-200 bg-white p-8 md:p-12">
+      <section className="mt-16 rounded-3xl border border-slate-200 bg-white p-6 md:mt-20 md:p-12">
         <h2 className="text-2xl font-bold text-slate-900">NGND（Next Generation Node Deployment）</h2>
         <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
@@ -94,7 +94,7 @@ export default function PurchasePage() {
       </section>
 
       {/* 注意事項セクション */}
-      <section className="mt-20 p-8 rounded-3xl bg-slate-50 border border-slate-200">
+      <section className="mt-16 rounded-3xl border border-slate-200 bg-slate-50 p-6 md:mt-20 md:p-8">
         <h2 className="text-lg font-bold text-slate-900 mb-4">公開状況に関するご案内</h2>
         <ul className="text-sm text-slate-600 space-y-3 list-disc pl-5">
           <li>AxisOS / NGND は現在開発中のため、購入・申込受付は未開始です。</li>

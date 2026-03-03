@@ -25,9 +25,9 @@ export default function ProductsPage() {
   ];
 
   return (
-    <div className="w-full py-12 md:py-20">
+    <div className="w-full py-10 md:py-20">
       {/* ヘッダーセクション */}
-      <section className="mb-16 border-l-4 border-sky-500 pl-6">
+      <section className="mb-12 border-l-4 border-sky-500 pl-4 md:mb-16 md:pl-6">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Products</h1>
         <p className="mt-2 max-w-2xl text-slate-700">
           NEXSPACEが提供する、AIをエンジンとして実装した次世代のプロダクト群です。
@@ -41,7 +41,7 @@ export default function ProductsPage() {
           <a
             key={product.title}
             href={product.href}
-            className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-500 hover:shadow-xl"
+            className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-500 hover:shadow-xl md:p-8"
           >
             <div>
               <div className="mb-4 inline-block rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-600">
@@ -73,7 +73,7 @@ export default function ProductsPage() {
         ))}
       </section>
 
-      <section className="mt-20 rounded-3xl border border-slate-200 bg-white p-8 md:p-12">
+      <section className="mt-16 rounded-3xl border border-slate-200 bg-white p-6 md:mt-20 md:p-12">
         <h2 className="text-2xl font-bold text-slate-900">NGND（Next Generation Node Deployment）</h2>
         <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
@@ -101,7 +101,7 @@ export default function ProductsPage() {
       </section>
 
       {/* 過去プロダクト導線 */}
-      <section className="mt-20 rounded-3xl border border-slate-200 bg-slate-50 p-8 md:p-12">
+      <section className="mt-16 rounded-3xl border border-slate-200 bg-slate-50 p-6 md:mt-20 md:p-12">
         <h2 className="text-xl font-bold text-slate-900">Past Products Archive</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
           過去に公開していた AIEC Office と Primus は、アーカイブページに移動しました。

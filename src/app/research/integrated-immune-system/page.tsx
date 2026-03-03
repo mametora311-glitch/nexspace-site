@@ -239,7 +239,7 @@ export default function IntegratedImmuneSystemPage() {
         </div>
         <iframe
           src="/papers/integrated-immune-system.pdf#view=FitH"
-          className="h-[720px] w-full rounded-xl border border-slate-200"
+          className="h-[420px] w-full rounded-xl border border-slate-200 md:h-[720px]"
           title="Integrated Immune System Architecture PDF"
         />
       </section>

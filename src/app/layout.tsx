@@ -1,9 +1,21 @@
 // src/app/layout.tsx
 import Image from "next/image";
+import Link from "next/link";
 import type { Metadata } from "next";
 import "./globals.css";
 import { ChatWidget } from "@/components/ChatWidget";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+
+const navLinks = [
+  { href: "/", label: "トップ" },
+  { href: "/products", label: "プロダクト" },
+  { href: "/research/integrated-immune-system", label: "論文" },
+  { href: "/company", label: "会社概要" },
+  { href: "/legal", label: "リーガル" },
+  { href: "/purchase", label: "購入" },
+  { href: "/faq", label: "Q&A" },
+  { href: "/contact", label: "お問い合わせ" },
+];
 
 export const metadata: Metadata = {
   title: "NEXSPACE | AI Engine-Oriented Systems",
@@ -29,23 +41,33 @@ export default function RootLayout({
               </div>
               <div className="flex items-center gap-4">
                 <nav className="hidden items-center gap-4 text-sm text-slate-600 md:flex">
-                  <a href="/" className="hover:text-sky-600">トップ</a>
-                  <a href="/products" className="hover:text-sky-600">プロダクト</a>
-                  <a href="/research/integrated-immune-system" className="hover:text-sky-600">論文</a>
-                  <a href="/company" className="hover:text-sky-600">会社概要</a>
-                  <a href="/legal" className="hover:text-sky-600">リーガル</a>
-                  <a href="/purchase" className="hover:text-sky-600">購入</a>
-                  <a href="/faq" className="hover:text-sky-600">Q&A</a>
-                  <a href="/contact" className="hover:text-sky-600">お問い合わせ</a>
+                  {navLinks.map((item) => (
+                    <Link key={item.href} href={item.href} className="hover:text-sky-600">
+                      {item.label}
+                    </Link>
+                  ))}
                 </nav>
                 <div className="hidden md:block">
                   <LanguageSwitcher />
                 </div>
               </div>
             </div>
+            <div className="border-t border-slate-100 px-4 pb-3 md:hidden">
+              <nav className="flex gap-2 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {navLinks.map((item) => (
+                  <Link
+                    key={`mobile-${item.href}`}
+                    href={item.href}
+                    className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </header>
 
-          <main className="mx-auto flex w-full max-w-6xl flex-1 px-4">
+          <main className="mx-auto flex w-full max-w-6xl flex-1 px-4 pb-24 md:pb-8">
             {children}
           </main>
 

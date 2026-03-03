@@ -1,7 +1,7 @@
 export default function NgndPage() {
   return (
-    <div className="w-full py-12 md:py-20">
-      <section className="mb-16 border-l-4 border-sky-500 pl-6">
+    <div className="w-full py-10 md:py-20">
+      <section className="mb-12 border-l-4 border-sky-500 pl-4 md:mb-16 md:pl-6">
         <div className="mb-4 inline-block rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-600">
           In Development
         </div>
@@ -21,7 +21,7 @@ export default function NgndPage() {
         </p>
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm md:p-12">
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-12">
         <h2 className="text-2xl font-bold text-slate-900">NGNDが実現する「次世代」の機能</h2>
         <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
           <li>
@@ -43,16 +43,16 @@ export default function NgndPage() {
         </ul>
       </section>
 
-      <div className="mt-16 flex flex-wrap gap-4">
+      <div className="mt-12 flex flex-col gap-4 sm:mt-16 sm:flex-row">
         <a
           href="/contact"
-          className="rounded-full bg-slate-900 px-8 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-700"
+          className="rounded-full bg-slate-900 px-8 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-slate-700"
         >
           導入のご相談はお問い合わせからどうぞ
         </a>
         <a
           href="/products"
-          className="rounded-full border border-slate-300 px-8 py-3 text-sm font-bold text-slate-900 transition-colors hover:border-slate-900"
+          className="rounded-full border border-slate-300 px-8 py-3 text-center text-sm font-bold text-slate-900 transition-colors hover:border-slate-900"
         >
           プロダクト一覧に戻る
         </a>
