@@ -14,7 +14,10 @@ export default function NgndPage() {
         </h1>
         <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-700 md:text-lg">
           公開論文「Integrated Immune System Architecture」の制御・防御システムを応用し、
-          ノードデプロイを次世代化するための基盤として開発を進めています。
+          自社ローカルサーバーの統合管理・制御・防御を同時に実現する運用システムとして開発を進めています。
+        </p>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 md:text-base">
+          複雑な操作はアプリUIに集約し、現場では直感的な画面操作でノード管理と防御運用を進められることを重視しています。
         </p>
       </section>
 
@@ -22,8 +25,12 @@ export default function NgndPage() {
         <h2 className="text-2xl font-bold text-slate-900">NGNDが実現する「次世代」の機能</h2>
         <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
           <li>
-            完全自動・ステルスデプロイ: WindowsからSSH経由でDebian等へログインし、ディスクを汚染せずに
-            メモリ上へWorkerを直接流し込んで実行する。
+            統合管理UI: アプリUI上でノード一覧、稼働状況、制御状態、防御イベントを一元管理し、
+            日常運用をシンプルにする。
+          </li>
+          <li>
+            完全自動・ステルスデプロイ: WindowsからSSH経由で自社ローカルサーバー群
+            （Debianを含むLinux系ノードなど）へ接続し、ディスクを汚染せずにメモリ上へWorkerを直接流し込んで実行する。
           </li>
           <li>
             物理法則による防御（IISA）: 不正アクセスを検知した瞬間、VDF Tarpitで攻撃者のCPUを

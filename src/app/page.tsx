@@ -47,7 +47,7 @@ export default function HomePage() {
                 },
                 {
                   title: "NGND",
-                  desc: "Next Generation Node Deployment。次世代ノード展開のための自律実行基盤。",
+                  desc: "自社ローカルサーバーを統合管理・制御・防御する、アプリUI中心の次世代運用システム。",
                   href: "/products/ngnd"
                 },
                 {
@@ -96,12 +96,16 @@ export default function HomePage() {
               <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
               <p className="mt-3 text-sm leading-relaxed text-slate-600">
                 公開論文「Integrated Immune System Architecture」の防御システム設計を応用し、
-                デプロイ基盤に物理制約ベースの制御思想を組み込んでいます。
+                自社ローカルサーバーの統合管理・制御・防御を一体化。アプリUIから直感的に運用できる設計です。
               </p>
               <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
                 <li>
-                  完全自動・ステルスデプロイ: WindowsからSSH経由でDebian等へログインし、ディスクを汚染せずに
-                  メモリ上へWorkerを直接流し込んで実行する。
+                  統合管理UI: アプリUI上でノード一覧、稼働状況、制御状態、防御イベントを一元管理し、
+                  日常運用をシンプルにする。
+                </li>
+                <li>
+                  完全自動・ステルスデプロイ: WindowsからSSH経由で自社ローカルサーバー群
+                  （Debianを含むLinux系ノードなど）へ接続し、ディスクを汚染せずにメモリ上へWorkerを直接流し込んで実行する。
                 </li>
                 <li>
                   物理法則による防御（IISA）: 不正アクセスを検知した瞬間、VDF Tarpitで攻撃者のCPUを
@@ -152,7 +156,7 @@ export default function HomePage() {
                 </p>
                 {/* 文字サイズを少し小さめ（text-xl〜2xl）に調整して品良く */}
                 <h3 className="text-xl font-black italic leading-tight text-white md:text-2xl">
-                  "単なるモデルではなく、エンジンとしての AI。"
+                  &quot;単なるモデルではなく、エンジンとしての AI。&quot;
                 </h3>
                 <p className="mt-6 text-sm leading-relaxed text-sky-50/80">
                   モデルを動かすことが目的ではなく、ビジネスを、生活を、そして未来を動かすためのエンジンとしてAIを実装する。それがNEXSPACEの存在意義です。

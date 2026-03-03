@@ -11,7 +11,7 @@ export default function PurchasePage() {
     {
       name: "NGND",
       status: "開発中",
-      desc: "NGND（Next Generation Node Deployment）は現在開発中です。機能詳細と提供形態は順次公開します。",
+      desc: "NGNDは、自社ローカルサーバーの統合管理・制御・防御をアプリUIで実行できる運用システムとして開発中です。",
       cta: "Coming Soon",
       highlight: false
     }
@@ -71,12 +71,16 @@ export default function PurchasePage() {
         <p className="mt-2 text-sm font-semibold text-sky-700">NGNDが実現する「次世代」の機能</p>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
           公開論文「Integrated Immune System Architecture」の防御システムを応用し、
-          展開と保全を同時に成立させるアーキテクチャを採用しています。
+          自社ローカルサーバーの統合管理・制御・防御を同時に成立させるアーキテクチャを採用しています。
         </p>
         <ul className="mt-6 space-y-4 text-sm leading-relaxed text-slate-700">
           <li>
-            完全自動・ステルスデプロイ: WindowsからSSH経由でDebian等へログインし、ディスクを汚染せずに
-            メモリ上へWorkerを直接流し込んで実行する。
+            統合管理UI: アプリUI上でノード一覧、稼働状況、制御状態、防御イベントを一元管理し、
+            日常運用をシンプルにする。
+          </li>
+          <li>
+            完全自動・ステルスデプロイ: WindowsからSSH経由で自社ローカルサーバー群
+            （Debianを含むLinux系ノードなど）へ接続し、ディスクを汚染せずにメモリ上へWorkerを直接流し込んで実行する。
           </li>
           <li>
             物理法則による防御（IISA）: 不正アクセスを検知した瞬間、VDF Tarpitで攻撃者のCPUを
