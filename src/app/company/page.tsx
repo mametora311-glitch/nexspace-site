@@ -1,50 +1,44 @@
-// src/app/company/page.tsx
+import Link from "next/link";
+import { siteConfig } from "@/config/site";
+
 export default function CompanyPage() {
   const companyInfo = [
-    { label: "屋号", value: "NEXSPACE" },
-    { label: "代表者", value: "松永 成幸" },
-    { label: "所在地", value: "鹿児島県鹿児島市油須木町167-3" },
-    { label: "設立", value: "2025年9月6日" },
-    { label: "事業内容", value: "SaaS事業 / AIシステム開発・運用" },
+    { label: "屋号", value: siteConfig.legalName },
+    { label: "代表者", value: siteConfig.representative },
+    { label: "所在地", value: siteConfig.address },
+    { label: "設立", value: siteConfig.established },
+    { label: "事業内容", value: "AIシステム開発・運用 / ローカルAI・業務運用支援プロダクト開発" },
   ];
 
   return (
-    <div className="w-full max-w-4xl py-12 md:py-20">
-      {/* ページタイトル */}
-      <div className="mb-12 border-l-4 border-sky-500 pl-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Company Profile</h1>
+    <div className="mx-auto w-full max-w-4xl py-12 md:py-20">
+      <section className="mb-12 border-l-4 border-sky-500 pl-4 md:pl-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-5xl">Company Profile</h1>
         <p className="mt-2 text-slate-600">会社概要</p>
-      </div>
+      </section>
 
-      {/* 会社情報テーブル */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <section className="overflow-hidden rounded-lg border border-slate-200 bg-white">
         <dl className="divide-y divide-slate-200">
-          {companyInfo.map((item, index) => (
-            <div key={index} className="grid grid-cols-1 px-6 py-6 sm:grid-cols-3 sm:gap-4">
-              <dt className="text-sm font-semibold text-slate-900">{item.label}</dt>
-              <dd className="mt-1 text-sm leading-relaxed text-slate-800 sm:col-span-2 sm:mt-0">
-                {item.value}
-              </dd>
+          {companyInfo.map((item) => (
+            <div key={item.label} className="grid grid-cols-1 px-6 py-5 sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-semibold text-slate-950">{item.label}</dt>
+              <dd className="mt-1 text-sm leading-relaxed text-slate-700 sm:col-span-2 sm:mt-0">{item.value}</dd>
             </div>
           ))}
         </dl>
-      </div>
+      </section>
 
-      {/* お問い合わせボタン */}
-      <div className="mt-8 flex justify-center">
-        <a href="/contact" className="rounded-full border border-slate-200 bg-white px-24 py-3 text-sm font-bold text-slate-600 transition-all hover:border-sky-500 hover:text-sky-600">
-          お問い合わせはこちらから
-        </a>
-      </div>
-
-      {/* ミッション/ビジョン（オプション） */}
-      <div className="mt-16 rounded-2xl bg-slate-900 p-8 text-white md:p-12">
-        <h2 className="mb-6 text-xl font-bold">Our Vision</h2>
-        <p className="text-lg leading-relaxed text-slate-300">
-          「AIを“エンジン”にして、現場で動くプロダクトをつくる。」
-          <br />
-          私たちは、技術を形にするだけでなく、それが実社会の動力となるまで伴走し続けます。
+      <section className="mt-12 rounded-lg bg-slate-950 p-6 text-white md:p-8">
+        <h2 className="text-xl font-bold">Our Vision</h2>
+        <p className="mt-4 text-sm leading-relaxed text-slate-300 md:text-base">
+          {siteConfig.mission}
         </p>
+      </section>
+
+      <div className="mt-8">
+        <Link href="/contact" className="inline-flex rounded-full bg-sky-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-sky-700">
+          お問い合わせはこちらから
+        </Link>
       </div>
     </div>
   );

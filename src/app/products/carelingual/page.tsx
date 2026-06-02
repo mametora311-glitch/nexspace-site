@@ -1,37 +1,35 @@
 import Link from "next/link";
 import { lifecycleLabels, products } from "@/config/products";
 
-const product = products.find((item) => item.slug === "ngnd");
+const product = products.find((item) => item.slug === "carelingual");
 
 const problems = [
-  "小規模事業者に専任管理者がいない",
-  "サーバー状態確認が属人化する",
-  "障害・不正アクセス時の確認が遅れる",
+  "記録が散らばる",
+  "申し送りの抜け漏れが起きる",
+  "情報確認に時間がかかる",
+  "紙・口頭・チャットが混在する",
 ];
 
 const features = [
-  "ノード一覧",
-  "CPU/RAM/Disk/Network表示",
-  "SSH接続先管理",
-  "ログ閲覧",
-  "防御イベント表示",
-  "JST時刻表示",
-  "管理者ログイン / 権限管理",
+  "タイムライン記録",
+  "利用者 / 患者情報の整理",
+  "PDF出力",
+  "役割別権限",
+  "通知",
+  "相談支援",
 ];
 
-const targets = ["小規模事業者", "医療・福祉施設", "自社ローカルサーバー運用者"];
-
-export default function NgndPage() {
+export default function CareLingualPage() {
   if (!product) return null;
 
   return (
     <div className="w-full py-12 md:py-20">
       <section className="mb-14 border-l-4 border-sky-500 pl-4 md:pl-6">
         <p className="text-sm font-bold text-sky-700">{lifecycleLabels[product.lifecycle]}</p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">NGND</h1>
-        <p className="mt-3 text-lg font-semibold text-slate-600">ローカルサーバー運用を、見える化して守る。</p>
+        <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">CareLingual</h1>
+        <p className="mt-3 text-lg font-semibold text-slate-600">現場記録と申し送りを、もっと扱いやすく。</p>
         <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-700 md:text-lg">
-          NGNDは、ローカルサーバーや社内ノードの状態監視、操作、証跡確認、防御イベントの可視化を一元化する運用支援システムです。
+          CareLingualは、医療・介護・福祉施設向けに、記録・申し送り・相談・通知・情報整理を支援するプロダクトです。
         </p>
       </section>
 
@@ -56,24 +54,20 @@ export default function NgndPage() {
         </div>
       </section>
 
-      <section className="mt-16">
-        <h2 className="text-2xl font-bold text-slate-950">For</h2>
-        <div className="mt-5 grid gap-4 md:grid-cols-3">
-          {targets.map((item) => (
-            <article key={item} className="rounded-lg border border-slate-200 bg-white p-5">
-              <h3 className="font-bold text-slate-950">{item}</h3>
-            </article>
-          ))}
-        </div>
+      <section className="mt-16 rounded-lg border border-amber-200 bg-amber-50 p-6 md:p-8">
+        <h2 className="text-2xl font-bold text-slate-950">Caution</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-700">
+          医療判断の代行ではなく、記録・確認・情報整理の補助を目的とするシステムです。
+        </p>
       </section>
 
       <section className="mt-16 rounded-lg border border-slate-200 bg-slate-50 p-6 md:p-8">
         <h2 className="text-2xl font-bold text-slate-950">CTA</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          導入条件や運用範囲は、個別の環境に合わせて確認します。
+          施設ごとの運用や権限設計に合わせて導入相談を受け付けます。
         </p>
         <Link href={product.ctaHref} className="mt-6 inline-flex rounded-full bg-sky-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-sky-700">
-          導入相談
+          施設導入相談
         </Link>
       </section>
     </div>

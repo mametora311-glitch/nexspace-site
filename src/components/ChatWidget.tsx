@@ -121,7 +121,7 @@ export function ChatWidget() {
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 animate-pulse rounded-full bg-sky-500"></div>
               <span className="text-xs font-bold tracking-widest text-slate-200 uppercase">
-                NEXPACE Intelligent Assistant
+                NEXSPACE Intelligent Assistant
               </span>
             </div>
             <button
@@ -162,7 +162,7 @@ export function ChatWidget() {
             <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-slate-700 bg-slate-950 px-2 py-1 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all">
               <input
                 className="flex-1 bg-transparent px-3 py-2 text-[13px] text-slate-100 outline-none placeholder:text-slate-600"
-                placeholder="AxisOSについて質問する..."
+                placeholder="導入相談について質問する..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") handleSend(); }}

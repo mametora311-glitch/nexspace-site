@@ -1,70 +1,72 @@
-// src/app/faq/page.tsx
-export default function FaqPage() {
-  const faqs = [
-    {
-      category: "AxisOS",
-      q: "クラウドファンディングの開始時期はいつですか？",
-      a: "AxisOSプロジェクトのクラウドファンディングは、2025年12月24日（水）よりCAMPFIREにて開始いたします。詳細はプロダクトページ、または公式SNSをご確認ください。",
-    },
-    {
-      category: "Primus",
-      q: "Primusは完全にオフラインで動作しますか？",
-      a: "はい。Primusはプライバシーの保護とレスポンス速度を最優先しており、推論処理の大部分をデバイス内のローカル環境で完結させる設計となっています。",
-    },
-    {
-      category: "AIEC Office",
-      q: "どのようなOfficeソフトに対応していますか？",
-      a: "Microsoft Excel、PowerPoint、Wordに対応しています。マクロやVBAの知識なしに、自然言語での指示だけでこれらのアプリケーションを横断的に操作可能です。",
-    },
-    {
-      category: "導入・サポート",
-      q: "導入に関する相談やカスタマイズの依頼は可能ですか？",
-      a: "もちろんです。各企業のワークフローに合わせた最適な導入プランをご提案いたします。画面上部の「お問い合わせ」フォーム、または右下のAIチャットよりお気軽にご相談ください。",
-    },
-  ];
+import Link from "next/link";
 
+const faqs = [
+  {
+    category: "NeutronGate",
+    q: "NeutronGateは何をする製品ですか？",
+    a: "ローカル環境で知識パックを扱うAI基盤です。詳細はNeutronGateページをご確認ください。",
+  },
+  {
+    category: "NeutronGate",
+    q: "NeutronGateはクラウドAIと何が違いますか？",
+    a: "クラウドにすべてを送る前提ではなく、PC内の知識パックやローカル運用を重視する点が違います。",
+  },
+  {
+    category: "NGND",
+    q: "NGNDは何をするシステムですか？",
+    a: "ローカルサーバーの状態監視、ノード管理、ログ確認、防御イベントの可視化を支援するシステムです。",
+  },
+  {
+    category: "CareLingual",
+    q: "CareLingualは医療判断を代行しますか？",
+    a: "代行しません。記録、申し送り、情報整理、確認支援を目的とする補助システムです。",
+  },
+  {
+    category: "NDSM",
+    q: "NDSMは何ですか？",
+    a: "複数サーバーの接続先、状態、ログをまとめて扱うための管理システムです。",
+  },
+  {
+    category: "Archive",
+    q: "AIEC / Axis / Primusは購入できますか？",
+    a: "いいえ。AIEC、Axis、Primusはサービス終了済みです。現在、新規購入・予約受付は行っていません。",
+  },
+];
+
+export default function FaqPage() {
   return (
     <div className="w-full py-12 md:py-20">
-      {/* ページタイトル */}
-      <section className="mb-16 border-l-4 border-sky-500 pl-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-5xl">Q&A</h1>
-        <p className="mt-4 max-w-2xl text-lg text-slate-700">
-          NEXSPACEのプロダクトや技術、導入に関するよくあるご質問をまとめています。
+      <section className="mb-12 border-l-4 border-sky-500 pl-4 md:mb-16 md:pl-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-5xl">Q&A</h1>
+        <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-700 md:text-lg">
+          NEXSPACEの現行プロダクト、導入相談、ローカル動作・データ取扱い、サポート範囲に関するよくあるご質問です。
         </p>
       </section>
 
-      {/* FAQリスト */}
-      <div className="mx-auto max-w-4xl space-y-8">
-        {faqs.map((faq, i) => (
-          <div key={i} className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-sky-500 hover:shadow-md">
-            <div className="mb-2 inline-block rounded bg-sky-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-600">
-              {faq.category}
-            </div>
-            <h2 className="text-lg font-bold text-slate-900 md:text-xl">
-              <span className="mr-2 text-sky-500 font-mono">Q.</span>
+      <section className="mx-auto max-w-4xl space-y-5">
+        {faqs.map((faq) => (
+          <article key={faq.q} className="rounded-lg border border-slate-200 bg-white p-6">
+            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-sky-700">{faq.category}</p>
+            <h2 className="text-lg font-bold text-slate-950">
+              <span className="mr-2 font-mono text-sky-600">Q.</span>
               {faq.q}
             </h2>
-            <div className="mt-4 flex gap-3 border-t border-slate-100 pt-4">
-              <span className="text-lg font-bold text-slate-400 font-mono">A.</span>
-              <p className="text-slate-700 leading-relaxed">
-                {faq.a}
-              </p>
-            </div>
-          </div>
+            <p className="mt-4 border-t border-slate-100 pt-4 text-sm leading-relaxed text-slate-700">
+              <span className="mr-2 font-mono font-bold text-slate-400">A.</span>
+              {faq.a}
+            </p>
+          </article>
         ))}
-      </div>
+      </section>
 
-      {/* 解決しない場合 */}
-      <section className="mt-20 rounded-3xl bg-slate-900 p-8 text-center text-white md:p-12">
-        <h3 className="mb-4 text-2xl font-bold">解決しない場合は？</h3>
-        <p className="mb-8 text-slate-300">
-          右下のAIチャットボットがお答えするか、担当者が直接対応させていただきます。
+      <section className="mt-16 rounded-lg bg-slate-950 p-6 text-white md:p-8">
+        <h2 className="text-2xl font-bold">個別相談が必要な場合</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-300">
+          導入条件、提供時期、カスタム開発の相談はお問い合わせフォームからご連絡ください。
         </p>
-        <div className="flex justify-center gap-4">
-          <a href="/contact" className="rounded-full bg-white px-8 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors">
-            お問い合わせフォームへ
-          </a>
-        </div>
+        <Link href="/consultation" className="mt-6 inline-flex rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-950 transition-colors hover:bg-slate-100">
+          導入相談へ
+        </Link>
       </section>
     </div>
   );

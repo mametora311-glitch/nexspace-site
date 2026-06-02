@@ -1,11 +1,10 @@
-// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', // ← これが「ガッチガチ」に重要です！
+  output: "export",
   images: {
-    unoptimized: true, // GitHub Pagesで画像を表示するために必要
+    unoptimized: true,
   },
 };
 
-//export default nextConfig;
+export default nextConfig;

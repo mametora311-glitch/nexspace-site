@@ -1,9 +1,78 @@
-// src/app/api/chat/route.ts
 import { NextResponse } from "next/server";
+import { archiveProducts } from "@/config/archiveProducts";
+import { products } from "@/config/products";
+import { siteConfig } from "@/config/site";
+
+type ChatMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
+};
+
+const currentProductText = products
+  .map((product) => `- ${product.name}: ${product.subtitle}。${product.shortDescription}`)
+  .join("\n");
+
+const archiveProductText = archiveProducts
+  .map((product) => `- ${product.name}: ${product.endedStatusLabel}。${product.endedDescription}`)
+  .join("\n");
+
+const mainLinks = [
+  "- NeutronGate: /products/neutrongate",
+  "- NGND: /products/ngnd",
+  "- CareLingual: /products/carelingual",
+  "- NDSM: /products/ndsm",
+  "- 導入相談: /consultation",
+  "- お問い合わせ: /contact",
+  "- アーカイブ: /archive",
+].join("\n");
+
+function buildSystemPrompt() {
+  return `あなたはNEXSPACE公式サイトの案内AIです。
+回答は、現在のサイト設定に基づいて簡潔に行ってください。
+
+【NEXSPACEの理念】
+${siteConfig.brandName}は、AIを単なる生成モデルではなく、現場で動くシステムのエンジンとして実装する開発ブランドです。
+
+【現在の主なプロダクト】
+${currentProductText}
+
+【サービス終了済みプロダクト】
+${archiveProductText}
+
+終了済みプロダクトについて質問された場合は、現在は提供・販売・予約受付を終了していると案内してください。
+価格、予約、旧キャンペーン、購入リンクは案内しないでください。
+
+【回答ルール】
+- 回答は1〜3文で簡潔にする。
+- 未確定の価格、提供時期、契約条件は断定しない。
+- 医療、法律、セキュリティの判断代行は行わない。
+- 個別相談は /contact または /consultation へ誘導する。
+- 回答の最後に関連ページリンクを1つだけ提示する。
+
+【主要リンク】
+${mainLinks}`;
+}
+
+function findArchiveProduct(message: string) {
+  const normalized = message.toLowerCase();
+  if (normalized.includes("axisos")) {
+    return archiveProducts.find((product) => product.slug === "axis");
+  }
+
+  return archiveProducts.find((product) => normalized.includes(product.slug));
+}
 
 export async function POST(req: Request) {
     try {
-        const { messages } = await req.json();
+        const { messages } = await req.json() as { messages: ChatMessage[] };
+        const latestUserMessage = [...messages].reverse().find((message) => message.role === "user");
+        const archiveProduct = latestUserMessage ? findArchiveProduct(latestUserMessage.content) : undefined;
+
+        if (archiveProduct) {
+            return NextResponse.json({
+                content: `${archiveProduct.name}はサービス終了済みで、現在は提供・販売・予約受付を終了しています。価格、予約、購入リンク、旧キャンペーン情報は案内していません。\n[アーカイブ](${archiveProduct.href})`,
+            });
+        }
 
         const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
             method: "POST",
@@ -16,62 +85,18 @@ export async function POST(req: Request) {
                 messages: [
                     {
                         role: "system",
-                        content: `
-あなたはNEXSPACEの高度対話型AIです。以下のサイト情報を完全に把握し、ユーザーにプロフェッショナルかつ簡潔に回答してください。
-
-【NEXSPACEの理念】
-・AIを単なる「生成モデル」ではなく、システムを動かす「動力（エンジン）」として定義。
-・"AI as an Engine, not just a model." がコアミッション。
-
-【製品情報】
-1. AxisOS: 複数のAIモデルやクラウドサービスを統合管理するAI時代のOS。
-2. AIEC Office: Excel/PPT/WordをAIで自動駆動。永久ライセンス ¥19,800。
-3. Primus: デバイス完結型の完全自律型AI。先行予約 ¥9,800。
-
-【会社概要】
-・屋号: NEXSPACE
-・代表: 松永 成幸
-・所在地: 鹿児島県鹿児島市油須木町167-3
-・設立: 2025年9月6日
-
-【リーガル・購入】
-・12/24よりCAMPFIREにてクラウドファンディング開始。
-・損害賠償は過去12ヶ月の支払額を上限とする（責任限定条項）。
-・反社会的勢力の排除を徹底。
-
-【回答指針】
-・回答は3文以内を目安に簡潔に行う。
-・不明な点や個別相談は必ず「お問い合わせページ（Googleフォーム）」へ誘導する。
-・NEXSPACEの代表や所在地、価格についても正確に答える。
-
-あなたはNEXSPACEのAIです。以下のガイドラインに従って回答してください。
-
-【リンク案内ルール】
-回答の最後には、必ずユーザーが次に進むべきページのリンクを以下の形式で1つだけ添えてください。
-形式: [ページ名](パス)
-
-【主要リンク一覧】
-・AxisOS詳細: [AxisOS Project](/products/axis)
-・AIEC購入/詳細: [AIEC Office 購入ページ](/purchase/aiec)
-・Primus予約: [Primus 先行予約ページ](/purchase/primus)
-・会社概要: [会社概要](/company)
-・お問い合わせ: [お問い合わせフォーム](/contact)
-・利用規約: [利用規約](/legal/terms)
-
-【回答スタイル】
-・簡潔に1〜2文で回答したあと、改行して上記のリンクを提示してください。
-`
+                        content: buildSystemPrompt(),
                     },
                     ...messages,
                 ],
                 max_tokens: 512,
-                temperature: 0.5, // 回答の安定性を高めるために少し下げました
+                temperature: 0.5,
             }),
         });
 
         const data = await response.json();
         return NextResponse.json(data.choices[0].message);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ content: "システムエラーです。お問い合わせからご連絡ください。" }, { status: 500 });
     }
 }
