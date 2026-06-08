@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ChatWidget } from "@/components/ChatWidget";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -86,6 +87,7 @@ export default function RootLayout({
           </footer>
           <ChatWidget />
           <SpeedInsights />
+          <Analytics />
         </div>
       </body>
     </html>
