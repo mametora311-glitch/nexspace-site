@@ -1,7 +1,7 @@
 // src/components/ChatWidget.tsx
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 
 type Message = {
   role: "user" | "assistant";
@@ -9,26 +9,42 @@ type Message = {
 };
 
 function formatContent(content: string) {
-  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-  const parts = content.split(linkRegex);
-  if (parts.length === 1) return content;
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)|(\/[a-z0-9/?=&_-]+)/gi;
+  const result: ReactNode[] = [];
+  let lastIndex = 0;
 
-  const result = [];
-  for (let i = 0; i < parts.length; i += 3) {
-    result.push(parts[i]);
-    if (parts[i + 1]) {
+  for (const match of content.matchAll(linkRegex)) {
+    const [fullMatch, markdownLabel, markdownHref, bareHref] = match;
+    const href = markdownHref ?? bareHref;
+    const label = markdownLabel ?? bareHref;
+    const isSafeHref = href.startsWith("/") || href.startsWith("https://nexspace.jp");
+
+    if (match.index > lastIndex) {
+      result.push(content.slice(lastIndex, match.index));
+    }
+
+    if (isSafeHref) {
       result.push(
         <a
-          key={i}
-          href={parts[i + 2]}
+          key={`${match.index}-${href}`}
+          href={href}
           className="mx-1 font-bold text-sky-400 underline decoration-sky-400/30 hover:text-white"
         >
-          {parts[i + 1]}
+          {label}
         </a>
       );
+    } else {
+      result.push(fullMatch);
     }
+
+    lastIndex = match.index + fullMatch.length;
   }
-  return result;
+
+  if (lastIndex < content.length) {
+    result.push(content.slice(lastIndex));
+  }
+
+  return result.length > 0 ? result : content;
 }
 
 export function ChatWidget() {
