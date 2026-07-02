@@ -129,21 +129,21 @@ function pickRelatedLink(message: string, content: string) {
     return { label: "会社概要", href: "/company" };
   }
 
-  const normalized = `${message}\n${content}`.toLowerCase();
-  const archiveProduct = archiveProducts.find((product) =>
-    normalized.includes(product.slug) || normalized.includes(product.name.toLowerCase())
+  const normalizedMessage = message.toLowerCase();
+  const archiveProductInMessage = archiveProducts.find((product) =>
+    normalizedMessage.includes(product.slug) || normalizedMessage.includes(product.name.toLowerCase())
   );
 
-  if (archiveProduct) {
-    return { label: archiveProduct.name, href: archiveProduct.href };
+  if (archiveProductInMessage) {
+    return { label: archiveProductInMessage.name, href: archiveProductInMessage.href };
   }
 
-  const product = products.find((item) =>
-    normalized.includes(item.slug) || normalized.includes(item.name.toLowerCase())
+  const productInMessage = products.find((item) =>
+    normalizedMessage.includes(item.slug) || normalizedMessage.includes(item.name.toLowerCase())
   );
 
-  if (product) {
-    return { label: product.name, href: product.href };
+  if (productInMessage) {
+    return { label: productInMessage.name, href: productInMessage.href };
   }
 
   if (/プロダクト|製品|サービス|商品|一覧/.test(message)) {
@@ -160,6 +160,23 @@ function pickRelatedLink(message: string, content: string) {
 
   if (/問い合わせ|問合|連絡|メール|電話|contact/i.test(message)) {
     return { label: "お問い合わせ", href: "/contact" };
+  }
+
+  const normalized = `${message}\n${content}`.toLowerCase();
+  const archiveProduct = archiveProducts.find((product) =>
+    normalized.includes(product.slug) || normalized.includes(product.name.toLowerCase())
+  );
+
+  if (archiveProduct) {
+    return { label: archiveProduct.name, href: archiveProduct.href };
+  }
+
+  const product = products.find((item) =>
+    normalized.includes(item.slug) || normalized.includes(item.name.toLowerCase())
+  );
+
+  if (product) {
+    return { label: product.name, href: product.href };
   }
 
   return { label: "会社概要", href: "/company" };
