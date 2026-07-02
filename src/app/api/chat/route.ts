@@ -8,7 +8,7 @@ type ChatMessage = {
   content: string;
 };
 
-const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-5.5-nano";
+const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-5.4-nano";
 
 const currentProductText = products
   .map((product) => `- ${product.name}: ${product.subtitle}。${product.shortDescription}`)
@@ -64,6 +64,29 @@ function findArchiveProduct(message: string) {
   return archiveProducts.find((product) => normalized.includes(product.slug));
 }
 
+function extractResponseText(data: {
+  output_text?: unknown;
+  output?: Array<{
+    content?: Array<{
+      type?: string;
+      text?: unknown;
+    }>;
+  }>;
+}) {
+  if (typeof data.output_text === "string" && data.output_text.trim()) {
+    return data.output_text;
+  }
+
+  const outputText = data.output
+    ?.flatMap((item) => item.content ?? [])
+    .filter((content) => content.type === "output_text" && typeof content.text === "string")
+    .map((content) => content.text)
+    .join("\n")
+    .trim();
+
+  return outputText;
+}
+
 export async function POST(req: Request) {
     try {
         const { messages } = await req.json() as { messages: ChatMessage[] };
@@ -83,7 +106,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/responses", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -91,15 +114,12 @@ export async function POST(req: Request) {
             },
             body: JSON.stringify({
                 model: OPENAI_MODEL,
-                messages: [
-                    {
-                        role: "system",
-                        content: buildSystemPrompt(),
-                    },
-                    ...messages,
-                ],
-                max_tokens: 512,
-                temperature: 0.5,
+                instructions: buildSystemPrompt(),
+                input: messages.map((message) => ({
+                    role: message.role,
+                    content: message.content,
+                })),
+                max_output_tokens: 512,
             }),
         });
 
@@ -109,7 +129,13 @@ export async function POST(req: Request) {
             throw new Error(data?.error?.message ?? "OpenAI API request failed");
         }
 
-        return NextResponse.json(data.choices[0].message);
+        const content = extractResponseText(data);
+
+        if (!content) {
+            throw new Error("OpenAI API returned no content");
+        }
+
+        return NextResponse.json({ content });
     } catch {
         return NextResponse.json({ content: "システムエラーです。お問い合わせからご連絡ください。" }, { status: 500 });
     }
