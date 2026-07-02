@@ -18,7 +18,17 @@ const archiveProductText = archiveProducts
   .map((product) => `- ${product.name}: ${product.endedStatusLabel}。${product.endedDescription}`)
   .join("\n");
 
+const companyText = [
+  `- 屋号: ${siteConfig.legalName}`,
+  `- 代表者: ${siteConfig.representative}`,
+  `- 所在地: ${siteConfig.address}`,
+  `- 設立: ${siteConfig.established}`,
+  "- 事業内容: AIシステム開発・運用 / ローカルAI・業務運用支援プロダクト開発",
+  `- お問い合わせ: ${siteConfig.email}`,
+].join("\n");
+
 const mainLinks = [
+  "- 会社概要: /company",
   "- NeutronGate: /products/neutrongate",
   "- NGND: /products/ngnd",
   "- CareLingual: /products/carelingual",
@@ -34,6 +44,10 @@ function buildSystemPrompt() {
 
 【NEXSPACEの理念】
 ${siteConfig.brandName}は、AIを単なる生成モデルではなく、現場で動くシステムのエンジンとして実装する開発ブランドです。
+${siteConfig.mission}
+
+【会社概要】
+${companyText}
 
 【現在の主なプロダクト】
 ${currentProductText}
@@ -49,7 +63,8 @@ ${archiveProductText}
 - 未確定の価格、提供時期、契約条件は断定しない。
 - 医療、法律、セキュリティの判断代行は行わない。
 - 個別相談は /contact または /consultation へ誘導する。
-- 回答の最後に関連ページリンクを1つだけ提示する。
+- 会社概要、代表者、所在地、設立、事業内容については上記の会社概要に基づいて回答する。
+- 回答の最後に関連ページリンクをMarkdown形式で1つだけ提示する。例: [会社概要](/company)
 
 【主要リンク】
 ${mainLinks}`;
