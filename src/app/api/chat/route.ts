@@ -8,6 +8,8 @@ type ChatMessage = {
   content: string;
 };
 
+const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-5.5-nano";
+
 const currentProductText = products
   .map((product) => `- ${product.name}: ${product.subtitle}。${product.shortDescription}`)
   .join("\n");
@@ -74,14 +76,21 @@ export async function POST(req: Request) {
             });
         }
 
-        const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+        if (!process.env.OPENAI_API_KEY) {
+            return NextResponse.json(
+                { content: "AI BotのAPIキーが未設定です。OPENAI_API_KEYを設定してください。" },
+                { status: 500 },
+            );
+        }
+
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.NVIDIA_API_KEY}`,
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
             },
             body: JSON.stringify({
-                model: "meta/llama-3.2-11b-vision-instruct",
+                model: OPENAI_MODEL,
                 messages: [
                     {
                         role: "system",
@@ -95,6 +104,11 @@ export async function POST(req: Request) {
         });
 
         const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data?.error?.message ?? "OpenAI API request failed");
+        }
+
         return NextResponse.json(data.choices[0].message);
     } catch {
         return NextResponse.json({ content: "システムエラーです。お問い合わせからご連絡ください。" }, { status: 500 });
