@@ -8,8 +8,11 @@ const homeProducts = products
   .filter((product) => product.showOnHome)
   .sort((a, b) => a.priority - b.priority);
 
-const featuredProduct = homeProducts[0];
-const businessProducts = homeProducts.filter((product) => product.slug !== featuredProduct.slug);
+const storeProducts = homeProducts.filter((product) => product.category === "store_app");
+const featuredProduct = homeProducts.find((product) => product.category === "flagship") ?? homeProducts[0];
+const businessProducts = homeProducts.filter((product) => (
+  product.category !== "store_app" && product.slug !== featuredProduct.slug
+));
 
 export default function HomePage() {
   return (
@@ -37,6 +40,32 @@ export default function HomePage() {
               導入相談
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white py-12 md:py-16">
+        <div className="border-l-4 border-sky-500 pl-4">
+          <p className="text-xs font-bold uppercase tracking-wider text-sky-700">New Products</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">Microsoft Store Apps</h2>
+          <p className="mt-1 text-sm text-slate-600">すぐに入手・購入できるWindowsアプリ</p>
+        </div>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
+          {storeProducts.map((product) => (
+            <Link
+              key={product.slug}
+              href={product.href}
+              className="block rounded-lg border border-sky-200 bg-sky-50 p-6 transition-colors hover:border-sky-500"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-sky-600 px-3 py-1 text-xs font-bold text-white">NEW</span>
+                <span className="text-xs font-bold text-sky-700">{product.priceLabel}</span>
+              </div>
+              <h3 className="mt-4 text-2xl font-bold text-slate-950">{product.name}</h3>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">{product.subtitle}</p>
+              <p className="mt-4 text-sm leading-relaxed text-slate-700">{product.shortDescription}</p>
+              <span className="mt-6 inline-flex text-sm font-bold text-sky-700">{product.ctaLabel}</span>
+            </Link>
+          ))}
         </div>
       </section>
 

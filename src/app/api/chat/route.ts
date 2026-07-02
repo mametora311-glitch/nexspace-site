@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { archiveProducts } from "@/config/archiveProducts";
-import { products } from "@/config/products";
+import { lifecycleLabels, products } from "@/config/products";
 import { siteConfig } from "@/config/site";
 
 type ChatMessage = {
@@ -11,7 +11,11 @@ type ChatMessage = {
 const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-5.4-nano";
 
 const currentProductText = products
-  .map((product) => `- ${product.name}: ${product.subtitle}。${product.shortDescription}`)
+  .map((product) => {
+    const price = product.priceLabel ? ` 価格/提供: ${product.priceLabel}。` : "";
+    const aliases = product.aliases?.length ? ` 別名: ${product.aliases.join(" / ")}。` : "";
+    return `- ${product.name}: ${lifecycleLabels[product.lifecycle]}。${product.subtitle}。${product.shortDescription}${price}${aliases}`;
+  })
   .join("\n");
 
 const archiveProductText = archiveProducts
@@ -27,13 +31,14 @@ const companyText = [
   `- お問い合わせ: ${siteConfig.email}`,
 ].join("\n");
 
+const productLinks = products
+  .map((product) => `- ${product.name}: ${product.href}`)
+  .join("\n");
+
 const mainLinks = [
   "- 会社概要: /company",
   "- プロダクト一覧: /products",
-  "- NeutronGate: /products/neutrongate",
-  "- NGND: /products/ngnd",
-  "- CareLingual: /products/carelingual",
-  "- NDSM: /products/ndsm",
+  productLinks,
   "- 技術: /technology",
   "- 導入相談: /consultation",
   "- お問い合わせ: /contact",
@@ -79,6 +84,15 @@ function findArchiveProduct(message: string) {
   }
 
   return archiveProducts.find((product) => normalized.includes(product.slug));
+}
+
+function productMatchesText(product: (typeof products)[number], text: string) {
+  const normalized = text.toLowerCase();
+  return [
+    product.slug,
+    product.name,
+    ...(product.aliases ?? []),
+  ].some((keyword) => normalized.includes(keyword.toLowerCase()));
 }
 
 function buildCompanyAnswer(message: string) {
@@ -138,9 +152,7 @@ function pickRelatedLink(message: string, content: string) {
     return { label: archiveProductInMessage.name, href: archiveProductInMessage.href };
   }
 
-  const productInMessage = products.find((item) =>
-    normalizedMessage.includes(item.slug) || normalizedMessage.includes(item.name.toLowerCase())
-  );
+  const productInMessage = products.find((item) => productMatchesText(item, normalizedMessage));
 
   if (productInMessage) {
     return { label: productInMessage.name, href: productInMessage.href };
@@ -171,9 +183,7 @@ function pickRelatedLink(message: string, content: string) {
     return { label: archiveProduct.name, href: archiveProduct.href };
   }
 
-  const product = products.find((item) =>
-    normalized.includes(item.slug) || normalized.includes(item.name.toLowerCase())
-  );
+  const product = products.find((item) => productMatchesText(item, normalized));
 
   if (product) {
     return { label: product.name, href: product.href };
