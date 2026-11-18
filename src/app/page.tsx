@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PromoVideoPlayer } from "@/components/PromoVideoPlayer";
 import { archiveProducts } from "@/config/archiveProducts";
 import { products } from "@/config/products";
 import { siteConfig } from "@/config/site";
@@ -52,18 +53,10 @@ export default function HomePage() {
           <p className="mt-1 text-sm text-slate-600">最新プロモーション映像・公開プロダクト</p>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-lg border border-slate-200 bg-slate-950">
-          <video
-            src="/videos/Brain_Promo_90s_Relaxed_v3_fixed.mp4"
-            poster="/videos/promo-poster.jpg"
-            controls
-            playsInline
-            preload="metadata"
-            className="aspect-video w-full bg-slate-950"
-          >
-            お使いのブラウザは動画再生に対応していません。
-          </video>
-        </div>
+        <PromoVideoPlayer
+          src="/videos/Brain_Promo_Final_Candidate_v7.mp4"
+          poster="/videos/promo-poster.jpg"
+        />
 
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {newReleaseProducts.map((product) => (
