@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { siteConfig } from "@/config/site";
+import { companyHistory, siteConfig } from "@/config/site";
 
 export default function CompanyPage() {
   const companyInfo = [
@@ -26,6 +26,50 @@ export default function CompanyPage() {
             </div>
           ))}
         </dl>
+      </section>
+
+      <section className="mt-12" aria-labelledby="company-history-heading">
+        <div className="mb-6 border-l-4 border-sky-500 pl-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-sky-600">History</p>
+          <h2 id="company-history-heading" className="mt-1 text-2xl font-bold tracking-tight text-slate-950">
+            沿革・開発略歴
+          </h2>
+        </div>
+
+        <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
+          <ol className="relative space-y-8 border-l border-slate-200 pl-6 md:space-y-0 md:border-l-0 md:pl-0">
+            {companyHistory.map((item, index) => (
+              <li
+                key={`${item.period}-${item.title}`}
+                className="relative md:grid md:grid-cols-[11rem_1fr] md:gap-8"
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute -left-[29px] top-1.5 h-2.5 w-2.5 rounded-full bg-sky-500 ring-4 ring-white md:hidden"
+                />
+
+                <div className="md:py-4 md:text-right">
+                  <span className="inline-block rounded bg-sky-50 px-2.5 py-0.5 text-xs font-semibold text-sky-700 md:bg-transparent md:px-0 md:py-0 md:text-sm md:font-semibold md:text-slate-600">
+                    {item.period}
+                  </span>
+                </div>
+
+                <div
+                  className={`mt-2 md:relative md:mt-0 md:border-l md:border-slate-200 md:pb-8 md:pl-8 md:pt-4 ${
+                    index === companyHistory.length - 1 ? "md:pb-4" : ""
+                  }`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="hidden md:absolute md:-left-[5px] md:top-[22px] md:block md:h-2.5 md:w-2.5 md:rounded-full md:bg-sky-500 md:ring-4 md:ring-white"
+                  />
+                  <h3 className="text-base font-bold leading-snug text-slate-950">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{item.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       <section className="mt-12 rounded-lg bg-slate-950 p-6 text-white md:p-8">
